@@ -1,5 +1,5 @@
-\name{FASTIN}
-\alias{FASTIN}
+\name{fastin}
+\alias{fastin}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 %%  ~~function to do ... ~~
@@ -9,50 +9,49 @@ Main analysis wrapper
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-FASTIN(SI.data = NULL, FA.data = NULL, Groups = NULL, Covariates = NULL, eveness = 0.1, nIter = 10000, nBurnin = 5000, Analysis.Type = "Pop.proportions.only")
+fastin(SI.data = NULL, FA.data = NULL, Groups = NULL, Covariates = NULL, eveness = 0.1, nIter = 10000, nBurnin = 5000, Analysis.Type = "Pop.proportions.only")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{SI.data}{
-%%     ~~Describe \code{SI.data} here~~
+ A list with references to filenames containing predator, prey names (1st column) and stable isotope values (remaining columns). Readers are encouraged to run \code{simulation()} to simualte data and inspect the files for the correct format. If fractionation coefficients are not available, a prior mean and sd can be set instread. USers are encouraged to use the gui via \code{run_FASTIN()} rather than using this function directly.
 }
   \item{FA.data}{
-%%     ~~Describe \code{FA.data} here~~
+ A list with references to filenames containing predator, prey names (1st column) and fatty acid profiles (remaining columns). Readers are encouraged to run \code{simulation()} to simualte data and inspect the files for the correct format. If fractionation coefficients are not available, a prior mean and sd can be set instread. USers are encouraged to use the gui via \code{run_FASTIN()} rather than using this function directly.
 }
   \item{Groups}{
-%%     ~~Describe \code{Groups} here~~
+Optional grouping variable (e.g., regions, sex, season, age classes) that may explain differences in diet proportions
 }
   \item{Covariates}{
-%%     ~~Describe \code{Covariates} here~~
+Optional covariates (e.g., age, length, latitude)
 }
   \item{eveness}{
-%%     ~~Describe \code{eveness} here~~
+Prior eveness pof diet proportions. A low value will give high prior probablility of specialist diets, a higher value gives a higher prior probablility to a more generalist diet. See gui for numerical examples.
 }
   \item{nIter}{
-%%     ~~Describe \code{nIter} here~~
+Number of MCMC iterations. Should be relatively low to start in order to verify that the model runs at reasonable speed. If not, fewer fatty acids and/or grouped preys may need to be used. See the gui for guidance when performing these steps.
+The number of kept MCMC iterations is allways ~1000 if nIter>1000, so the chain is thinned appropriately for larger numbers of iterations. >10000 iterations are highly recommended to ensure minimal autocorrelation and independent draws for the posterior distribution.
 }
   \item{nBurnin}{
-%%     ~~Describe \code{nBurnin} here~~
+Number of MCMC Iterations to discard
 }
   \item{Analysis.Type}{
-%%     ~~Describe \code{Analysis.Type} here~~
+Choose if population proportions or individual and population proportions are to be estimated. The former is aprticularly useful when doing exploratory analysis since it tends to run much faster. The altter is automatically selected (choice is overwritten) if covariates or groups are present.
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+
+An object of class 'post diets', grouping MCMC runs for summaries via \code{summary} and plotting via \code{plot}.
+
 }
 \references{
-%% ~put references to the literature/web site here ~
+Neubauer.P. and Jensen, O.P. (in prep)
 }
 \author{
-%%  ~~who you are~~
+Philipp Neubauer
 }
 \note{
 %%  ~~further notes~~
@@ -61,12 +60,11 @@ FASTIN(SI.data = NULL, FA.data = NULL, Groups = NULL, Covariates = NULL, eveness
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{run_FASTIN}},\code{\link{simulation}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+
+run_FASTIN()
 
 ## The function is currently defined as
 function (SI.data = NULL, FA.data = NULL, Groups = NULL, Covariates = NULL, 
@@ -329,5 +327,4 @@ function (SI.data = NULL, FA.data = NULL, Groups = NULL, Covariates = NULL,
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{  manip}

@@ -3,12 +3,10 @@
 \alias{FASTIN}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Fatty Acids and Stable Isotopes in R
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+This packages provides gui facilities to perfom Bayesian estiamtion of diet proportions based on fatty acid profiles, stable isotopes and their combination. Bayesian estiamtion is currently performed using the R package BRugs to call OpenBUGS from R. The package can handle covariates and grouped (e.g., regional) data as predictors of diet proportions, and will estiamte both individual and popualtion level diet protportions. Facilities for simulating, plotting and extracting/writing summary statistics to file are provided as well.
 }
 \details{
 \tabular{ll}{
@@ -16,26 +14,27 @@ Package: \tab FASTIN\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2013-03-19\cr
-License: \tab What license is it under?\cr
+License: \tab GPL (>= 2)\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
-Who wrote it
+Philipp Neubauer
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Philipp Neubauer <neubauer.phil@gmail.com>
+
 }
 \references{
-~~ Literature or other references for background information ~~
+Neubauer.P. and Jensen, O.P. (in prep)
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation ~~
-~~ directory ~~
+
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+\code{\link{fastin}},\code{\link{simulation}},\code{\link{run_FASTIN}}
 }
 \examples{
-~~ simple examples of the most important functions ~~
+
+simulation()
+run_FASTIN()
+
 }

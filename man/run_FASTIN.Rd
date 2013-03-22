@@ -2,17 +2,17 @@
 \alias{run_FASTIN}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Gui for the FASTIN analysis
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Provides a gui to input data into the main \code{\link{fastin}} function.
 }
 \usage{
 run_FASTIN()
 }
 %- maybe also 'usage' for other objects documented here.
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+  Please consult the help for \code{\link{fastin}}
 }
 \value{
 %%  ~Describe the value returned
@@ -22,10 +22,10 @@ run_FASTIN()
 %% ...
 }
 \references{
-%% ~put references to the literature/web site here ~
+Neubauer.P. and Jensen, O.P. (in prep)
 }
 \author{
-%%  ~~who you are~~
+Philipp Neubauer
 }
 \note{
 %%  ~~further notes~~
@@ -34,7 +34,7 @@ run_FASTIN()
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{fastin}},\code{\link{simulation}}
 }
 \examples{
 ##---- Should be DIRECTLY executable !! ----
@@ -101,5 +101,5 @@ function ()
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ manip}
+

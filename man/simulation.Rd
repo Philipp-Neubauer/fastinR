@@ -1,31 +1,56 @@
 \name{simulation}
 \alias{simulation}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
+\title{ Simualte Fatty Acid profiles and Stable Isotope data
 %%  ~~function to do ... ~~
 }
-\description{
+\description{Gui for simulating FAtty Acid and Stable Isotope data according to user specified caracteristics. 
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
 simulation()
 }
 %- maybe also 'usage' for other objects documented here.
-\details{
+\details{The function calls a gui to simulate data, functions are of little use outside the gui facility.
+
+Pressing the \code{New Simualtion} makes sense only after all desired compoenets were updated - i.e., when updating proportions, FA and/or SI data need to be re-simulated to have the new diet proportions alter the predator fatty acid makup. 
+
+\code{New Simualtion} will draw a CAP (Constrained Analysis of Princiipal Coordiantes) plot to show the simualted data. The user is prompted to use the cursor to select an area in the plot to draw a legend. Cacelling the window (upper right hand cross on window) may lead to crashes of the R gui, so be sure to press \code{OK} in the pop-up window. 
+
+The window will remain open to allow for many tries at simulating data. Variuous configurations can be written to file to allow for exploration of the model.
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+
+A number of .csv files, with customized filename *
+
+ \item{*_props}{Simualted diet proportions}
+
+For Fatty Acids:
+
+ \item{*_preys.csv}{Prey names (first column) and fatty acid profiles}
+ \item{*_preds.csv}{Predator index (first column) and fatty acid profiles}
+ \item{*_fat_cont.csv}{Prey fat contents (here as mean and sd, can be specified for each prey sample for the main analysis)}
+ \item{*_FA_cc_means.csv}{Prey specific conversion coefficient means} 
+ \item{*_FA_cc_sd.csv}{Prey specific conversion coefficient standard deviations} 
+ 
+ For Stable Isotopes:
+
+ \item{*_SI_preys.csv}{Prey names (first column) and stable isotope values}
+ \item{*_SI_preds.csv}{Predator index (first column) and stable isotope values}
+ \item{*_SI_fc_means.csv}{Prey specific SI additive fractionation coefficient means} 
+ \item{*_SI_fc_sd.csv}{Prey specific additive fractionation coefficient standard deviations} 
+
 }
 \references{
-%% ~put references to the literature/web site here ~
+
+Neubauer.P. and Jensen, O.P. (in prep)
+
 }
 \author{
-%%  ~~who you are~~
+
+Philipp Neubauer
+
 }
 \note{
 %%  ~~further notes~~
@@ -34,9 +59,12 @@ simulation()
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{fastin}},\code{\link{run_FASTIN}}
 }
 \examples{
+
+simulation()
+
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
 ##--	or do  help(data=index)  for the standard data sets.
@@ -232,5 +260,4 @@ function ()
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ manip }

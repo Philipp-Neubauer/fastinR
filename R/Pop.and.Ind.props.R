@@ -1,6 +1,6 @@
-Poppropanalysis <- function(data,nIter=1000,nBurnin=1000) UseMethod("Poppropanalysis", data)
+PopandIndprops <- function(data,nIter=1000,nBurnin=1000) UseMethod("PopandIndprops", data)
 
-Poppropanalysis.FA <- function(data,nIter=1000,nBurnin=1000)
+PopandIndprops.FA <- function(data,nIter=1000,nBurnin=1000)
 {
   
   R = data$datas.FA$R
@@ -16,36 +16,40 @@ Poppropanalysis.FA <- function(data,nIter=1000,nBurnin=1000)
   ni = data$datas.FA$ni
   preds = data$datas.FA$preds
   preym = data$datas.FA$preym
+  eveness = data$eveness
   
+  S = diag(eveness,n.preys)
+  SS = diag(1,n.preys)
   
   initials=list(list(
     fc = fc_mean,
-    fracs=matrix(mean_c,n.preys,n.fats),             
-    ps = rep(1/n.preys,n.preys),
+    fracs=matrix(mean_c,n.preys,n.fats),     
+    pmean=rep(0,n.preys),
+    pprec = diag(1,n.preys),
     prey.means=preym,
     predprec = diag(1,m.fats),
     prey.precs = array(1,c(n.preys,m.fats,m.fats))
   ))
+    
+  datas=list('S','SS','R','fc_mean','fc_tau','mean_c','tau_coeffs','Rnot','n.preys','n.preds','n.fats','m.fats','ni','preds','preym')
   
-  datas=list('R','fc_mean','fc_tau','mean_c','tau_coeffs','Rnot','n.preys','n.preds','n.fats','m.fats','ni','preds','preym')
-  
-  vars = c('prop')
+  vars = c('prop','pop.prop')
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
   res <- BRugsFit('Pop.prop.analysis.FA.bugs', datas, inits=initials, numChains = 1, vars,
-                  nBurnin = nBurnin, nIter = nIter, nThin = round(nIter/1000), coda = T,
-                  DIC = F, working.directory = getwd(), digits = 4,
-                  BRugsVerbose = T)
+                                 nBurnin = nBurnin, nIter = nIter, nThin = round(nIter/1000), coda = T,
+                                 DIC = F, working.directory = getwd(), digits = 4,
+                                 BRugsVerbose = T)
   
   res <- as.data.frame((res)[[1]])
   output <- list(MCMC=res,Preynames=rownames(preys))
-  class(output) <- 'pop_props'
+  class(output) <- 'ind_props'
   return(output)
   
 }
 
-Poppropanalysis.SI <- function(data,nIter=1000,nBurnin=1000)
+PopandIndprops.SI <- function(data,nIter=1000,nBurnin=1000)
 {
   n.preys = data$n.preys
   n.preds = data$n.preds
@@ -59,10 +63,13 @@ Poppropanalysis.SI <- function(data,nIter=1000,nBurnin=1000)
   preds.SI = data$datas.SI$preds.SI
   preym.SI = data$datas.SI$preym.SI
   
+  S = diag(eveness,n.preys)
+  SS = diag(1,n.preys)
   
   initials.SI=list(list(
-    
-    ps = rep(1/n.preys,n.preys),#matrix(1/n.preys,n.preds,n.preys),
+ 
+    pmean=rep(0,n.preys),
+    pprec = diag(1,n.preys), 
     cs=matrix(mean_cs,n.preys,isos,byrow=T),
     prey.means_SI=preym.SI,
     predprec_SI = diag(0.01,isos),
@@ -72,9 +79,9 @@ Poppropanalysis.SI <- function(data,nIter=1000,nBurnin=1000)
   
   
   
-  datas.SI=list('R_SI','mean_cs','tau_cs','Rnot_SI','n.preys','n.preds','isos','ni.SI','preds.SI','preym.SI')
+  datas.SI=list('S','SS','R_SI','mean_cs','tau_cs','Rnot_SI','n.preys','n.preds','isos','ni.SI','preds.SI','preym.SI')
   
-  vars = c('prop')
+  vars = c('prop','pop.prop')
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
@@ -85,11 +92,11 @@ Poppropanalysis.SI <- function(data,nIter=1000,nBurnin=1000)
   
   res <- as.data.frame((res)[[1]])
   output <- list(MCMC=res,Preynames=rownames(preys.SI))
-  class(output) <- 'pop_props'
+  class(output) <- 'ind_props'
   return(output)
 }
 
-Poppropanalysis.combined <- function(data,nIter=1000,nBurnin=1000)
+PopandIndprops.combined <- function(data,nIter=1000,nBurnin=1000)
 {
   
   n.preys = data$n.preys
@@ -116,10 +123,14 @@ Poppropanalysis.combined <- function(data,nIter=1000,nBurnin=1000)
   preds = data$datas.FA$preds
   preym = data$datas.FA$preym
   
+  S = diag(eveness,n.preys)
+  SS = diag(1,n.preys)
+ 
   initials.comb=list(list(
+    pmean=rep(0,n.preys),
+    pprec = diag(1,n.preys), 
     fc = fc_mean,
     fracs=matrix(mean_c,n.preys,n.fats),             
-    ps = rep(1/n.preys,n.preys),#matrix(1/n.preys,n.preds,n.preys),
     prey.means=preym,
     predprec = diag(1,m.fats),
     prey.precs = array(0.1,c(n.preys,m.fats,m.fats)),
@@ -130,21 +141,19 @@ Poppropanalysis.combined <- function(data,nIter=1000,nBurnin=1000)
     
   ))
   
+  datas.comb=list('S','SS','R','R_SI','fc_mean','fc_tau','mean_c','tau_coeffs','mean_cs','tau_cs','Rnot','Rnot_SI','n.preys','n.preds','isos','n.fats','m.fats','ni.SI','ni','preds','preds.SI','preym.SI','preym')
   
-  
-  datas.comb=list('R','R_SI','fc_mean','fc_tau','mean_c','tau_coeffs','mean_cs','tau_cs','Rnot','Rnot_SI','n.preys','n.preds','isos','n.fats','m.fats','ni.SI','ni','preds','preds.SI','preym.SI','preym')
-  
-  vars = c('prop')
+  vars = c('prop','pop.prop')
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
   res <- BRugsFit('Pop.prop.analysis.combined.bugs', datas.comb, inits=initials.comb, numChains = 1, vars,
-                  nBurnin = nBurnin, nIter = Iter, nThin = round(nIter/1000), coda = T,
-                  DIC = F, working.directory = getwd(), digits = 4, 
-                  BRugsVerbose = T)
+                                   nBurnin = nBurnin, nIter = Iter, nThin = round(nIter/1000), coda = T,
+                                   DIC = F, working.directory = getwd(), digits = 4, 
+                                   BRugsVerbose = T)
   res <- as.data.frame((res)[[1]])
   output <- list(MCMC=res,Preynames=rownames(preys))
-  class(output) <- 'pop_props'
+  class(output) <- 'ind_props'
   return(output)
   
 }

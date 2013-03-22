@@ -1,10 +1,12 @@
-Package: FASTIN-R
+Package: FASTIN
 Type: Package
+Depends: vegan, compositions
+Suggests: robCompositions, MCMCpack,mvtnorm,fgui,tcltk
 Title: Fatty Acids and Stable Isotopes in R
 Version: 1.0
 Date: 2013-03-19
 Author: Philipp Neubauer
-Maintainer: Philipp Neubauer neubauer.phil@gmail.com
+Maintainer: Philipp Neubauer <neubauer.phil@gmail.com>
 Description: This packages provides gui facilities to perfom Bayesian estiamtion 
              of diet proportions based on fatty acid profiles, stable isotopes and 
              their combination. Bayesian estiamtion is currently performed using 
@@ -13,4 +15,5 @@ Description: This packages provides gui facilities to perfom Bayesian estiamtion
              proportions, and will estiamte both individual and popualtion level diet 
              protportions. Facilities for simulating, plotting and extracting/writing 
              summary statistics to file are provided as well.
-License: GPL-3
+License: GPL (>= 2)
+URL: 
