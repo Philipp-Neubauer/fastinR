@@ -1,10 +1,10 @@
 Package: FASTIN
 Type: Package
-Depends: vegan, compositions
-Suggests: robCompositions, MCMCpack,mvtnorm,fgui,tcltk
+Depends: vegan, compositions,MCMCpack,mvtnorm,fgui,tcltk
+Imports: robCompositions
 Title: Fatty Acids and Stable Isotopes in R
-Version: 1.0
-Date: 2013-03-19
+Version: 0.1
+Date: 2013-03-22
 Author: Philipp Neubauer
 Maintainer: Philipp Neubauer <neubauer.phil@gmail.com>
 Description: This packages provides gui facilities to perfom Bayesian estiamtion 
