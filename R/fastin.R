@@ -51,7 +51,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       # treat conversion coeffs
       if (nchar(FA.data$Conv.Coeffs.mean)>0 & nchar(FA.data$Conv.Coeffs.var)>0)
       {     
-        mean_c = read.csv(FA.data$Conv.Coeffs.mean,header=F,row.names=1)
+        mean_c = read.csv(FA.data$Conv.Coeffs.mean,header=F,colClasses=c('character',rep('numeric',n.fats)),row.names=1)
         sd_c  = read.csv(FA.data$Conv.Coeffs.var,header=F,row.names=1)
       } else if (nchar(FA.data$Conv.Coeffs.mean)==0 & nchar(FA.data$Conv.Coeffs.var)==0)
       {
