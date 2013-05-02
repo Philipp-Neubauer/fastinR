@@ -90,7 +90,7 @@ simulation <- function(){
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")
       } else if (switchin == 'combined') {
-        # if I already have combined data, only take the covs and discard prior groups
+        # if I compositions::already have combined data, only take the covs and discard prior groups
         n.covs.old <- guiGetSafe("n.covs")        
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")[,c(1,(ncol(Covs)-(n.covs.old-1)):ncol(Covs))]
@@ -143,7 +143,7 @@ simulation <- function(){
       p_unn <- exp(pnorm)
       for(j in 1:n.preys) {    
         
-        #closure
+        #compositions::closure
         props[i,j] <- (p_unn[i,j])/sum(p_unn[i,1:n.preys])
         
       }  
@@ -184,7 +184,7 @@ simulation <- function(){
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")
       } else if (switchin == 'combined') {
-        # if I already have combined data, only take the groups and discard prior Covs
+        # if I compositions::already have combined data, only take the groups and discard prior Covs
         n.covs.old    <- guiGetSafe("n.covs")
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")[,1:(ncol(Covs)-n.covs.old)]
@@ -240,7 +240,7 @@ simulation <- function(){
       p_unn <- exp(pnorm)
       for(j in 1:n.preys) {    
         
-        #closure
+        #compositions::closure
         props[i,j] <- (p_unn[i,j])/sum(p_unn[i,1:n.preys])
         
       }  
@@ -285,7 +285,7 @@ simulation <- function(){
     
     preys <- array(,c(nsamples[1],n.fats,n.preys))
     for (i in 1:n.preys){
-      preys[,,i] <- rdirichlet(nsamples,As[i,])
+      preys[,,i] <- MCMCpack::rdirichlet(nsamples,As[i,])
     }
     
     preya={}
@@ -306,8 +306,8 @@ simulation <- function(){
     sd_css=matrix(0.05,n.preys,n.fats)
     rownames(sd_css) <- unique(preys.ix)
     
-    mprey <-  clo(t(apply(preys,3,colMeans)))
-    preds <-  clo(props%*%(as.vector(fc_mean)*mprey*mean_css))
+    mprey <-  compositions::clo(t(apply(preys,3,colMeans)))
+    preds <-  compositions::clo(props%*%(as.vector(fc_mean)*mprey*mean_css))
     
     
     guiSet("preds",preds)
@@ -431,7 +431,7 @@ simulation <- function(){
     preys.ix <- guiGetSafe("preys.ix")
     
     plott <-F
-    if(all(!is.na(preys))){preya=cbind(preya,alr(preys));preda=cbind(preda,alr(preds));plott <-T}
+    if(all(!is.na(preys))){preya=cbind(preya,compositions::alr(preys));preda=cbind(preda,compositions::alr(preds));plott <-T}
     if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,preds.SI);plott <-T}
     
     if(plott==T){
@@ -497,6 +497,6 @@ simulation <- function(){
                                nsamples=c(5,100,5)
                               ),exec='',closeOnExec = F,argGridOrder=c(1,2,3,4,4,4,5,5,6,6),output=NULL,helps=list(simwrite=simulation)
   ) 
-  detach("package:fgui", unload=TRUE)
-  detach("package:tcltk", unload=TRUE)
+  #detach("package:fgui", unload=TRUE)
+  #detach("package:tcltk", unload=TRUE)
 }    

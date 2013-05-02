@@ -25,7 +25,7 @@ run_FASTIN <- function(){
                                                 Frac.Coeffs.mean="Load prey and stable isotope specific fractionation means (csv)",
                                                 Frac.Coeffs.var="Load prey and stable isotope specific fractionation sd (csv)",
                                                 FC.mean="Mean fractionation coefficients (use R's c() notation)",
-                                                FC.var="Variance of fractionation coefficients (use R's c() notation)",
+                                                FC.var="SD of fractionation coefficients (use R's c() notation)",
                                                 R.diag.SI = "Diagonal of the prior for predator (co)-variance matrix (>0, smaller value is less informative)"),
                                             cancelButton=F), 
                                 FA.data = guiNestedF(add.FA,"FA.data",argFilter=list(predators= "{{} {.csv}}",preys= "{{} {.csv}}",fat.cont = "{{} {.csv}}",Conv.Coeffs.mean="{{} {.csv}}",Conv.Coeffs.var="{{} {.csv}}"), 
@@ -35,11 +35,11 @@ run_FASTIN <- function(){
                                              preys="Load prey fatty acid data (csv)",
                                              Conv.Coeffs.mean="Load prey and fatty acid specific conversion means (csv)",
                                              Conv.Coeffs.var="Load prey and fatty acid specific conversion sd (csv)",
-                                             Fat.Cont = "Prey fat content (csv)",
+                                             fat.cont = "Prey fat content (csv)",
                                              FC.mean="Mean fat content (use R's c() notation)",
-                                             FC.var="Variance of fat content (use R's c() notation)", 
+                                             FC.var="SD of fat content (use R's c() notation)", 
                                              CC.mean="Mean conversion coefficients (use R's c() notation)",
-                                             CC.var="Variance of conversion coefficients (use R's c() notation)",
+                                             CC.var="SD of conversion coefficients (use R's c() notation)",
                                              R.diag = "Diagonal of the prior for predator (co)-variance matrix (>0, smaller value is less informative)"),
                                           exec = "Add Fatty Acid data", cancelButton=F,closeOnExec = TRUE,output = NULL) ),
               argFilter=list(Groups="{{} {.csv}}",Covariates="{{} {.csv}}"),
@@ -53,7 +53,7 @@ run_FASTIN <- function(){
               helps = list(Analysis.Type='Option 1 (Population proportions only) is faster since a Dirichlet prior is used, but Option 2 (Pop. and Individual proportions) is run by default for Covariates and Groups'),
               closeOnExec = TRUE,output=NULL,argGridOrder=c(1,1,2,2,3,3,3,4,5), argGridSticky=rep("w",length(formals(fastin)))
   )
-  detach("package:fgui", unload=TRUE)
+  #detach("package:fgui", unload=TRUE)
   #detach("package:tcltk", unload=TRUE)
   return(output)
   

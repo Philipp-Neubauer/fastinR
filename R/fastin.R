@@ -52,12 +52,11 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       if (nchar(FA.data$Conv.Coeffs.mean)>0 & nchar(FA.data$Conv.Coeffs.var)>0)
       {     
         mean_c = read.csv(FA.data$Conv.Coeffs.mean,header=F,row.names=1)
-        tau_c  = 1/read.csv(FA.data$Conv.Coeffs.var,header=F,row.names=1)^2
-      }
-      else if (nchar(FA.data$Conv.Coeffs.mean)==0 & nchar(FA.data$Conv.Coeffs.var)==0)
+        sd_c  = read.csv(FA.data$Conv.Coeffs.var,header=F,row.names=1)
+      } else if (nchar(FA.data$Conv.Coeffs.mean)==0 & nchar(FA.data$Conv.Coeffs.var)==0)
       {
         mean_c = matrix(FA.data$CC.mean,n.fats,n.preys)
-        tau_c =matrix(1/FA.data$CC.var,n.fats,n.preys)
+        sd_c =matrix(FA.data$CC.var,n.fats,n.preys)
       } else
       {
         stop('Known conversion coefficients, or a mean AND variance for conversion coefficients need to be supplied')
@@ -69,11 +68,11 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
         fc.mean <- FA.data$FC.mean; fc.var <- FA.data$FC.var
       } else
       {
-        
+        fat.cont <- read.csv(FA.data$fat.cont,header=F)
         if (dim(fat.cont)[2]>1){
           fat.cont <- read.csv(FA.data$fat.cont,header=F,row.names=1) 
           fc.mean = fat.cont[,1];fc.sd = fat.cont[,2]
-        } else { fat.cont <- read.csv(FA.data$fat.cont,header=F) }
+        } 
       }
       
       # make sure everything sums to 1
@@ -81,24 +80,22 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       predators <- t(apply(predators,1,function(x){x/(sum(x))}))
       preys <- t(apply(preys,1,function(x){x/(sum(x))}))
       
-      ## first, calculate distances  ---------------
+      ## first, calculate distances 
       
-      require('robCompositions')
       
       dists <- matrix(,nrow(preys),nrow(preys))
       for (i in 1:nrow(preys)){
         for (j in i:nrow(preys)){
-          dists[j,i] <- aDist(preys[i,],preys[j,])
+          dists[j,i] <- robCompositions::aDist(preys[i,],preys[j,])
         }}
-      detach("package:robCompositions", unload=TRUE)
       dista <- as.dist(dists)
       
       x11()
       PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
       #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
       
-      plot(preys%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
-      points(predators%*%PR.RDA$CCA$v[,1:2],pch=16)
+      plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
+      points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
       #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
       
       legend(locator(2),legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
@@ -113,9 +110,12 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       
       ## NOW DO variable selection -----
       x11()  
-      plot(cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)),ylab='cumulative proportion')
+      plot(cumsum(sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)),ylab='cumulative proportion')
       
-      print(cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)))
+      cumsums <- as.data.frame(matrix(,n.fats,1))
+      cumsums[,1] <- cumsum(sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T))
+      names(cumsums) <- 'Cumulative Proportion'
+      print(cumsums)
       
       # new CAP for vs
       answer <- menu(c('yes','no'),'Would you like to use a subset of Fatty Acids?',graphics=T)
@@ -129,7 +129,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
         #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
         #legend(locator(2),(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
         
-        sv = sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
+        sv = sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
         par(ask=T)
         nv <- readline(prompt = "please enter number of variables for analysis \n")
         six <- sv$ix[1:as.numeric(nv)]
@@ -141,30 +141,33 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       # get prey means - loop
       mprey <- matrix(,n.preys,n.fats)
       fcc.mean <- rep(NA,n.preys)
-      fcc.sd <- rep(NA,n.preys)
+      fcc.var <- rep(NA,n.preys)
+      var_c <-  matrix(,n.preys,n.fats)
       
       for (i in 1:n.preys){
         
         if (is.null(dim(fat.cont))){
           mprey[i,] <- apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],
                              2,function(x){weighted.mean(x,w=fat.cont[prey.ix==unique(prey.ix)[i]])})
-          
+          var_c[i,] <- (sd_c[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]],six])^2
           fcc.mean[i] <- mean(fat.cont[prey.ix==unique(prey.ix)[i]])
-          fcc.sd[i] <- var(fat.cont[prey.ix==unique(prey.ix)[i]])
+          fcc.var[i] <- (fat.cont[prey.ix==unique(prey.ix)[i]])^2
+          
         } else # combine means and variance
         {
           mprey[i,] <- apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],
                              2,function(x){weighted.mean(x,w=fc.mean[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c))])})
           
           fcc.mean[i] <- mean(fc.mean[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]])
-          fcc.sd[i] <- mean(fc.sd[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]])
+          fcc.var[i] <- (mean(fc.sd[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]]))^2
+          var_c[i,] <- (sd_c[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]],six])^2
         }
       }
       
       mean_c <- mean_c[1:n.preys,six]*0+1         
-      
-      preym <- unclass(alr(mprey))
-      preds <- unclass(alr(predators[,six]))    
+           
+      preym <- unclass(compositions::alr(mprey))
+      preds <- unclass(compositions::alr(predators[,six]))    
       
       # now prepare data for analysis
       
@@ -172,17 +175,16 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       ni<-rep(NA,n.preys)
       for (i in 1:n.preys){
         ni[i] <- max(n.fats+1,sum(prey.ix==unique(prey.ix)[i])-1)
-        R[,,i]=cov(alr(preys[prey.ix==unique(prey.ix)[i],six]))*ni[i]
+        R[,,i]=cov(compositions::alr(preys[prey.ix==unique(prey.ix)[i],six]))*ni[i]
       }
       
       ## first some data and inits ----
       
       # set uninformative prior SS matrix for wishart prior alr transformed predator data
       
-      Rnot =diag(R.diag,m.fats)
+      Rnot =diag(FA.data$R.diag,m.fats)
       
-      FA==T
-      datas.FA <- list(fc_mean=fcc.mean,fc_tau=1/fcc.sd^2,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=Rnot,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=tau_c)
+      datas.FA <- list(fc_mean=fcc.mean,fc_tau=1/fcc.var,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=Rnot,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=1/var_c)
       
       
     } else {
@@ -223,11 +225,11 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
     } else if (nchar(SI.data$Frac.Coeffs.mean)>0 & nchar(SI.data$Frac.Coeffs.var)>0)
     {     
       mean_cs = read.csv(SI.data$Frac.Coeffs.mean,header=F,row.names=1)
-      sd_cs  = 1/read.csv(SI.data$Frac.Coeffs.var,header=F,row.names=1)^2
+      sd_cs  = read.csv(SI.data$Frac.Coeffs.var,header=F,row.names=1)
     } else if (nchar(SI.data$Frac.Coeffs.mean)==0 & nchar(SI.data$Frac.Coeffs.var)==0)
     {
       mean_cs = matrix(SI.data$FC.mean,isos,n.preys.SI)
-      tau_cs =matrix(1/SI.data$FC.var,isos,n.preys.SI)
+      sd_cs =matrix(SI.data$FC.var,isos,n.preys.SI)
     }
     
     # if we've allready combine the preys based on FAs, then jsut use the index and combine
@@ -263,14 +265,14 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       n.preds <- dim(predators.SI)[1]
     }
     
-    
     # combine preys
     preym.SI <- matrix(,n.preys,isos) 
+    var_cs<- matrix(,n.preys,isos) 
     # in either case, combine preys....
     for (i in 1:n.preys){
       
       preym.SI[i,] <- apply(preys.SI[prey.ix==unique(prey.ix)[i],]+mean_cs[match(preys.ix.SI[prey.ix==unique(prey.ix)[i]],rownames(mean_cs)),],2,mean)
-      
+      var_cs[i,] <- (sd_cs[rownames(mean_cs) %in% preys.ix[prey.ix==unique(prey.ix)[i]],])^2
     }
     
     #set fractionation to 0 since it's allready applied
@@ -289,13 +291,15 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
     
     # set uninformative prior SS matrix for wishart prior alr transformed predator data
     
-    SI==T
-    datas.SI <- list(isos=isos,R.SI=R.SI,Rnot.SI=Rnot.SI,preym.SI=preym.SI,preds.SI=preds.SI,ni.SI=ni.SI,mean_cs=mean_cs,tau_cs=tau_cs)
+  
+    datas.SI <- list(isos=isos,R.SI=R.SI,Rnot.SI=Rnot_SI,preym.SI=preym.SI,preds.SI=predators.SI,ni.SI=ni.SI,mean_cs=mean_cs,tau_cs=1/var_cs)
     
   } else {
     stop("Must supply Stable Isotope data when choosing option 'Stable Isotopes' or 'Combined analysis' as data type")
   }
 }
+  
+  if (is.na(eveness)){eveness=0.1}
 
 datas <- list(n.preys = n.preys,n.preds=n.preds,datas.FA=NULL,datas.SI=NULL,eveness=eveness)
 
@@ -318,15 +322,14 @@ if (Data.Type == 'Combined.Analysis')
 if (nchar(Covariates)>0 & nchar(Groups)==0)
 {
   Analysis.Type = 'Analysis.with.Covariates'    
-  Covs <- read.csv(Covariates,header=T)
+  Covs <- read.csv(Covariates,header=F)
   Covs <- cbind(rep(1,nrow(Covs)),Covs)
   n.covs <- ncol(Covs)
 } else if (nchar(Covariates)==0 & nchar(Groups)>0) 
   {
   Analysis.Type = 'Analysis.with.Covariates'
   Grps <- read.csv(Groups,header=F)
-  Grp.names <- Grps[,1]    
-  Grps <- Grps[,2]  
+  Grp.names <- unlist(unique(Grps)) 
   
   for (i in 1:ncol(Grps)){
     vg <- as.vector(Grps[,i])
@@ -340,12 +343,11 @@ if (nchar(Covariates)>0 & nchar(Groups)==0)
 } else if (nchar(Covariates)>0 & nchar(Groups)>0) 
   {
   Analysis.Type = 'Analysis.with.Covariates'
-  Covs <- read.csv(Covariates,header=T)
+  Covs <- read.csv(Covariates,header=F)
   Covnames <- names(Covs)
   Grps <- read.csv(Groups,header=F)
-  Grp.names <- Grps[,1]    
-  Grps <- Grps[,2] 
-  
+  Grp.names <- unlist(unique(Grps)) 
+    
   for (i in 1:ncol(Grps)){
     vg <- as.vector(Grps[,i])
     Grps[,i] <- as.factor(vg)

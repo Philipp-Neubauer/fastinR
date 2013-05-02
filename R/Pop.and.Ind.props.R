@@ -37,7 +37,7 @@ PopandIndprops.FA <- function(data,nIter=1000,nBurnin=1000)
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
-  res <- BRugsFit('Pop.prop.analysis.FA.bugs', datas, inits=initials, numChains = 1, vars,
+  res <- BRugsFit(Pop.and.Ind.props.FA.bugs, datas, inits=initials, numChains = 1, vars,
                                  nBurnin = nBurnin, nIter = nIter, nThin = round(nIter/1000), coda = T,
                                  DIC = F, working.directory = getwd(), digits = 4,
                                  BRugsVerbose = T)
@@ -54,10 +54,10 @@ PopandIndprops.SI <- function(data,nIter=1000,nBurnin=1000)
   n.preys = data$n.preys
   n.preds = data$n.preds
   
-  R.SI = data$datas.SI$R.SI
+  R_SI = data$datas.SI$R.SI
   mean_cs = data$datas.SI$mean_cs
   tau_cs = data$datas.SI$tau_cs
-  Rnot.SI = data$datas.SI$Rnot.SI
+  Rnot_SI = data$datas.SI$Rnot.SI
   isos = data$datas.SI$isos
   ni.SI = data$datas.SI$ni.SI
   preds.SI = data$datas.SI$preds.SI
@@ -85,7 +85,7 @@ PopandIndprops.SI <- function(data,nIter=1000,nBurnin=1000)
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
-  res <- BRugsFit('Pop.prop.analysis.SI.bugs', datas.SI, inits=initials.SI, numChains = 1, vars,
+  res <- BRugsFit(Pop.and.Ind.props.SI.bugs, datas.SI, inits=initials.SI, numChains = 1, vars,
                   nBurnin = nBurnin, nIter = Iter, nThin = round(nIter/1000), coda = T,
                   DIC = F, working.directory = getwd(), digits = 4, 
                   BRugsVerbose = T)
@@ -102,10 +102,10 @@ PopandIndprops.combined <- function(data,nIter=1000,nBurnin=1000)
   n.preys = data$n.preys
   n.preds = data$n.preds
   
-  R.SI = data$datas.SI$R.SI
+  R_SI = data$datas.SI$R.SI
   mean_cs = data$datas.SI$mean_cs
   tau_cs = data$datas.SI$tau_cs
-  Rnot.SI = data$datas.SI$Rnot.SI
+  Rnot_SI = data$datas.SI$Rnot.SI
   isos = data$datas.SI$isos
   ni.SI = data$datas.SI$ni.SI
   preds.SI = data$datas.SI$preds.SI
@@ -147,7 +147,7 @@ PopandIndprops.combined <- function(data,nIter=1000,nBurnin=1000)
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
-  res <- BRugsFit('Pop.prop.analysis.combined.bugs', datas.comb, inits=initials.comb, numChains = 1, vars,
+  res <- BRugsFit(Pop.and.Ind.props.combined.bugs, datas.comb, inits=initials.comb, numChains = 1, vars,
                                    nBurnin = nBurnin, nIter = Iter, nThin = round(nIter/1000), coda = T,
                                    DIC = F, working.directory = getwd(), digits = 4, 
                                    BRugsVerbose = T)
