@@ -130,7 +130,6 @@ Poppropanalysis.combined <- function(data,nIter=1000,nBurnin=1000)
   ))
   
   
-  
   datas.comb=list('R','R_SI','fc_mean','fc_tau','mean_c','tau_coeffs','mean_cs','tau_cs','Rnot','Rnot_SI','n.preys','n.preds','isos','n.fats','m.fats','ni.SI','ni','preds','preds.SI','preym.SI','preym')
   
   vars = c('prop')

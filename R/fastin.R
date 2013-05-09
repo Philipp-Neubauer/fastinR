@@ -133,7 +133,8 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,even=0.
         
         sv = sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
         par(ask=T)
-        nv <- readline(prompt = "please enter number of variables for analysis \n")
+        nv <- menu(title='please choose the number of fatty acids to use',choices = 1:n.fats,graphics=T)
+        #nv <- readline(prompt = "please enter number of variables for analysis \n")
         six <- sv$ix[1:as.numeric(nv)]
         
         n.fats <- length(six)
