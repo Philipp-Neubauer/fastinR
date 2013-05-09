@@ -1,12 +1,12 @@
 run_FASTIN <- function(){
   #require(tcltk)   # this is needed - but leads to crashes....what a bugga!
-  require(fgui)
+  #require(fgui)
   
   # gui helper functions
-  add.SI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=1e-10){}
-  add.FA <- function(predators,preys,fat.cont = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=1e-10){}
+  add.SI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=1e-2){}
+  add.FA <- function(predators,preys,fat.cont = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=1e-2){}
   
-  pnorm_even <- function(eveness=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/eveness)));return(p)}
+  pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
   
   
   guiSet( "LIST_WIDTH", 50)
@@ -14,7 +14,7 @@ run_FASTIN <- function(){
   
   #Gui - tried some meaningful indentation here, but still not quite right...
   output <- gui( fastin, 
-                 argCommand=list(eveness = guiNestedF(pnorm_even,'eveness',exec='Set new prior',argSlider=list(eveness=c(0.001,2,0.001),output=c(0,1,0.001)),callback=guiExec,argText=c(output = "Probability that prop(prey x) = 0.95*prop(preys other than x)")),
+                 argCommand=list(even = guiNestedF(pnorm_even,'even',exec='Set new prior',argSlider=list(even=c(0.001,2,0.001),output=c(0,1,0.001)),callback=guiExec,argText=c(output = "Probability that prop(prey x) = 0.95*prop(preys other than x)")),
                                  SI.data = guiNestedF(add.SI,"SI.data",
                                             argFilter=list(predators.SI= "{{} {.csv}}",preys.SI= "{{} {.csv}}",Frac.Coeffs.mean="{{} {.csv}}",Frac.Coeffs.var="{{} {.csv}}"), 
                                             title = 'Stable Isotope data entry form',
@@ -49,12 +49,16 @@ run_FASTIN <- function(){
                         Data.Type = "Choose data to analyze",
                         Analysis.Type = "Choose Model Setup",
                   Covariates = "Add Covariates (optional)",
-                  Groups = "Add Groups (optional)"),
+                  Groups = "Add Groups (optional)",
+                        even= "eveness"),
               helps = list(Analysis.Type='Option 1 (Population proportions only) is faster since a Dirichlet prior is used, but Option 2 (Pop. and Individual proportions) is run by default for Covariates and Groups'),
               closeOnExec = TRUE,output=NULL,argGridOrder=c(1,1,2,2,3,3,3,4,5), argGridSticky=rep("w",length(formals(fastin)))
   )
   #detach("package:fgui", unload=TRUE)
   #detach("package:tcltk", unload=TRUE)
+ # even=0.1
+ # guiSet("even",even)
+    
   return(output)
   
 }

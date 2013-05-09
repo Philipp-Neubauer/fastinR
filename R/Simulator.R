@@ -439,7 +439,7 @@ simulation <- function(){
       PR.RDA <- capscale(preya~as.factor(preys.ix))
       plot(preya%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
       points(preda%*%PR.RDA$CCA$v[,1:2],pch=16)
-      legend('bottomright',(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+      legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))
       
     }
   }
@@ -458,7 +458,7 @@ simulation <- function(){
                                                      argText=list(n.covs = 'number of covariates'),
                                                      argSlider=list(covariate.effect.size=c(0,5,0.1)),helps=''),
                                 simwrite = guiNestedF(simwrite,'simwrite',exec='Write simulation to files',helps=''),
-                                FAsim.data = guiNestedF(sim.FA,'FA.data',
+                                FAsim.data = guiNestedF(sim.FA,'FAsim.data',
                                                         exec='Simulate Fatty Acid data',
                                                         cancelButton=F,closeOnExec = TRUE,output = NULL,
                                                         argSlider=list(
@@ -470,7 +470,7 @@ simulation <- function(){
                                                                      cvar='variability of conversion coefficients'
                                                         ),helps=''
                                 ),
-                                SIsim.data = guiNestedF(sim.SI,'SI.data',
+                                SIsim.data = guiNestedF(sim.SI,'SIsim.data',
                                                         exec='Simulate Stable Isotope data',
                                                         cancelButton=F,closeOnExec = TRUE,output = NULL,
                                                         argSlider=list(

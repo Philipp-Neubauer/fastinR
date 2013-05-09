@@ -19,7 +19,7 @@ model{
     prey.means_SI[j,1:isos] ~  dmnorm(preym.SI[j,],Rs_SI[j,,])
     
     for (i in 1:isos)
-    { cs[j,i] ~ dnorm(mean_cs[i],tau_cs[i])
+    { cs[j,i] ~ dnorm(mean_cs[j,i],tau_cs[j,i])
       # take out of joint posterior for mixing model = make analysis conditional on prey mean distribution
       prey.mc_SI[j,i] <-cut(prey.means_SI[j,i])
       prey_SI[j,i] <- cs[j,i]+prey.mc_SI[j,i]

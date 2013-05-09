@@ -16,4 +16,4 @@ Description: This packages provides gui facilities to perfom Bayesian estiamtion
              protportions. Facilities for simulating, plotting and extracting/writing 
              summary statistics to file are provided as well.
 License: GPL (>= 2)
-URL: 
+URL: https://github.com/Philipp-Neubauer/FASTIN-R

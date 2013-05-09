@@ -1,4 +1,4 @@
-fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness=0.1,nIter=10000,nBurnin=5000,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions'){
+fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,even=0.1,nIter=10000,nBurnin=5000,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions'){
   
   # combine sources function
   source.combine <- function(k,preys.ix){
@@ -37,7 +37,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       
       preys.ix <- as.character(preys[,1])
       
-      preys.names <- as.character(unique(preys.ix))
+      preys.names <<- as.character(unique(preys.ix))
       
       
       preys = preys[,-1]
@@ -93,12 +93,12 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       x11()
       PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
       #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
-      
+            
       plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
       points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
       #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
       
-      legend(locator(2),legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+      legend("topright",legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
       
       #recursive call to combine sources
       prey.ix <- source.combine(1,preys.ix)
@@ -107,6 +107,8 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       
       n.preys <- length(unique(prey.ix))
       n.preds <- dim(predators)[1]
+      
+      dev.off()
       
       ## NOW DO variable selection -----
       x11()  
@@ -137,6 +139,8 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
         n.fats <- length(six)
         m.fats=n.fats-1
       } else {six = 1:n.fats}
+      
+      dev.off()
       
       # get prey means - loop
       mprey <- matrix(,n.preys,n.fats)
@@ -207,7 +211,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
     
     preys.ix.SI  <- as.character(preys.SI[,1])
     
-    preys.names.SI  <- as.character(unique(preys.ix.SI ))
+    preys.names.SI  <<- as.character(unique(preys.ix.SI ))
     
     
     preys.SI  = preys.SI [,-1]
@@ -242,7 +246,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
         plot(preys.SI[,1:ncol(preys.SI)],pch=as.numeric(as.factor(preys.ix.SI)),col=as.numeric(as.factor(preys.ix.SI))+1)
         points(predators.SI[,1:2],pch=16)
         tkmessageBox( message="please use the cursor to select lower right and upper left corner for legend", title="Plot Legend" )
-        legend(locator(2),legend=preys.names.SI,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+        legend("topright",legend=preys.names.SI,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
         #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
         #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
         
@@ -252,7 +256,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
         plot(data.matrix(preys.SI)%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix.SI)),col=as.numeric(as.factor(preys.ix.SI))+1)
         points(data.matrix(predators.SI)%*%PR.RDA$CCA$v[,1:2],pch=16)
         tkmessageBox(message="please use the cursor to select lower right and upper left corner for legend", title="Plot Legend" )
-        legend(locator(2),legend=preys.names.SI,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+        legend("topright",legend=preys.names.SI,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
         #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
         #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
         
@@ -264,7 +268,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
       n.preys <- length(unique(prey.ix))
       n.preds <- dim(predators.SI)[1]
     }
-    
+    dev.off()
     # combine preys
     preym.SI <- matrix(,n.preys,isos) 
     var_cs<- matrix(,n.preys,isos) 
@@ -299,9 +303,9 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,eveness
   }
 }
   
-  if (is.na(eveness)){eveness=0.1}
+  if (is.na(even)){even=0.1}
 
-datas <- list(n.preys = n.preys,n.preds=n.preds,datas.FA=NULL,datas.SI=NULL,eveness=eveness)
+datas <- list(n.preys = n.preys,n.preds=n.preds,datas.FA=NULL,datas.SI=NULL,eveness=even)
 
 if (Data.Type == 'Combined.Analysis')
 {
