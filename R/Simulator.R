@@ -462,7 +462,7 @@ simulation <- function(){
                                                         exec='Simulate Fatty Acid data',
                                                         cancelButton=F,closeOnExec = TRUE,output = NULL,
                                                         argSlider=list(
-                                                          sep=c(0,10,0.1),
+                                                          sep=c(0.1,10,0.1),
                                                           n.fats=c(2,40,1),
                                                           cvar=c(0.05,0.5,0.01)),
                                                         argText=list(sep = 'Prey separation in FA space',
@@ -475,7 +475,7 @@ simulation <- function(){
                                                         cancelButton=F,closeOnExec = TRUE,output = NULL,
                                                         argSlider=list(
                                                           sep=c(0.1,5,0.1),
-                                                          isos=c(1,10,1)
+                                                          isos=c(2,10,1)
                                                         ),
                                                         argText=list(sep = 'Prey separation in SI space',
                                                                      isos= 'Number of Stable Isotopes'                                                                  
@@ -492,7 +492,7 @@ simulation <- function(){
                              n.preys = 'Number of prey species',
                              n.preds = 'Number of individual predators',
                              nsamples = 'Number of samples per prey species'),
-                argSlider=list(n.preys=c(2,10,1),
+                argSlider=list(n.preys=c(3,10,1),
                                n.preds=c(2,40,1),
                                nsamples=c(5,100,5)
                               ),exec='',closeOnExec = F,argGridOrder=c(1,2,3,4,4,4,5,5,6,6),output=NULL,helps=list(simwrite=simulation)

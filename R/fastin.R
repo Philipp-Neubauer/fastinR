@@ -1,4 +1,4 @@
-fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,even=0.1,nIter=10000,nBurnin=5000,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions'){
+fastin <- function(SI.data=NULL,FA.data=NULL,Groups='',Covariates='',even=0.1,nIter=10000,nBurnin=5000,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions'){
   
   # combine sources function
   source.combine <- function(k,preys.ix){
@@ -132,11 +132,12 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,even=0.
         #legend(locator(2),(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
         
         sv = sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
-        par(ask=T)
+       
         nv <- menu(title='please choose the number of fatty acids to use',choices = 1:n.fats,graphics=T)
+       
         #nv <- readline(prompt = "please enter number of variables for analysis \n")
         six <- sv$ix[1:as.numeric(nv)]
-        
+  
         n.fats <- length(six)
         m.fats=n.fats-1
       } else {six = 1:n.fats}
@@ -197,7 +198,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,even=0.
     }
   }
   # switch between cases for analyses
-  
+
   if (Data.Type=='Stable.Isotopes' | Data.Type == 'Combined.Analysis'){
     ## SI data prep -------------
   if(is.list(SI.data)){
@@ -307,8 +308,8 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups=NULL,Covariates=NULL,even=0.
   if (is.na(even)){even=0.1}
 
 datas <- list(n.preys = n.preys,n.preds=n.preds,datas.FA=NULL,datas.SI=NULL,eveness=even)
-
-if (Data.Type == 'Combined.Analysis')
+  
+  if (Data.Type == 'Combined.Analysis')
 {
   datas$datas.FA <- datas.FA
   datas$datas.SI <- datas.SI
@@ -322,7 +323,6 @@ if (Data.Type == 'Combined.Analysis')
   datas$datas.SI <- datas.SI
   class(datas) <- 'SI'
 }
-
 
 if (nchar(Covariates)>0 & nchar(Groups)==0)
 {
@@ -370,7 +370,7 @@ outputs <- switch(Analysis.Type,
                   Analysis.with.Covariates = AnalysiswithCov(datas,Covs,nIter,nBurnin)
 )
 
-return(output)
+return(outputs)
 
 # plot output in here? - methods dispatch here too
 #   * ggdensity of individual, and all psots
