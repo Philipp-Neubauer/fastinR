@@ -1,22 +1,22 @@
-AnalysiswithCov <- function(data,Covs,nIter=1000,nBurnin=1000) UseMethod("AnalysiswithCov", data)
+AnalysiswithCov <- function(datas,Covs,nIter=1000,nBurnin=1000) UseMethod("AnalysiswithCov",datas)
 
-AnalysiswithCov.FA <- function(data,Covs,nIter=1000,nBurnin=1000)
+AnalysiswithCov.FA <- function(datas,Covs,nIter=1000,nBurnin=1000)
 {
   n.covs = ncol(Covs)
-  R = data$datas.FA$R
-  fc_mean = data$datas.FA$fc_mean
-  fc_tau = data$datas.FA$fc_tau
+  R =datas$datas.FA$R
+  fc_mean =datas$datas.FA$fc_mean
+  fc_tau =datas$datas.FA$fc_tau
   mean_c = matrix(unlist(data$datas.SI$mean_cs),n.preys,isos)
-  tau_coeffs = data$datas.FA$tau_c
-  Rnot = data$datas.FA$Rnot
-  n.preys = data$n.preys
-  n.preds = data$n.preds
-  n.fats = data$datas.FA$n.fats
-  m.fats = data$datas.FA$m.fats
-  ni = data$datas.FA$ni
-  preds = data$datas.FA$preds
-  preym = data$datas.FA$preym
-  eveness = data$eveness
+  tau_coeffs =datas$datas.FA$tau_c
+  Rnot =datas$datas.FA$Rnot
+  n.preys =datas$n.preys
+  n.preds =datas$n.preds
+  n.fats =datas$datas.FA$n.fats
+  m.fats =datas$datas.FA$m.fats
+  ni =datas$datas.FA$ni
+  preds =datas$datas.FA$preds
+  preym =datas$datas.FA$preym
+  eveness =datas$eveness
   
   S = diag(eveness,n.preys)
   SS = diag(1,n.preys)
@@ -31,13 +31,13 @@ AnalysiswithCov.FA <- function(data,Covs,nIter=1000,nBurnin=1000)
     prey.precs = array(1,c(n.preys,m.fats,m.fats))
   ))
     
-  datas=list('Covs','n.covs','S','SS','R','fc_mean','fc_tau','mean_c','tau_coeffs','Rnot','n.preys','n.preds','n.fats','m.fats','ni','preds','preym')
+ datass=list('Covs','n.covs','S','SS','R','fc_mean','fc_tau','mean_c','tau_coeffs','Rnot','n.preys','n.preds','n.fats','m.fats','ni','preds','preym')
   
   vars = c('prop','pop.prop','beta')
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
-  res <- BRugsFit(system.file("exec","Analysis.with.Cov.FA.bugs",package = 'FASTIN'), datas, inits=initials, numChains = 1, vars,
+  res <- BRugsFit(system.file("exec","Analysis.with.Cov.FA.bugs",package = 'FASTIN'),datass, inits=initials, numChains = 1, vars,
                                  nBurnin = nBurnin, nIter = nIter, nThin = round(nIter/1000), coda = T,
                                  DIC = F, working.directory = getwd(), digits = 4,
                                  BRugsVerbose = T)
@@ -49,21 +49,22 @@ AnalysiswithCov.FA <- function(data,Covs,nIter=1000,nBurnin=1000)
   
 }
 
-AnalysiswithCov.SI <- function(data,Covs,nIter=1000,nBurnin=1000)
+AnalysiswithCov.SI <- function(datas,Covs,nIter=1000,nBurnin=1000)
 {
-  n.preys = data$n.preys
-  n.preds = data$n.preds
+  n.preys =datas$n.preys
+  n.preds =datas$n.preds
   
   n.covs = ncol(Covs)
   
-  R_SI = data$datas.SI$R.SI
+  R_SI =datas$datas.SI$R.SI
   mean_cs = matrix(unlist(data$datas.SI$mean_cs),n.preys,isos)
-  tau_cs = data$datas.SI$tau_cs
-  Rnot_SI = data$datas.SI$Rnot.SI
-  isos = data$datas.SI$isos
-  ni.SI = data$datas.SI$ni.SI
-  preds.SI = data$datas.SI$preds.SI
-  preym.SI = data$datas.SI$preym.SI
+  tau_cs =datas$datas.SI$tau_cs
+  Rnot_SI =datas$datas.SI$Rnot.SI
+  isos =datas$datas.SI$isos
+  ni.SI =datas$datas.SI$ni.SI
+  preds.SI =datas$datas.SI$preds.SI
+  preym.SI =datas$datas.SI$preym.SI
+  eveness =datas$eveness
   
   S = diag(eveness,n.preys)
   SS = diag(1,n.preys)
@@ -81,13 +82,13 @@ AnalysiswithCov.SI <- function(data,Covs,nIter=1000,nBurnin=1000)
   
   
   
-  datas.SI=list('Covs','n.covs','S','SS','R_SI','mean_cs','tau_cs','Rnot_SI','n.preys','n.preds','isos','ni.SI','preds.SI','preym.SI')
+ datass.SI=list('Covs','n.covs','S','SS','R_SI','mean_cs','tau_cs','Rnot_SI','n.preys','n.preds','isos','ni.SI','preds.SI','preym.SI')
   
   vars = c('prop','pop.prop','beta')
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   
-  res <- BRugsFit(system.file("exec","Analysis.with.Cov.SI.bugs",package = 'FASTIN'), datas.SI, inits=initials.SI, numChains = 1, vars,
+  res <- BRugsFit(system.file("exec","Analysis.with.Cov.SI.bugs",package = 'FASTIN'),datass.SI, inits=initials.SI, numChains = 1, vars,
                   nBurnin = nBurnin, nIter = Iter, nThin = round(nIter/1000), coda = T,
                   DIC = F, working.directory = getwd(), digits = 4, 
                   BRugsVerbose = T)
@@ -97,32 +98,33 @@ AnalysiswithCov.SI <- function(data,Covs,nIter=1000,nBurnin=1000)
   return(output)
 }
 
-AnalysiswithCov.combined <- function(data,Covs,nIter=1000,nBurnin=1000)
+AnalysiswithCov.combined <- function(datas,Covs,nIter=1000,nBurnin=1000)
 {
   
-  n.preys = data$n.preys
-  n.preds = data$n.preds
+  n.preys =datas$n.preys
+  n.preds =datas$n.preds
   n.covs = ncol(Covs)
-  R_SI = data$datas.SI$R.SI
-  mean_cs = matrix(unlist(data$datas.SI$mean_cs),n.preys,isos)
-  tau_cs = data$datas.SI$tau_cs
-  Rnot_SI = data$datas.SI$Rnot.SI
-  isos = data$datas.SI$isos
-  ni.SI = data$datas.SI$ni.SI
-  preds.SI = data$datas.SI$preds.SI
-  preym.SI = data$datas.SI$preym.SI
+  R_SI =datas$datas.SI$R.SI
+  mean_cs = matrix(unlist(datas$datas.SI$mean_cs),n.preys,isos)
+  tau_cs =datas$datas.SI$tau_cs
+  Rnot_SI =datas$datas.SI$Rnot.SI
+  isos =datas$datas.SI$isos
+  ni.SI =datas$datas.SI$ni.SI
+  preds.SI =datas$datas.SI$preds.SI
+  preym.SI =datas$datas.SI$preym.SI
   
-  R = data$datas.FA$R
-  fc_mean = data$datas.FA$fc_mean
-  fc_tau = data$datas.FA$fc_tau
-  mean_c =matrix(unlist(data$datas.FA$mean_c),n.preys,n.fats)
-  tau_coeffs = data$datas.FA$tau_c
-  Rnot = data$datas.FA$Rnot
-  n.fats = data$datas.FA$n.fats
-  m.fats = data$datas.FA$m.fats
-  ni = data$datas.FA$ni
-  preds = data$datas.FA$preds
-  preym = data$datas.FA$preym
+  R =datas$datas.FA$R
+  fc_mean =datas$datas.FA$fc_mean
+  fc_tau =datas$datas.FA$fc_tau
+  mean_c =matrix(unlist(datas$datas.FA$mean_c),n.preys,n.fats)
+  tau_coeffs =datas$datas.FA$tau_c
+  Rnot =datas$datas.FA$Rnot
+  n.fats =datas$datas.FA$n.fats
+  m.fats =datas$datas.FA$m.fats
+  ni =datas$datas.FA$ni
+  preds =datas$datas.FA$preds
+  preym =datas$datas.FA$preym
+  eveness =datas$eveness
   
   S = diag(eveness,n.preys)
   SS = diag(1,n.preys)
@@ -142,13 +144,13 @@ AnalysiswithCov.combined <- function(data,Covs,nIter=1000,nBurnin=1000)
     
   ))
   
-  datas.comb=list('Covs','n.covs','S','SS','R','R_SI','fc_mean','fc_tau','mean_c','tau_coeffs','mean_cs','tau_cs','Rnot','Rnot_SI','n.preys','n.preds','isos','n.fats','m.fats','ni.SI','ni','preds','preds.SI','preym.SI','preym')
+ datass.comb=list('Covs','n.covs','S','SS','R','R_SI','fc_mean','fc_tau','mean_c','tau_coeffs','mean_cs','tau_cs','Rnot','Rnot_SI','n.preys','n.preds','isos','n.fats','m.fats','ni.SI','ni','preds','preds.SI','preym.SI','preym')
   
   vars = c('prop','pop.prop','beta')
   
   # compilation time and return time once OpenBUGS has finished can be very long. Patience is of the essence...
   system.file("exec","Analysis.with.Cov.combined.bugs",package = 'FASTIN')
-  res <- BRugsFit(system.file("exec","Analysis.with.Cov.combined.bugs",package = 'FASTIN'), datas.comb, inits=initials.comb, numChains = 1, vars,
+  res <- BRugsFit(system.file("exec","Analysis.with.Cov.combined.bugs",package = 'FASTIN'),datass.comb, inits=initials.comb, numChains = 1, vars,
                                    nBurnin = nBurnin, nIter = Iter, nThin = round(nIter/1000), coda = T,
                                    DIC = F, working.directory = getwd(), digits = 4, 
                                    BRugsVerbose = T)

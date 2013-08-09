@@ -108,6 +108,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups='',Covariates='',even=0.1,nI
       n.preys <- length(unique(prey.ix))
       n.preds <- dim(predators)[1]
       
+      if (dev.cur()!=1)
       dev.off()
       
       ## NOW DO variable selection -----
@@ -142,6 +143,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups='',Covariates='',even=0.1,nI
         m.fats=n.fats-1
       } else {six = 1:n.fats}
       
+      if (dev.cur()!=1)
       dev.off()
       
       # get prey means - loop
@@ -270,6 +272,7 @@ fastin <- function(SI.data=NULL,FA.data=NULL,Groups='',Covariates='',even=0.1,nI
       n.preys <- length(unique(prey.ix))
       n.preds <- dim(predators.SI)[1]
     }
+    if (dev.cur()!=1)
     dev.off()
     # combine preys
     preym.SI <- matrix(,n.preys,isos) 
