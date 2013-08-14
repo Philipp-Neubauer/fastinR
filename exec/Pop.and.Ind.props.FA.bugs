@@ -10,18 +10,13 @@ model{
     # model for sources with Jeffrey's (uninformative, improper) prior
    
     prey.precs[j,1:m.fats,1:m.fats] ~ dwish(R[,,j],ni[j])
-    prey.means[j,1:m.fats] ~  dmnorm(preym[j,],Rs[j,,])        
+    prey.means[j,1:m.fats] ~  dmnorm(preym[j,],prey.precs[j,,])        
     
     for (f in 1:m.fats){
       # take out of joint posterior for mixing model = make analysis conditional on prey mean distribution
-      prey.mc[j,f] <-cut(prey.means[j,f]) 
-      
-      for (g in 1:m.fats){ 	
-        Rs[j,f,g] <- prey.precs[j,f,g]*ni[j]
-      }
-      
-      # backtransform to apply fractionation and fat content
-      preydd[j,f] <- exp(prey.mc[j,f])
+            
+            # backtransform to apply fractionation and fat content
+      preydd[j,f] <- exp(prey.means[j,f])
       preyd[j,f] <- preydd[j,f]/(sum(preydd[j,1:m.fats])+1)
     
     }
@@ -30,9 +25,8 @@ model{
     
     for (f in 1:n.fats){      
       # draw fractionation coeffs for prey j and fatty acid f
-      fracs[j,f] ~ dnorm(mean_c[j,f],tau_coeffs[j,f])I(0,)
-      frac[j,f] <- cut(fracs[j,f])
-      preyf[j,f] <- (preyd[j,f]*frac[j,f]*fc[j])
+      fracs[j,f] ~ dnorm(mean_c[j,f],tau_coeffs[j,f])I(0,)      
+      preyf[j,f] <- (preyd[j,f]*fracs[j,f]*fc[j])
       
     }    
   }

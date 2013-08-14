@@ -1,3 +1,3 @@
-plot.pop_props <- function(data,...){}
-plot.ind_props <- function(data,...){}
-plot.cov_props <- function(data,...){}
+plot.pop_props <- function(MCMCdatas){}
+plot.ind_props <- function(MCMCdatas){}
+plot.cov_props <- function(MCMCdatas){}
