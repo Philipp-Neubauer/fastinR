@@ -1,6 +1,6 @@
 Package: FASTIN
 Type: Package
-Depends: vegan,fgui,tcltk
+Depends: vegan,fgui,tcltk,rjags
 Imports: robCompositions, compositions,MCMCpack
 Title: Fatty Acids and Stable Isotopes in R
 Version: 0.1

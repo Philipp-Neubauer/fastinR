@@ -8,7 +8,7 @@ FASTIN <- function(){
   addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=1e-2){
     
     # combine sources function
-    source.combine <- function(k,preys.ix){
+    source.combine <- function(k,preys.ix,preys.names){
       # combination choice
       cat('please select from source combination menu','\n')
       combine <- menu(title='combine sources into groups',choices = c('yes','no'),graphics=T)
@@ -106,7 +106,7 @@ FASTIN <- function(){
       }
       
       #recursive call to combine sources
-      prey.ix <- source.combine(1,preys.ix.SI)
+      prey.ix <- source.combine(1,preys.ix.SI,preys.names.SI)
       
       n.preys <- length(unique(prey.ix))
       preys.names <- as.character(unique(prey.ix))

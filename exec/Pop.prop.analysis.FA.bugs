@@ -11,10 +11,9 @@ model{
     #fcc[j] <- cut(fc[j])
     
     # model for sources with Jeffrey's (uninformative, improper) prior
-    
     prey.precs[j,1:m.fats,1:m.fats] ~ dwish(R[1:m.fats,1:m.fats,j],ni[j])
     prey.means[j,1:m.fats] ~  dmnorm(preym[j,],prey.precs[j,,])        
-    
+   
     for (f in 1:m.fats){
       # take out of joint posterior for mixing model = make analysis conditional on prey mean distribution
       
@@ -44,9 +43,11 @@ model{
   # mixing and alr transformation of predator signature for likelihood
   for (f in 1:n.fats){ 
     predm[f] <- inprod(prop[1:n.preys],preyf[1:n.preys,f])
-    predf[f] <- predm[f]/sum(predm[1:m.fats])
+    
   }
-  for (f in 1:m.fats){
+predf[1:n.fats] <- predm[1:n.fats]/sum(predm[1:n.fats])
+  
+for (f in 1:m.fats){
     mu[f] <- log(predf[f]/predf[n.fats])
    
   }

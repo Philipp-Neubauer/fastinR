@@ -72,7 +72,7 @@ model{
   # mixing and alr transformation of predator fat signature for likelihood
     for (f in 1:n.fats){ 
       predm[i,f] <- inprod(prop[i,1:n.preys],preyf[1:n.preys,f])
-      predf[i,f] <- predm[i,f]/sum(predm[i,1:m.fats])
+      predf[i,f] <- predm[i,f]/sum(predm[i,1:n.fats])
     }
     for (f in 1:m.fats){
       mu[i,f] <- log(predf[i,f]/predf[i,n.fats])

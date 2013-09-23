@@ -15,7 +15,6 @@ PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   ni = datas$datas.FA$ni
   preds = datas$datas.FA$preds
   preym = datas$datas.FA$preym
-  eveness = datas$even
   
   S = diag(eveness,n.preys)
   SS = diag(1,n.preys)
@@ -29,7 +28,7 @@ PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
   
   res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res,Preynames=rownames(preys))
+  output <- list(MCMC=res)
   class(output) <- 'ind_props'
   return(output)
   
@@ -43,14 +42,14 @@ PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   isos = datas$datas.SI$isos
   R_SI = datas$datas.SI$R.SI
   mean_cs = matrix(unlist(datas$datas.SI$mean_cs),n.preys,isos)
-  tau_cs = datas$datas.SI$tau_cs*1000
+  tau_cs = datas$datas.SI$tau_cs
   Rnot_SI = datas$datas.SI$Rnot.SI
   ni.SI = datas$datas.SI$ni.SI
   preds.SI = datas$datas.SI$preds.SI
   preym.SI = datas$datas.SI$preym.SI
   eveness = datas$even
     
-  S = diag(eveness,n.preys)
+  S = diag(1,n.preys)
   SS = diag(1,n.preys)
   zeros = rep(0,n.preys)
   
@@ -59,9 +58,12 @@ PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   cat('\n','proceeding to burn-in phase','\n')
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
-  res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','cs','prey.means_SI'),n.iter=nIter,thin=nThin)
+  res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
+
+summary(res)
+plot(res[,1])
   
-  res <- as.data.frame((res)[[1]])
+  xres <- as.data.frame((res)[[1]])
   output <- list(MCMC=res)
   class(output) <- 'ind_props'
   return(output)

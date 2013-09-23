@@ -50,6 +50,7 @@ Poppropanalysis.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
+  
   res <- as.data.frame((res)[[1]])
   output <- list(MCMC=res)
   class(output) <- 'pop_props'
