@@ -1,12 +1,12 @@
 fastin <- function(SI.data=NULL,FA.data=NULL,groupings,Load.Data=NULL,Save.Data=NULL,add.covs,MCMC,Save.Outputs=NULL,Display.Summaries=NULL,Plot.Outputs=NULL){}
 
 FASTIN <- function(){
-  #require(tcltk)   # this is needed - but leads to crashes....what a bugga!
+  #require(tcltk)   # this is needed - but leads to crashes...
   #require(fgui)
   
   # overall dummy function
-  addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=1e-2){
-    
+    addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=1e-2){
+        
     # combine sources function
     source.combine <- function(k,preys.ix,preys.names){
       # combination choice
@@ -162,9 +162,20 @@ FASTIN <- function(){
     
     # combine sources function
     source.combine <- function(k,preys.ix){
+
+         x11()
+      PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
+      #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
+      
+      plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
+      points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
+      #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
+      
+      legend("topright",legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+         
       # combination choice
       cat('please select from source combination menu','\n')
-      combine <- menu(title='combine sources into groups',choices = c('yes','no'),graphics=T)
+      combine <- menu(title='combine sources into groups?',choices = c('yes','no'),graphics=T)
       
       #in case the menyu is clicked away without choice
       while (combine==0) {cat('please select from source combination menu')
@@ -172,7 +183,7 @@ FASTIN <- function(){
       }
       
       if (combine==1) {
-        
+        dev.off()
         selecta <- select.list(preys.names,multiple = T,graphics=T)
         #       cat(selecta,"\n")
         #       cat(k,"\n")
@@ -246,26 +257,15 @@ FASTIN <- function(){
     } else {SC=F}
     
     ## first, calculate distances 
-    
-    if(SC==F){
-      
-      dists <- matrix(,nrow(preys),nrow(preys))
+    dists <- matrix(,nrow(preys),nrow(preys))
       for (i in 1:nrow(preys)){
         for (j in i:nrow(preys)){
           dists[j,i] <- robCompositions::aDist(preys[i,],preys[j,])
         }}
       dista <- as.dist(dists)
-      
-      x11()
-      PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
-      #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
-      
-      plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
-      points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
-      #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
-      
-      legend("topright",legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
-      
+    
+    if(SC==F){
+            
       #recursive call to combine sources
       prey.ix <- source.combine(1,preys.ix) 
       
@@ -275,9 +275,9 @@ FASTIN <- function(){
       guiSet('prey.names',preys.names )
     } else{warning('using previously combined sources')}
     SC=T
-    if (dev.cur()!=1)
-      dev.off()
-    
+    if (dev.cur()!=1)dev.off()
+
+    PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
     ## NOW DO variable selection -----
     x11()  
     plot(cumsum(sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)),ylab='cumulative proportion')

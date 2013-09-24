@@ -437,12 +437,14 @@ simulation <- function(){
     if(plott==T){
       x11() 
       PR.RDA <- capscale(preya~as.factor(preys.ix))
-      plot(preya%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
+
+      plot(rbind(preya,preda)%*%PR.RDA$CCA$v[,1:2],t='n')
+      points(preya%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
       points(preda%*%PR.RDA$CCA$v[,1:2],pch=16)
       legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))
       
     }
-  }
+}
   
   require(fgui)
   
@@ -463,7 +465,7 @@ simulation <- function(){
                                                         cancelButton=F,closeOnExec = TRUE,output = NULL,
                                                         argSlider=list(
                                                           sep=c(0.1,10,0.1),
-                                                          n.fats=c(2,40,1),
+                                                          n.fats=c(3,40,1),
                                                           cvar=c(0.05,0.5,0.01)),
                                                         argText=list(sep = 'Prey separation in FA space',
                                                                      n.fats= 'Number of fatty acids',
