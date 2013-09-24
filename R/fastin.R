@@ -8,7 +8,29 @@ FASTIN <- function(){
     addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=1e-2){
         
     # combine sources function
-    source.combine <- function(k,preys.ix,preys.names){
+        source.combine <- function(k,preys.ix,preys.names){
+
+            n.preys <- length(unique(preys.ix))
+            preys.names <- as.character(unique(preys.ix))
+            
+            if (isos<=2){
+                x11()
+                plot(preys.SI[,1:ncol(preys.SI)],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
+                points(predators.SI[,1:2],pch=16)
+                legend("topright",legend=preys.names,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+                                        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
+        #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
+        
+            } else {
+                x11()
+                PR.RDA <- capscale(preys.SI~as.factor(preys.ix))
+                plot(data.matrix(preys.SI)%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
+                points(data.matrix(predators.SI)%*%PR.RDA$CCA$v[,1:2],pch=16)
+                legend("topright",legend=preys.names,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+                                        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
+                                        #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
+          
+      }
       # combination choice
       cat('please select from source combination menu','\n')
       combine <- menu(title='combine sources into groups',choices = c('yes','no'),graphics=T)
@@ -18,14 +40,14 @@ FASTIN <- function(){
                           combine <- menu(title='combine sources into groups',choices = c('yes','no'),graphics=T)
       }
       
-      if (combine==1) {
-        
+        if (combine==1) {
+        dev.off()
         selecta <- select.list(preys.names,multiple = T,graphics=T)
         #       cat(selecta,"\n")
         #       cat(k,"\n")
         #       unique(preys.ix)[selecta]
         preys.ix[preys.ix %in% selecta] <- paste('grouped prey',k)
-        
+
         preys.ix <- source.combine(k+1,preys.ix)
         
       }
@@ -86,31 +108,13 @@ FASTIN <- function(){
     
     if (SC==F) # query for prey combination
     {
-      if (isos<=2){
-        x11()
-        plot(preys.SI[,1:ncol(preys.SI)],pch=as.numeric(as.factor(preys.ix.SI)),col=as.numeric(as.factor(preys.ix.SI))+1)
-        points(predators.SI[,1:2],pch=16)
-        legend("topright",legend=preys.names.SI,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
-        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
-        #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
-        
-      } else {
-        x11()
-        PR.RDA <- capscale(preys.SI~as.factor(preys.ix.SI))
-        plot(data.matrix(preys.SI)%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix.SI)),col=as.numeric(as.factor(preys.ix.SI))+1)
-        points(data.matrix(predators.SI)%*%PR.RDA$CCA$v[,1:2],pch=16)
-        legend("topright",legend=preys.names.SI,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
-        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
-        #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
-        
-      }
-      
+          
       #recursive call to combine sources
       prey.ix <- source.combine(1,preys.ix.SI,preys.names.SI)
-      
+
       n.preys <- length(unique(prey.ix))
       preys.names <- as.character(unique(prey.ix))
-      
+        
       guiSet('prey.names',preys.names )
       
     }else{warning('using previously combined sources')}
@@ -161,42 +165,43 @@ FASTIN <- function(){
   addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=1e-2){
     
     # combine sources function
-    source.combine <- function(k,preys.ix){
-
-         x11()
-      PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
-      #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
+      source.combine <- function(k,preys.ix){
+          n.preys <- length(unique(preys.ix))
+          preys.names <- as.character(unique(preys.ix))
+          x11()
+          PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
+                                        #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
       
-      plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
-      points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
-      #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
+          plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
+          points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
+                                        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
       
-      legend("topright",legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+          legend("topright",legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
          
-      # combination choice
-      cat('please select from source combination menu','\n')
-      combine <- menu(title='combine sources into groups?',choices = c('yes','no'),graphics=T)
+                                        # combination choice
+          cat('please select from source combination menu','\n')
+          combine <- menu(title='combine sources into groups?',choices = c('yes','no'),graphics=T)
       
       #in case the menyu is clicked away without choice
-      while (combine==0) {cat('please select from source combination menu')
-                          combine <- menu(title='combine sources into groups',choices = c('yes','no'),graphics=T)
-      }
+          while (combine==0) {cat('please select from source combination menu')
+                              combine <- menu(title='combine sources into groups',choices = c('yes','no'),graphics=T)
+                          }
       
-      if (combine==1) {
-        dev.off()
-        selecta <- select.list(preys.names,multiple = T,graphics=T)
-        #       cat(selecta,"\n")
-        #       cat(k,"\n")
-        #       unique(preys.ix)[selecta]
-        preys.ix[preys.ix %in% selecta] <- paste('grouped prey',k)
+          if (combine==1) {
+              dev.off()
+              selecta <- select.list(preys.names,multiple = T,graphics=T)
+                                        #       cat(selecta,"\n")
+                                        #       cat(k,"\n")
+                                        #       unique(preys.ix)[selecta]
+              preys.ix[preys.ix %in% selecta] <- paste('grouped prey',k)
         
-        preys.ix <- source.combine(k+1,preys.ix)
+              preys.ix <- source.combine(k+1,preys.ix)
         
+          }
+      
+          return(preys.ix)
+      
       }
-      
-      return(preys.ix)
-      
-    }
     
     
     # import predator and prey FA profiles
@@ -256,14 +261,15 @@ FASTIN <- function(){
       prey.ix=datas$prey.ix ; n.preys=datas$n.preys; SC=T
     } else {SC=F}
     
-    ## first, calculate distances 
+    ## first, calculate distances for preys
     dists <- matrix(,nrow(preys),nrow(preys))
       for (i in 1:nrow(preys)){
         for (j in i:nrow(preys)){
           dists[j,i] <- robCompositions::aDist(preys[i,],preys[j,])
         }}
       dista <- as.dist(dists)
-    
+
+    # combine sources? SC refers to potential prior combination based on other sources.
     if(SC==F){
             
       #recursive call to combine sources
