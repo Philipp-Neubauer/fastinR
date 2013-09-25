@@ -48,7 +48,7 @@ model{
     
  prop[i,1:n.preys] <- (p_unn[i,1:n.preys])/sum(p_unn[i,1:n.preys])
 
-      predm[i,1:n.fats] <- prop[i,1:n.preys]%*%preyf[1:n.preys,]
+      predm[i,1:n.fats] <- prop[i,1:n.preys] %*% preyf[1:n.preys,]
       predf[i,1:n.fats] <- predm[i,]/sum(predm[i,])
    
      mu[i,1:m.fats] <- log(predf[i,1:m.fats]/predf[i,n.fats])

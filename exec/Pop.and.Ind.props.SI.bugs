@@ -4,7 +4,7 @@ model{
   # model for sources with Jeffrey's (uninformative, improper) prior
    
     prey.precs_SI[j,1:isos,1:isos] ~ dwish(R_SI[,,j],ni.SI[j])
-    prey.means_SI[j,1:isos] ~  dmnorm(preym.SI[j,],ni.SI[j]*prey.precs_SI[j,,])
+    prey.means_SI[j,1:isos] ~  dmnorm(preym.SI[j,],prey.precs_SI[j,,])
     
     for (i in 1:isos)
     { cs[j,i] ~ dnorm(mean_cs[j,i],tau_cs[j,i])
@@ -14,7 +14,7 @@ model{
     }
 }
   
-  for(i in 1:n.preds) {      
+for(i in 1:n.preds) {      
     
        # draw clr(proportions)
     pnorm[i,1:n.preys] ~ dmnorm(pmean[],pprec[,])
@@ -26,16 +26,15 @@ model{
       #closure      
      
     }
-      prop[i,1:n.preys] <- (p_unn[i,1:n.preys])/sum(p_unn[i,1:n.preys])
-   # predator likelihood
+    prop[i,1:n.preys] <- (p_unn[i,1:n.preys])/sum(p_unn[i,1:n.preys])
+    # predator likelihood
     
     preds.SI[i,1:isos] ~ dmnorm(mu_SI[i,],predprec_SI[,])
       
-      # mixing for predator SI signature for likelihood
+    # mixing for predator SI signature for likelihood
  
-    mu_SI[i,1:n.preys] <- prop[i,1:n.preys]%*%prey_SI[1:n.preys,]
+    mu_SI[i,1:isos] <- prop[i,1:n.preys] %*% prey_SI[1:n.preys,]
     
-  
   }   
                
 

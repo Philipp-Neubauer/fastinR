@@ -64,19 +64,15 @@ model{
     
  
   # mixing for predator SI signature for likelihood
-  for (k in 1:isos){ 
-    mu_SI[i,k] <- inprod(prop[i,1:n.preys],prey_SI[1:n.preys,k])
+ 
+    mu_SI[i,1:isos] <- prop[i,1:n.preys] %*% prey_SI[1:n.preys,]
     
-  }
   
   # mixing and alr transformation of predator fat signature for likelihood
-    for (f in 1:n.fats){ 
-      predm[i,f] <- inprod(prop[i,1:n.preys],preyf[1:n.preys,f])
-      predf[i,f] <- predm[i,f]/sum(predm[i,1:n.fats])
-    }
-    for (f in 1:m.fats){
-      mu[i,f] <- log(predf[i,f]/predf[i,n.fats])
-     }   
+   predm[i,1:n.fats] <- prop[i,1:n.preys] %*% preyf[1:n.preys,]
+      predf[i,1:n.fats] <- predm[i,]/sum(predm[i,])
+
+   mu[i,1:m.fats] <- log(predf[i,1:m.fats]/predf[i,n.fats])
   }  
   
 # priors for proportions and predator covariance

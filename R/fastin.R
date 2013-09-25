@@ -162,7 +162,7 @@ FASTIN <- function(){
     guiSet('datas',datas)
     
   }
-  addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=1e-2){
+    addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=10){
     
     # combine sources function
       source.combine <- function(k,preys.ix){
@@ -380,12 +380,12 @@ FASTIN <- function(){
     
   }
   
-  resetsc <- function(){datas <- guiGetSafe('datas');if(length(datas)>1){datas$SC=F;guiSet('datas',datas)}}
+    resetsc <- function(){datas <- guiGetSafe('datas');if(length(datas)>1){datas$SC=F;guiSet('datas',datas)}}
   
   # gui helper functions
-  pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
+    pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
   
-  run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
+    run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
     # have three types here: FA, SI and combined, then methods dispatch based on type of arg
     
     datas = guiGetSafe('datas')
@@ -419,18 +419,18 @@ FASTIN <- function(){
     }
   }
   
-  dispsummaries <- function(Display.Summary=NULL){output <- guiGetSafe('MCMCout') ; 
+    dispsummaries <- function(Display.Summary=NULL){output <- guiGetSafe('MCMCout') ; 
                               if(class(output)=='pop_props'|class(output)=='ind_props'|class(output)=='cov_props')
                               {summary(output)}
   }
-  plotoutputs<- function(){output <- guiGetSafe('MCMCout') 
+    plotoutputs<- function(){output <- guiGetSafe('MCMCout') 
                            if(class(output)=='pop_props'|class(output)=='ind_props'|class(output)=='cov_props')
                            {plot(output)}
   }
   
-  saveoutputs <- function(Path="MCMCout.Rdata"){output <- guiGetSafe('MCMCout');save(output,file=Path)}
+    saveoutputs <- function(Path="MCMCout.Rdata"){output <- guiGetSafe('MCMCout');save(output,file=Path)}
   
-  addcovs <- function(Groups='',Covariates=''){ 
+    addcovs <- function(Groups='',Covariates=''){
     
     if (nchar(Covariates)>0 & nchar(Groups)==0)
     {
@@ -470,22 +470,22 @@ FASTIN <- function(){
     }
   }
   
-  SaveData <- function(Path="datas.Rdata"){datas <- guiGetSafe('datas');stopifnot(length(datas)>1);save(datas,file=Path)}
-  LoadData <- function(Path=NULL){load(Path); guiSet('datas',datas)}
+    SaveData <- function(Path="datas.Rdata"){datas <- guiGetSafe('datas');stopifnot(length(datas)>1);save(datas,file=Path)}
+    LoadData <- function(Path=NULL){load(Path); guiSet('datas',datas)}
   
-  guiSet( "LIST_WIDTH", 50)
-  guiSet( "ENTRY_WIDTH", 10)
+    guiSet( "LIST_WIDTH", 50)
+    guiSet( "ENTRY_WIDTH", 10)
   
   #Gui - tried some meaningful indentation here, but still not quite right...
-  output <- gui( fastin, title = 'FASTIN main menu',
+    output <- gui( fastin, title = 'FASTIN main menu',
                  argCommand=list(add.covs=guiNestedF(addcovs,"add.covs",  argFilter=list(Groups="{{} {.csv}}",Covariates="{{} {.csv}}"),
                                                      argText=c(Covariates = "Add Covariates (optional)",Groups = "Add Groups (optional)"),cancelButton=F,exec='Add'),
                                  Save.Outputs=guiNestedF(saveoutputs,"Save.Outputs",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
                                  Save.Data=guiNestedF(SaveData,"Save.Data",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
                                  Load.Data=guiNestedF(LoadData,"Load.Data",argFilter=list(Path= "{{} {.Rdata}}"),cancelButton=F,exec='load'),
-                                 Display.Summaries=guiNestedF(dispsummaries,'Display.Summaries',argCommand=list(Display.Summary = guiExec),cancelButton=F),
-                                 groupings = resetsc(),
-                                 Plot.Outputs=plotoutputs(),
+                                 Display.Summaries=dispsummaries,
+                                 groupings = resetsc,
+                                 Plot.Outputs=plotoutputs,
                                  SI.data = guiNestedF(addSI,"SI.data",
                                                       argFilter=list(predators.SI= "{{} {.csv}}",preys.SI= "{{} {.csv}}",Frac.Coeffs.mean="{{} {.csv}}",Frac.Coeffs.var="{{} {.csv}}"), 
                                                       title = 'Stable Isotope data entry form',

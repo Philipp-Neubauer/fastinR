@@ -8,7 +8,7 @@ AnalysiswithCov.FA <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nTh
   R =datas$datas.FA$R
   fc_mean =datas$datas.FA$fc_mean
   fc_tau =datas$datas.FA$fc_tau
-  mean_c = matrix(unlist(data$datas.FA$mean_c),n.preys,n.fats)
+  mean_c = matrix(unlist(datas$datas.FA$mean_c),n.preys,n.fats)
   tau_coeffs =datas$datas.FA$tau_c
   Rnot =datas$datas.FA$Rnot
   n.preds =datas$n.preds
@@ -43,7 +43,7 @@ AnalysiswithCov.SI <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nTh
   n.covs = ncol(Covs)
   isos =datas$datas.SI$isos
   R_SI =datas$datas.SI$R.SI
-  mean_cs = matrix(unlist(data$datas.SI$mean_cs),n.preys,isos)
+  mean_cs = matrix(unlist(datas$datas.SI$mean_cs),n.preys,isos)
   tau_cs =datas$datas.SI$tau_cs
   Rnot_SI =datas$datas.SI$Rnot.SI
   ni.SI =datas$datas.SI$ni.SI
