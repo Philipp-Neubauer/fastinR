@@ -17,16 +17,17 @@ model{
 for(i in 1:n.preds) {      
     
        # draw clr(proportions)
-    pnorm[i,1:n.preys] ~ dmnorm(pmean[],pprec[,])
-    for(j in 1:n.preys) {
+    pnorm[i,1:m.preys] ~ dmnorm(pmean[],pprec[,])
+    for(j in 1:m.preys) {
       
       # backtransform clr proportions by clr^-1
       p_unn[i,j] <- exp(pnorm[i,j])
-            
-      #closure      
-     
+                 
     }
+    #closure 
+    p_unn[i,n.preys] <- 1
     prop[i,1:n.preys] <- (p_unn[i,1:n.preys])/sum(p_unn[i,1:n.preys])
+    
     # predator likelihood
     
     preds.SI[i,1:isos] ~ dmnorm(mu_SI[i,],predprec_SI[,])
@@ -40,13 +41,15 @@ for(i in 1:n.preds) {
 
   # priors for proportions and predator covariance
    predprec_SI[1:isos,1:isos] ~ dwish(Rnot_SI[,],isos)
-   pmean[1:n.preys] ~ dmnorm(zeros[],S[,])
+   pmean[1:m.preys] ~ dmnorm(zeros[],S[,])
  
-  for(j in 1:n.preys) {  
+  for(j in 1:m.preys) {  
     pm_unn[j] <- exp(pmean[j])    
     #closure
-    pop.prop[j] <- (pm_unn[j])/sum(pm_unn[1:n.preys])
-  }
     
-  pprec[1:n.preys,1:n.preys] ~ dwish(SS[,],n.preys)
+  }
+pm_unn[n.preys] <- 1
+pop.prop[1:n.preys] <- (pm_unn[1:n.preys])/sum(pm_unn[1:n.preys])
+    
+  pprec[1:m.preys,1:m.preys] ~ dwish(SS[,],m.preys)
 }

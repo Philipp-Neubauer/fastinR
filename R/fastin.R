@@ -5,7 +5,7 @@ FASTIN <- function(){
   #require(fgui)
   
   # overall dummy function
-    addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=1e-2){
+    addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=0.01){
         
     # combine sources function
         source.combine <- function(k,preys.ix,preys.names){
@@ -162,7 +162,7 @@ FASTIN <- function(){
     guiSet('datas',datas)
     
   }
-    addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=10){
+    addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.01){
     
     # combine sources function
       source.combine <- function(k,preys.ix){
@@ -172,7 +172,7 @@ FASTIN <- function(){
           PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
                                         #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
       
-          plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix)))
+          plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
           points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
                                         #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
       
@@ -523,16 +523,16 @@ FASTIN <- function(){
                                                              nBurnin = 'Number of MCMC iterations to discard (burn-in)',
                                                              nChains = 'Number of Markov Chains',
                                                              nThin = 'Thinning interval of MCMC chains',
-                                                             even= 'prior eveness of proportions'
+                                                             even= 'Prior eveness of proportions'
                                                    ),cancelButton=F)
                  ),                                 
                  argText=c(SI.data='Add Stable Isotope data', 
                            FA.data='Add Fatty Acid profiles',
-                           groupings = 'reset previous prey grouping',
+                           groupings = 'Reset previous prey grouping',
                            Save.Data= "Save data",
                            Load.Data = 'Load previously saved dataset',
-                           add.covas='Add covariates and/or groups',
-                           MCMC = 'run Bayesian analysis (MCMC)'
+                           add.covs='Add covariates and/or groups',
+                           MCMC = 'Run Bayesian analysis (MCMC)'
                  ),
                  exec=NULL,output=NULL,argGridOrder=c(1,1,1,2,2,2,3,3,4,4), argGridSticky=rep("w",length(formals(fastin)))
   )

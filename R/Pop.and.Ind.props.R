@@ -3,6 +3,7 @@ PopandIndprops <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10) Us
 PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
   n.preys = datas$n.preys
+  m.preys = datas$n.preys-1
   n.fats = datas$datas.FA$n.fats
   R = datas$datas.FA$R
   fc_mean = datas$datas.FA$fc_mean
@@ -17,9 +18,9 @@ PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   preym = datas$datas.FA$preym
   eveness = datas$even
   
-  S = diag(eveness,n.preys)
-  SS = diag(1,n.preys)
-  zeros = rep(0,n.preys)
+  S = diag(eveness,m.preys)
+  SS = diag(1,m.preys)
+  zeros = rep(0,m.preys)
   
   JM <- jags.model(file=paste(system.file("exec",package = "FASTIN"),"/Pop.and.Ind.props.FA.bugs",sep=''),n.chains=nChains)
   
@@ -43,6 +44,7 @@ PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
     jagsdata <- list(
         n.preys = datas$n.preys,
         n.preds = datas$n.preds,
+        m.preys = datas$n.preys-1,
         isos = datas$datas.SI$isos,
         R_SI = datas$datas.SI$R.SI,
         mean_cs = matrix(unlist(datas$datas.SI$mean_cs),datas$n.preys,datas$datas.SI$isos),
@@ -51,9 +53,9 @@ PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
         ni.SI = datas$datas.SI$ni.SI,
         preds.SI = datas$datas.SI$preds.SI,
         preym.SI = datas$datas.SI$preym.SI,    
-        S = diag(1,n.preys),
-        SS = diag(eveness,n.preys),
-        zeros = rep(0,n.preys)
+        S = diag(1,n.preys-1),
+        SS = diag(eveness,n.preys-1),
+        zeros = rep(0,n.preys-1)
         )
   
   JM <- jags.model(file=paste(system.file("exec",package = "FASTIN"),"/Pop.and.Ind.props.SI.bugs",sep=''),n.chains=nChains,data=jagsdata,n.adapt=nBurnin)
@@ -66,8 +68,11 @@ PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   res <- as.data.frame((res)[[1]])
   #head(res)
 
+  #qres <- function(res){apply(res,2,function(x){quantile(x,c(0.025,0.5,0.975))})}
   #qres(res)
-  
+
+  #  plot(res[,5])
+    
   output <- list(MCMC=res)
   class(output) <- 'ind_props'
   return(output)
@@ -81,6 +86,7 @@ PopandIndprops.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nTh
   
 jagsdata <- list(    
   n.preys = datas$n.preys,
+  m.preys = datas$n.preys-1,
   n.preds = datas$n.preds,  
   isos = datas$datas.SI$isos,
   R_SI = datas$datas.SI$R.SI,
@@ -101,9 +107,9 @@ jagsdata <- list(
   ni = datas$datas.FA$ni,
   preds = datas$datas.FA$preds,
   preym = datas$datas.FA$preym,
-  S = diag(eveness,n.preys),
-  SS = diag(1,n.preys),
-  zeros=rep(0,n.preys)
+  S = diag(eveness,n.preys-1),
+  SS = diag(1,n.preys-1),
+  zeros=rep(0,n.preys-1)
     )
   
   JM <- jags.model(file=paste(system.file("exec",package = "FASTIN"),"/Pop.and.Ind.props.combined.bugs",sep=''),n.chains=nChains,data=jagsdata)

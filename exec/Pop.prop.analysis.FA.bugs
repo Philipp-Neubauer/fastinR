@@ -19,18 +19,14 @@ model{
       
       # backtransform to apply fractionation and fat content
       preydd[j,f] <- exp(prey.means[j,f])
-      preyd[j,f] <- preydd[j,f]/(sum(preydd[j,1:m.fats])+1)
-    
-    }
-    
-    preyd[j,n.fats] <- 1/(sum(preydd[j,1:m.fats])+1)
-    
-    for (f in 1:n.fats){      
-      # draw fractionation coeffs for prey j and fatty acid f
       fracs[j,f] ~ dnorm(mean_c[j,f],tau_coeffs[j,f])I(0,)
-      preyf[j,f] <- (preyd[j,f]*fracs[j,f]*fc[j])
+    }
+    fracs[j,n.fats] ~ dnorm(mean_c[j,n.fats],tau_coeffs[j,n.fats])I(0,)
+    preydd[j,n.fats] <- 1	    
+    preyd[j,1:n.fats] <- preydd[j,1:n.fats]/sum(preydd[j,1:n.fats])    
+   
+    preyf[j,1:n.fats] <- preyd[j,1:n.fats]*fracs[j,1:n.fats]*fc[j]
       
-    }    
   }
   
   for(i in 1:n.preds) {      

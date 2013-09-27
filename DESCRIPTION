@@ -1,16 +1,16 @@
 Package: FASTIN
 Type: Package
-Depends: vegan,fgui,tcltk,rjags
-Imports: robCompositions, compositions,MCMCpack
+Depends: vegan,fgui,tcltk,rjags,lattice
+Imports: robCompositions, compositions,MCMCpack,grid,denstrip,reshape
 Title: Fatty Acids and Stable Isotopes in R
-Version: 0.1
-Date: 2013-03-22
+Version: 0.2
+Date: 2013-09-26
 Author: Philipp Neubauer
 Maintainer: Philipp Neubauer <neubauer.phil@gmail.com>
 Description: This packages provides gui facilities to perfom Bayesian estiamtion 
              of diet proportions based on fatty acid profiles, stable isotopes and 
              their combination. Bayesian estiamtion is currently performed using 
-             the R package BRugs to call OpenBUGS from R. The package can handle 
+             the R package rjags to call JAGS from R. The package can handle 
              covariates and grouped (e.g., regional) data as predictors of diet 
              proportions, and will estiamte both individual and popualtion level diet 
              protportions. Facilities for simulating, plotting and extracting/writing 
