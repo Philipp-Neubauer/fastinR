@@ -100,6 +100,7 @@ simulation <- function(){
     } else {(Covs=NA)}
     
     Grps <- as.data.frame(as.factor(sample(1:n.groups,n.preds,replace=T)))
+    colnames(Grps) <- 'Grouping_Variable'
     
     Covs.new<-as.data.frame(model.matrix(attr(model.frame(1:nrow(Grps)~.,data=Grps),'terms'),data=Grps)[,])
       
@@ -397,8 +398,8 @@ simulation <- function(){
     switchin <- guiGetSafe("gswitch")
     
     if(all(!is.na(preys))){
-      write.table(cbind(preys.ix,preys),file=paste(filename,'_preys.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
-      write.table(preds,file=paste(filename,'_preds.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
+      write.table(cbind(preys.ix,preys),file=paste(filename,'_FA_preys.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
+      write.table(preds,file=paste(filename,'_FA_preds.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(cbind(fc_mean,fc_sd),file=paste(filename,'_fat_cont.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(mean_c,file=paste(filename,'_FA_cc_means.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(sd_c,file=paste(filename,'_FA_cc_sd.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
@@ -409,10 +410,12 @@ simulation <- function(){
       write.table(mean_cs,file=paste(filename,'_SI_fc_means.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(sd_cs,file=paste(filename,'_SI_fc_sd.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
     }
-    if(switchin != 'gprops'){
-      write.table(Covs,file=paste(filename,'_Covariates.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
+    if(switchin == 'Covas' | switchin == 'combined'){
+      write.table(Covs,file=paste(filename,'_Covariates.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
+      write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)}
+     if(switchin == 'grouped' | switchin == 'combined'){
+      write.table(Grps,file=paste(filename,'_Groups.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
       write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
-      write.table(Grps,file=paste(filename,'_Groups.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
     }
           
     write.table(props,file=paste(filename,'_props.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)

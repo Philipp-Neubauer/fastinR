@@ -128,7 +128,7 @@ FASTIN <- function(){
     for (i in 1:n.preys){
       
       preym.SI[i,] <- apply(preys.SI[prey.ix==unique(prey.ix)[i],]+mean_cs[match(preys.ix.SI[prey.ix==unique(prey.ix)[i]],rownames(mean_cs)),],2,mean)
-      var_cs[i,] <- (sd_cs[rownames(mean_cs) %in% preys.ix.SI[prey.ix==unique(prey.ix)[i]],])^2
+      var_cs[i,] <- colMeans(sd_cs[rownames(mean_cs) %in% preys.ix.SI[prey.ix==unique(prey.ix)[i]],])^2
     }
     
     #set fractionation to 0 since it's allready applied
@@ -229,8 +229,8 @@ FASTIN <- function(){
       sd_c  = read.csv(Conv.Coeffs.var,header=F,row.names=1)
     } else if (nchar(Conv.Coeffs.mean)==0 & nchar(Conv.Coeffs.var)==0)
     {
-      mean_c = matrix(CC.mean,n.fats,n.preys)
-      sd_c =matrix(CC.var,n.fats,n.preys)
+      mean_c = matrix(CC.mean,n.preys,n.fats)
+      sd_c =matrix(CC.var,n.preys,n.fats)
     } else
     {
       print('Known conversion coefficients, or a mean AND variance for conversion coefficients need to be supplied')
@@ -341,7 +341,7 @@ FASTIN <- function(){
         
         fcc.mean[i] <- mean(fc.mean[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]])
         fcc.var[i] <- (mean(fc.sd[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]]))^2
-        var_c[i,] <- (sd_c[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]],six])^2
+        var_c[i,] <- (colMeans(sd_c[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]],six]))^2
       }
     }
     
@@ -408,7 +408,7 @@ FASTIN <- function(){
       
       Covs = guiGetSafe('Covs')
       
-      if(is.na(Covs) & Analysis.Type == 'Analysis.with.Covariates'){stop('analysis with covariates selected, but no covariates entered.')}
+      if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates'){stop('analysis with covariates selected, but no covariates entered.')}
       
       outputs <- switch(Analysis.Type,
                         Population.proportions = Poppropanalysis(datas,nIter,nBurnin,nChains,nThin),
@@ -434,13 +434,13 @@ FASTIN <- function(){
     
     if (nchar(Covariates)>0 & nchar(Groups)==0)
     {
-      Covs <- read.csv(Covariates,header=F)
+      Covs <- read.csv(Covariates,header=T)
       Covs <- cbind(rep(1,nrow(Covs)),Covs)
       n.covs <- ncol(Covs)
       guiSet('Covs',Covs)
     } else if (nchar(Covariates)==0 & nchar(Groups)>0) 
     {
-      Grps <- read.csv(Groups,header=F)
+      Grps <- read.csv(Groups,header=T)
       Grp.names <- unlist(unique(Grps)) 
       
       for (i in 1:ncol(Grps)){
@@ -454,9 +454,9 @@ FASTIN <- function(){
       
     } else if (nchar(Covariates)>0 & nchar(Groups)>0) 
     {
-      Covs <- read.csv(Covariates,header=F)
+      Covs <- read.csv(Covariates,header=T)
       Covnames <- names(Covs)
-      Grps <- read.csv(Groups,header=F)
+      Grps <- read.csv(Groups,header=T)
       Grp.names <- unlist(unique(Grps)) 
       
       for (i in 1:ncol(Grps)){
