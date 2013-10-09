@@ -6,7 +6,7 @@
 Fatty Acids and Stable Isotopes in R
 }
 \description{
-This packages provides gui facilities to perfom Bayesian estiamtion of diet proportions based on fatty acid profiles, stable isotopes and their combination. Bayesian estiamtion is currently performed using the R package BRugs to call OpenBUGS from R. The package can handle covariates and grouped (e.g., regional) data as predictors of diet proportions, and will estiamte both individual and popualtion level diet protportions. Facilities for simulating, plotting and extracting/writing summary statistics to file are provided as well.
+This packages provides gui facilities to perfom Bayesian estiamtion of diet proportions based on fatty acid profiles, stable isotopes and their combination. Bayesian estiamtion is currently performed using the R package BRugs to call OpenBUGS from R. The package can handle covariates and grouped (e.g., regional) data as predictors of diet proportions, and will estimate both individual and popualtion level diet protportions. Fucntionality for simulating, plotting and extracting/writing summary statistics to file is provided as well.
 }
 \details{
 \tabular{ll}{
@@ -30,11 +30,9 @@ Neubauer.P. and Jensen, O.P. (in prep)
 
 \keyword{ package }
 \seealso{
-\code{\link{fastin}},\code{\link{simulation}},\code{\link{run_FASTIN}}
+\code{\link{fastin}},\code{\link{simulation}},\code{\link{FASTIN}}
 }
 \examples{
 
-simulation()
-run_FASTIN()
 
 }

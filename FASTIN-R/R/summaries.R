@@ -1,4 +1,5 @@
-summary.pop_props <- function(MCMCout){
+summary.pop_props <- function(object, ...){
+  MCMCout <- object
   res <- apply(MCMCout$MCMC,2,function(x){quantile(x,c(0.025,0.5,0.975))})
   #if (ls(.GlobalEnv)[grep('preys.names',ls(.GlobalEnv))[1]] == "preys.names"){
   prey.names <- unique(guiGetSafe('datas')$prey.ix)
@@ -6,8 +7,8 @@ summary.pop_props <- function(MCMCout){
   cat('\n','\n','\n',"population diet proportions",'\n','\n','\n')
   print(res)
 }
-summary.ind_props <- function(MCMCout){
-  
+summary.ind_props <- function(object, ...){
+  MCMCout <- object
   # print pop proportions
   popix <- grep('pop',colnames(MCMCout$MCMC))
   res <- apply(MCMCout$MCMC[,popix],2,function(x){quantile(x,c(0.025,0.5,0.975))})
@@ -36,7 +37,8 @@ summary.ind_props <- function(MCMCout){
  
   }
 }
-summary.cov_props <- function(MCMCout){
+summary.cov_props <- function(object, ...){
+  MCMCout <- object
   # print pop proportions
   datas <- guiGetSafe('datas')
 

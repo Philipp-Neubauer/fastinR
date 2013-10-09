@@ -1,6 +1,6 @@
-AnalysiswithCov <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod("AnalysiswithCov",datas)
+.AnalysiswithCov <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod("AnalysiswithCov",datas)
 
-AnalysiswithCov.FA <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.AnalysiswithCov.FA <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
 
     n.preys =datas$n.preys
@@ -45,7 +45,7 @@ n.covs = ncol(Covs)
   
 }
 
-AnalysiswithCov.SI <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.AnalysiswithCov.SI <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
   n.preys =datas$n.preys
   m.preys =datas$n.preys-1
@@ -87,7 +87,7 @@ n.covs = ncol(Covs)
   return(output)
 }
 
-AnalysiswithCov.combined <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.AnalysiswithCov.combined <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
 
     n.preys =datas$n.preys

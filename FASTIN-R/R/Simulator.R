@@ -2,7 +2,7 @@
 simulation <- function(){
   
   ######### sim functions
-  require(fgui)  
+#  require(fgui)  
   
   simulator <- function(n.preys=3,n.preds=10,nsamples=30,simProps=NULL,simGroups=NULL,simCovs=NULL,FAsim.data=NULL,SIsim.data=NULL,simplot=NULL,simwrite=NULL){
     
@@ -51,12 +51,12 @@ simulation <- function(){
     n.preys <- guiGetSafe("n.preys")
     n.preds <- guiGetSafe("n.preds")
     
-    require(MCMCpack)
+    #require(MCMCpack)
     
     v1 = 0.5; v2 = 0.7
     Q = rlnorm(n.preys,c(rep(0,n.preys-1),eveness),v2)
     #rlnorm(n.preys,c(rep(0,n.preys-1),eveness),v2)# individual proportions
-    props=rdirichlet(n.preds,Q)
+    props=MCMCpack::rdirichlet(n.preds,Q)
     
     guiSet("props",props)
     guiSet("gswitch",'gprops')
@@ -76,8 +76,6 @@ simulation <- function(){
   }
   
   simGroups <- function(n.groups=2,group.effect.size=1){
-    
-    require(mvtnorm)
     
     n.preys <- guiGetSafe("n.preys")
     n.preds <- guiGetSafe("n.preds")
@@ -115,7 +113,7 @@ simulation <- function(){
        
     for (j in 1:n.covs)
     {
-      beta.new[1:n.preys,j] <- rmvnorm(1,rep(0,n.preys),diag(group.effect.size,n.preys))
+      beta.new[1:n.preys,j] <- mvrnorm(1,rep(0,n.preys),diag(group.effect.size,n.preys))
     }
     
     colnames(beta.new) <- names(Covs.new)
@@ -172,8 +170,7 @@ simulation <- function(){
   
   simCovs <- function(n.covs=1,covariate.effect.size=1){
        
-    require(mvtnorm)
-    
+       
     n.preys <- guiGetSafe("n.preys")
     n.preds <- guiGetSafe("n.preds")
     
@@ -212,7 +209,7 @@ simulation <- function(){
     
     for (j in 1:(n.covs))
     {
-      beta.new[1:n.preys,j] <- rmvnorm(1,rep(0,n.preys),diag(covariate.effect.size,n.preys))
+      beta.new[1:n.preys,j] <- mvrnorm(1,rep(0,n.preys),diag(covariate.effect.size,n.preys))
     }
     
     colnames(beta.new) <- names(Covs.new)
@@ -268,7 +265,7 @@ simulation <- function(){
   
   sim.FA <- function(sep=1,n.fats=10,cvar=0.5){
     
-    require(MCMCpack)
+   # require(MCMCpack)
     
     props <- guiGetSafe("props")
     
@@ -449,7 +446,7 @@ simulation <- function(){
     }
 }
   
-  require(fgui)
+  #require(fgui)
   
   output <- gui(simulator,callback=guiExec,
                 argCommand=list(simplot=simplott,

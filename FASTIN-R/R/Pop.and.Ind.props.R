@@ -1,6 +1,6 @@
-PopandIndprops <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod("PopandIndprops", datas)
+.PopandIndprops <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod("PopandIndprops", datas)
 
-PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
   n.preys = datas$n.preys
   m.preys = datas$n.preys-1
@@ -36,7 +36,7 @@ PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   
 }
 
-PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
 
     eveness = datas$even
@@ -78,7 +78,7 @@ PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
   return(output)
 }
 
-PopandIndprops.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.PopandIndprops.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
 
   eveness = datas$even

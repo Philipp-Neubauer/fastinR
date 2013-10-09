@@ -1,4 +1,5 @@
-plot.pop_props <- function(MCMCdatas){
+plot.pop_props <- function(x,...){
+    MCMCdatas <- x
     sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
     preya.names <- unique(guiGetSafe('datas')$prey.ix)
     outs <- MCMCdatas$MCMC
@@ -11,7 +12,7 @@ plot.pop_props <- function(MCMCdatas){
     if (sava==1) pdf("MCMC_correlations.pdf")
     plot(outs,main='Correlation of proportion estimates')
     if (sava==1) dev.off()
-    require(lattice)
+   
 
     mp=reshape::melt(outs)
     if (sava==1) pdf("Post_pop_proportions.pdf")
@@ -29,7 +30,8 @@ plot.pop_props <- function(MCMCdatas){
     trellis.unfocus()
     if (sava==1) dev.off()
 }
-plot.ind_props <- function(MCMCdatas){
+plot.ind_props <- function(x,...){
+    MCMCdatas <- x
     sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
     datas <-  guiGetSafe('datas')
     preya.names <- unique(datas$prey.ix)
@@ -45,8 +47,7 @@ plot.ind_props <- function(MCMCdatas){
     par(ask=T)
     plot(outs[,popix],main='Correlation of proportion estimates')
     if (sava==1) dev.off()
-    require(lattice)
-
+   
     # draw popualtion posteriors
     mp=reshape::melt.data.frame(outs[,popix])
     if (sava==1) pdf("Post_pop_proportions.pdf")
@@ -93,7 +94,8 @@ par(ask=T)
     trellis.unfocus()
     if (sava==1) dev.off()
 }
-plot.cov_props <- function(MCMCdatas){
+plot.cov_props <- function(x,...){
+    MCMCdatas <- x
     sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
     datas <-  guiGetSafe('datas')
     preya.names <- unique(datas$prey.ix)
@@ -121,7 +123,7 @@ plot.cov_props <- function(MCMCdatas){
     for (n in 1:nGr) {colnames(this.eff)[k:(k+datas$n.preys-1)] <- sprintf(paste('Group',n,'/ %s'),preya.names); k=k+datas$n.preys}
     plot( this.eff,main='Correlation of proportion estimates')
     if (sava==1) dev.off()
-    require(lattice)
+   
 
     # draw popualtion posteriors
     mp=reshape::melt.data.frame(this.eff)

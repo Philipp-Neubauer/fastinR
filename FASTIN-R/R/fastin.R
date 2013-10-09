@@ -404,9 +404,9 @@ run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatt
       if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates'){stop('analysis with covariates selected, but no covariates entered.')}
       
       outputs <- switch(Analysis.Type,
-                        Population.proportions = Poppropanalysis(datas,nIter,nBurnin,nChains,nThin),
-                        Individual.proportions = PopandIndprops(datas,nIter,nBurnin,nChains,nThin),
-                        Analysis.with.Covariates = AnalysiswithCov(datas,Covs,nIter,nBurnin,nChains,nThin)
+                        Population.proportions = .Poppropanalysis(datas,nIter,nBurnin,nChains,nThin),
+                        Individual.proportions = .PopandIndprops(datas,nIter,nBurnin,nChains,nThin),
+                        Analysis.with.Covariates = .AnalysiswithCov(datas,Covs,nIter,nBurnin,nChains,nThin)
       )
       guiSet('MCMCout',outputs)
     }

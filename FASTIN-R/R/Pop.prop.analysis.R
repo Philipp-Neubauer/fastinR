@@ -1,6 +1,6 @@
-Poppropanalysis <- function(datas,nIter=1000,nBurnin=1000,nChains=1,nThin=10) UseMethod("Poppropanalysis", datas)
+.Poppropanalysis <- function(datas,nIter=1000,nBurnin=1000,nChains=1,nThin=10) UseMethod("Poppropanalysis", datas)
 
-Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
   n.preys = datas$n.preys
   R = datas$datas.FA$R
@@ -30,7 +30,7 @@ Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10
   
 }
 
-Poppropanalysis.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.Poppropanalysis.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
   n.preys = datas$n.preys
   n.preds = datas$n.preds
@@ -57,7 +57,7 @@ Poppropanalysis.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10
   return(output)
 }
 
-Poppropanalysis.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.Poppropanalysis.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
   
   n.preys = datas$n.preys
