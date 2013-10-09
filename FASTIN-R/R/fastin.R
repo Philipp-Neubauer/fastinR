@@ -1,4 +1,4 @@
-fastin <- function(SI.data=NULL,FA.data=NULL,groupings,Load.Data=NULL,Save.Data=NULL,add.covs,MCMC,Save.Outputs=NULL,Display.Summaries=NULL,Plot.Outputs=NULL){}
+.fastin <- function(SI.data=NULL,FA.data=NULL,groupings,Load.Data=NULL,Save.Data=NULL,add.covs,MCMC,Save.Outputs=NULL,Display.Summaries=NULL,Plot.Outputs=NULL){}
 
 addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=0.01){
         
@@ -478,7 +478,7 @@ FASTIN <- function(){
     guiSet( "ENTRY_WIDTH", 10)
   
   #Gui - tried some meaningful indentation here, but still not quite right...
-    output <- gui( fastin, title = 'FASTIN main menu',
+    output <- gui(.fastin, title = 'FASTIN main menu',
                  argCommand=list(add.covs=guiNestedF(addcovs,"add.covs",  argFilter=list(Groups="{{} {.csv}}",Covariates="{{} {.csv}}"),
                                                      argText=c(Covariates = "Add Covariates (optional)",Groups = "Add Groups (optional)"),cancelButton=F,exec='Add'),
                                  Save.Outputs=guiNestedF(saveoutputs,"Save.Outputs",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
