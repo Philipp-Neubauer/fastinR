@@ -1,11 +1,6 @@
 fastin <- function(SI.data=NULL,FA.data=NULL,groupings,Load.Data=NULL,Save.Data=NULL,add.covs,MCMC,Save.Outputs=NULL,Display.Summaries=NULL,Plot.Outputs=NULL){}
 
-FASTIN <- function(){
-  #require(tcltk)   # this is needed - but leads to crashes...
-  #require(fgui)
-  
-  # overall dummy function
-    addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=0.01){
+addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=0.01){
         
     # combine sources function
         source.combine <- function(k,preys.ix,preys.names){
@@ -53,7 +48,7 @@ FASTIN <- function(){
       }
       
       return(preys.ix)
-      
+       return(datas)
     }
     
     datas <- guiGetSafe('datas')
@@ -162,7 +157,8 @@ FASTIN <- function(){
     guiSet('datas',datas)
     
   }
-    addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.01){
+
+addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.01){
     
     # combine sources function
       source.combine <- function(k,preys.ix){
@@ -377,15 +373,12 @@ FASTIN <- function(){
       datas$prey.ix=prey.ix
     }
     guiSet('datas',datas)
-    
+    return(datas)
   }
-  
-    resetsc <- function(){datas <- guiGetSafe('datas');if(length(datas)>1){datas$SC=F;guiSet('datas',datas)}}
-  
-  # gui helper functions
-    pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
-  
-    run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
+
+resetsc <- function(datas=NULL){if (is.null(datas)){datas <- guiGetSafe('datas')};if(length(datas)>1){datas$SC=F;guiSet('datas',datas);return(datas)}}
+
+run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
     # have three types here: FA, SI and combined, then methods dispatch based on type of arg
     
     datas = guiGetSafe('datas')
@@ -418,6 +411,14 @@ FASTIN <- function(){
       guiSet('MCMCout',outputs)
     }
   }
+  
+
+FASTIN <- function(){
+  #require(tcltk)   # this is needed - but leads to crashes...
+  #require(fgui)
+  
+  # gui helper functions
+    pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
   
     dispsummaries <- function(Display.Summary=NULL){output <- guiGetSafe('MCMCout') ; 
                               if(class(output)=='pop_props'|class(output)=='ind_props'|class(output)=='cov_props')
