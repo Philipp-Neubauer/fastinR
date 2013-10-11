@@ -233,17 +233,24 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     }
     
     # deal with fat content
-    if(nchar(fat.conts)==0) 
-    {
-      fc.mean <- FC.mean; fc.var <- FC.var
-    } else
-    {
-      fat.cont <- read.csv(fat.conts,header=F)
-      if (dim(fat.cont)[2]>2){
-        fat.cont <- read.csv(fat.conts,header=F,row.names=1) 
-        fc.mean = fat.cont[,1];fc.sd = fat.cont[,2]
-      } 
-    }
+      if(nchar(fat.conts)==0) 
+          {
+              fc.mean <- FC.mean; fc.var <- FC.var
+          } else
+              {
+                  fat.cont <- read.csv(fat.conts,header=F)
+                  if (dim(fat.cont)[2]>2){
+                      fat.cont <- read.csv(fat.conts,header=F,row.names=1) 
+                      fc.mean <- fat.cont[,1];fc.sd <- fat.cont[,2]
+                      if (any(fc.mean>1)){
+                          fc.mean <- fc.mean/100
+                          fc.sd <- fc.sd/100
+                      }
+                  } else if (any(fat.cont>1)){
+                      fat.cont <- fat.cont/100
+                  }
+              }
+  
     
     # make sure everything sums to 1
     
@@ -324,18 +331,16 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     for (i in 1:n.preys){
       
       if (is.null(dim(fat.cont))){
-        mprey[i,] <- apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],
-                           2,function(x){weighted.mean(x,w=fat.cont[prey.ix==unique(prey.ix)[i]])})
+        mprey[i,] <- compositions::clo(apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],2,function(x){exp(weighted.mean(log(x),w=fat.cont[prey.ix==unique(prey.ix)[i]]))}))
         var_c[i,] <- (sd_c[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]],six])^2
-        fcc.mean[i] <- mean(fat.cont[prey.ix==unique(prey.ix)[i]])
-        fcc.var[i] <- (fat.cont[prey.ix==unique(prey.ix)[i]])^2
+        fcc.mean[i] <- exp(mean(log(fat.cont[prey.ix==unique(prey.ix)[i]])))
+        fcc.var[i] <- exp(sd(log((fat.cont[prey.ix==unique(prey.ix)[i]]))))^2
         
       } else # combine means and variance
       {
-        mprey[i,] <- apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],
-                           2,function(x){weighted.mean(x,w=fc.mean[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c))])})
+        mprey[i,] <- compositions::clo(apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],2,function(x){exp(weighted.mean(log(x),w=fc.mean[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c))]))}))
         
-        fcc.mean[i] <- mean(fc.mean[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]])
+        fcc.mean[i] <- exp(mean(log(fc.mean[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]])))
         fcc.var[i] <- (mean(fc.sd[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]]))^2
         var_c[i,] <- (colMeans(sd_c[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]],six]))^2
       }
@@ -378,10 +383,10 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
 
 resetsc <- function(datas=NULL){if (is.null(datas)){datas <- guiGetSafe('datas')};if(length(datas)>1){datas$SC=F;guiSet('datas',datas);return(datas)}}
 
-run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
+run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
     # have three types here: FA, SI and combined, then methods dispatch based on type of arg
     
-    datas = guiGetSafe('datas')
+    if(missing(datas)) {datas = guiGetSafe('datas');GUI = T} else {GUI=F}
     
     
     if(length(datas)<=1){warning('No data processed yet')} else {   
@@ -409,6 +414,7 @@ run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatt
                         Analysis.with.Covariates = .AnalysiswithCov(datas,Covs,nIter,nBurnin,nChains,nThin)
       )
       guiSet('MCMCout',outputs)
+      if(GUI==F) return(outputs)
     }
   }
   
@@ -418,6 +424,41 @@ FASTIN <- function(){
   #require(fgui)
   
   # gui helper functions
+    run_MCMC <- function(nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
+    # have three types here: FA, SI and combined, then methods dispatch based on type of arg
+    
+    datas = guiGetSafe('datas')    
+    
+    if(length(datas)<=1){stop('No data processed yet')} else {   
+      
+      datas$even=even
+      
+      if (Data.Type == 'Combined.Analysis')
+      {
+        class(datas) <- 'combined'
+      } else if (Data.Type=='Fatty.Acid.Profiles')
+      {
+        class(datas) <- 'FA'
+      } else if (Data.Type=='Stable.Isotopes')
+      {
+        class(datas) <- 'SI'
+      }
+      
+      Covs = guiGetSafe('Covs')
+      
+      if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates'){stop('analysis with covariates selected, but no covariates entered.')}
+      
+      outputs <- switch(Analysis.Type,
+                        Population.proportions = .Poppropanalysis(datas,nIter,nBurnin,nChains,nThin),
+                        Individual.proportions = .PopandIndprops(datas,nIter,nBurnin,nChains,nThin),
+                        Analysis.with.Covariates = .AnalysiswithCov(datas,Covs,nIter,nBurnin,nChains,nThin)
+      )
+      guiSet('MCMCout',outputs)
+     
+    }
+  }
+  
+    
     pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
   
     dispsummaries <- function(Display.Summary=NULL){output <- guiGetSafe('MCMCout') ; 
@@ -535,7 +576,7 @@ FASTIN <- function(){
                            add.covs='Add covariates and/or groups',
                            MCMC = 'Run Bayesian analysis (MCMC)'
                  ),
-                 exec=NULL,output=NULL,argGridOrder=c(1,1,1,2,2,2,3,3,4,4), argGridSticky=rep("w",length(formals(fastin)))
+                 exec=NULL,output=NULL,argGridOrder=c(1,1,1,2,2,2,3,3,4,4), argGridSticky=rep("w",length(formals(.fastin)))
   )
   #detach("package:fgui", unload=TRUE)
   #detach("package:tcltk", unload=TRUE)

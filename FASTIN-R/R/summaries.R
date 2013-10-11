@@ -42,7 +42,7 @@ summary.cov_props <- function(object, ...){
   # print pop proportions
   datas <- guiGetSafe('datas')
 
-  prey.names <- rownames(datas$datas.FA$mean_c)
+  prey.names <- unique(datas$prey.ix)
   
   Covs <- guiGetSafe('Covs') 
   cidx <- apply(Covs,2,function(x){any(x!=0 & x!=1)})

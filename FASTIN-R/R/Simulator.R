@@ -271,7 +271,7 @@ simulation <- function(){
     
     if (any(is.na(props)))
     {
-      stop("Please click 'Update Parameters' first to initialize parameters")
+      stop("Please simualte proportions first to initialize parameters")
     }
     
     n.preys <- guiGetSafe("n.preys")
@@ -304,7 +304,7 @@ simulation <- function(){
     sd_css=matrix(0.05,n.preys,n.fats)
     rownames(sd_css) <- unique(preys.ix)
     
-    mprey <-  compositions::clo(t(apply(preys,3,colMeans)))
+    mprey <-  compositions::clo(t(apply(preys,c(3),function(x){exp(colMeans(log(x)))})))
     preds <-  compositions::clo(props%*%(as.vector(fc_mean)*mprey*mean_css))
     
     

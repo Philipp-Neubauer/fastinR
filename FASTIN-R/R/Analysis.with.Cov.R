@@ -1,4 +1,4 @@
-.AnalysiswithCov <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod("AnalysiswithCov",datas)
+.AnalysiswithCov <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod(".AnalysiswithCov",datas)
 
 .AnalysiswithCov.FA <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {

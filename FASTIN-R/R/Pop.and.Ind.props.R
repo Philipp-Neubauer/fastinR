@@ -1,4 +1,4 @@
-.PopandIndprops <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod("PopandIndprops", datas)
+.PopandIndprops <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod(".PopandIndprops", datas)
 
 .PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {

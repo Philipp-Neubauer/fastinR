@@ -1,4 +1,4 @@
-.Poppropanalysis <- function(datas,nIter=1000,nBurnin=1000,nChains=1,nThin=10) UseMethod("Poppropanalysis", datas)
+.Poppropanalysis <- function(datas,nIter=1000,nBurnin=1000,nChains=1,nThin=10) UseMethod(".Poppropanalysis", datas)
 
 .Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
 {
