@@ -417,7 +417,43 @@ run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data
       if(GUI==F) return(outputs)
     }
   }
-  
+
+addcovs <- function(Grps=NULL,Covs=NULL){
+    
+    if (length(Covs)>0 & length(Grps)==0)
+    {
+      Covs <- cbind(rep(1,nrow(Covs)),Covs)
+      n.covs <- ncol(Covs)
+      guiSet('Covs',Covs)
+    } else if (length(Covs)==0 & length(Grps)>0) 
+    {
+      Grp.names <- unlist(unique(Grps)) 
+      
+      for (i in 1:ncol(Grps)){
+        vg <- as.vector(Grps[,i])
+        Grps[,i] <- as.factor(vg)
+      }
+      
+      Covs <- model.matrix(attr(model.frame(1:nrow(Grps)~.,data=Grps),'terms'),data=Grps)[,]
+      colnames(Covs) <- Grp.names[length(Grp.names):1]
+      guiSet('Covs',Covs)
+      
+    } else if (length(Covs)>0 & length(Grps)>0) 
+    {
+       Covnames <- names(Covs)
+       Grp.names <- unlist(unique(Grps)) 
+      
+      for (i in 1:ncol(Grps)){
+        vg <- as.vector(Grps[,i])
+        Grps[,i] <- as.factor(vg)
+      }
+      
+      Covs <- cbind(model.matrix(attr(model.frame(1:nrow(Grps)~.,data=Grps),'terms'),data=Grps)[,],Covs)
+      colnames(Covs) <- c(Grp.names[length(Grp.names):1],Covnames)
+      guiSet('Covs',Covs)
+    }
+  }
+
 
 FASTIN <- function(){
   #require(tcltk)   # this is needed - but leads to crashes...
@@ -491,7 +527,7 @@ FASTIN <- function(){
       }
       
       Covs <- model.matrix(attr(model.frame(1:nrow(Grps)~.,data=Grps),'terms'),data=Grps)[,]
-      names(Covs) <- Grp.names
+      colnames(Covs) <- Grp.names[length(Grp.names):1]
       guiSet('Covs',Covs)
       
     } else if (nchar(Covariates)>0 & nchar(Groups)>0) 
@@ -507,7 +543,7 @@ FASTIN <- function(){
       }
       
       Covs <- cbind(model.matrix(attr(model.frame(1:nrow(Grps)~.,data=Grps),'terms'),data=Grps)[,],Covs)
-      names(Covs) <- c(Grp.names,Covnames)
+      colnames(Covs) <- c(Grp.names[length(Grp.names):1],Covnames)
       guiSet('Covs',Covs)
     }
   }

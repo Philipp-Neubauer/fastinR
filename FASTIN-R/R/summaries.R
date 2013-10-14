@@ -53,8 +53,8 @@ summary.cov_props <- function(object, ...){
   Csidx <- which(cidx)
   Gridx <- which(cidx==F)
 
-  covnames <- names(Covs[Csidx])
-  grnames <- names(Covs[Gridx])
+  covnames <- colnames(Covs[Csidx])
+  grnames <- colnames(Covs[Gridx])
   
   betaix <- grep('beta',colnames(MCMCout$MCMC))
     
