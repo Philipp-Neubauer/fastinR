@@ -91,7 +91,7 @@ plot(cumsum(sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v)*c(PR.RDA$CCA$
 
 sv = sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v))*c(PR.RDA$CCA$eig))^2)),decreasing =T,index.return=T)
 sv
-nv <- 6
+nv <- 7
 six <- sv$ix[1:nv]
 
 n.fats=length(six)
@@ -172,7 +172,7 @@ Squid.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,p
 guiSet('datas',Squid.data)
 
 # MCMC defaults to population proportions only from FA data,
-outs <- run_MCMC(nIter=10000,nBurnin=10000,nChains=1,nThin=10,datas = Squid.data)
+outs <- run_MCMC(nIter=100000,nBurnin=10000,nChains=1,nThin=10,datas = Squid.data)
 
 #compare props to outs
  colMeans(outs[[1]])[1:n.preys]-colMeans(props)
@@ -188,13 +188,13 @@ ggs_density(outs[[1]][,pop.ix],colMeans(props))
 
 
 # now try individual proportions from FA data,
-outs <- run_MCMC(nIter=10000,nBurnin=1000,nChains=1,nThin=10,datas = Squid.data,Analysis.Type='Individual.proportions')
+outs.ind <- run_MCMC(nIter=100000,nBurnin=10000,nChains=1,nThin=10,datas = Squid.data,Analysis.Type='Individual.proportions')
 
 #compare props to outs
-colMeans(outs[[1]])[1:n.preys]-colMeans(props)
+colMeans(outs.ind[[1]])[1:n.preys]-colMeans(props)
 
 #plot outputs
-plot(outs)
+plot(outs.ind)
 
 pop.ix <- grep('pop',names(outs[[1]]))
 
@@ -257,12 +257,12 @@ dev.off()
 ###########################################
 
 # simulate 13 predators from both size classes
-n.preds =13*2
+n.preds =2#*13
 
-spreds1 <- compositions::clo(abs(mvrnorm(n.preds/2,SQ.means[1,],diag(SQ.sd[1,])^2)))
-spreds2 <- compositions::clo(abs(mvrnorm(n.preds/2,SQ.means[2,],diag(SQ.sd[2,])^2)))
+spreds1 <- SQ.means[1,]#compositions::clo(abs(mvrnorm(n.preds/2,SQ.means[1,],diag(SQ.sd[1,])^2)))
+spreds2 <- SQ.means[2,]#compositions::clo(abs(mvrnorm(n.preds/2,SQ.means[2,],diag(SQ.sd[2,])^2)))
 
-Grps=as.data.frame(c(rep('small',13),rep('large',13)))
+Grps=as.data.frame(c(rep('small',1),rep('large',1)))
 addcovs(Grps)
 
 preda <-  rbind(spreds1,spreds2)
@@ -270,16 +270,15 @@ preda <-  rbind(spreds1,spreds2)
 preds <- unclass(data.matrix(compositions::alr(preda[,six])))
 
                                         # new data object
-datas.FA <- list(n.fats = n.fats,m.fats=m.fats,fc_mean=fc_mean,fc_tau =fc_tau,R=R,Rnot = Rnot,preym=preym,preds = preds,ni=ni,mean_c=mean_c,tau_c = tau_coeffs)
+datas.FA <- list(n.fats = n.fats,m.fats=m.fats,fc_mean=fc_mean,fc_tau =fc_tau,R=R,Rnot = Rnot,preym=preym,preds = preds,ni=ni,mean_c=mean_c,tau_c = tau_coeffs/1000)
 
 Squid.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,prey.ix=c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi'))
 
 guiSet('datas',Squid.data)
 
                                         # MCMC defaults to population proportions only from FA data,
-outs <- run_MCMC(nIter=100000,nBurnin=10000,nChains=1,nThin=10,datas = Squid.data,Analysis.Type='Analysis.with.Covariates')
+outs.anova <- run_MCMC(nIter=1000000,nBurnin=50000,nChains=2,nThin=1000,datas = Squid.data,Analysis.Type='Analysis.with.Covariates')
 
+plot(outs.anova)
 
-summary(outs)
-
-plot(outs)
+summary(outs.anova)

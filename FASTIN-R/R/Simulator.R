@@ -67,10 +67,10 @@ simulation <- function(){
       tkmessageBox( message="simulating new diet signatures", title="New FA/SI signatures" )
     }
     if(all(!is.na(guiGetSafe("preds")))){
-      sim.FA(guiGetSafe("sep"),guiGetSafe("n.fats"),guiGetSafe("cvar"))
+      sim.FA(guiGetSafe("sep.FA"),guiGetSafe("n.fats"),guiGetSafe("cvar"))
     }
     if(all(!is.na(guiGetSafe("preds.SI")))){
-      sim.SI(guiGetSafe("sep"),guiGetSafe("isos"))
+      sim.SI(guiGetSafe("sep.SI"),guiGetSafe("isos"))
     }
     
   }
@@ -160,10 +160,10 @@ simulation <- function(){
       tkmessageBox( message="simulating new diet signatures", title="New FA/SI signatures" )
     }
     if(all(!is.na(guiGetSafe("preds")))){
-      sim.FA(guiGetSafe("sep"),guiGetSafe("n.fats"),guiGetSafe("cvar"))
+      sim.FA(guiGetSafe("sep.FA"),guiGetSafe("n.fats"),guiGetSafe("cvar"))
     }
     if(all(!is.na(guiGetSafe("preds.SI")))){
-      sim.SI(guiGetSafe("sep"),guiGetSafe("isos"))
+      sim.SI(guiGetSafe("sep.SI"),guiGetSafe("isos"))
     }
     
   }
@@ -256,10 +256,10 @@ simulation <- function(){
       tkmessageBox( message="simulating new diet signatures", title="New FA/SI signatures" )
     }
     if(all(!is.na(guiGetSafe("preds")))){
-      sim.FA(guiGetSafe("sep"),guiGetSafe("n.fats"),guiGetSafe("cvar"))
+      sim.FA(guiGetSafe("sep.FA"),guiGetSafe("n.fats"),guiGetSafe("cvar"))
     }
     if(all(!is.na(guiGetSafe("preds.SI")))){
-      sim.SI(guiGetSafe("sep"),guiGetSafe("isos"))
+      sim.SI(guiGetSafe("sep.SI"),guiGetSafe("isos"))
     }
   }
   
@@ -319,7 +319,7 @@ simulation <- function(){
     guiSet("fc_sd",fc_sd)
     
     # set for re-sim
-    guiSet("sep",sep)
+    guiSet("sep.FA",sep)
     guiSet("n.fats",n.fats)
     guiSet("cvar",cvar)
   }
@@ -370,7 +370,7 @@ simulation <- function(){
     guiSet("sd_cs",sd_cs)
     
     # set for re-sim
-    guiSet("sep",sep)
+    guiSet("sep.SI",sep)
     guiSet("isos",isos)
 
     
@@ -431,7 +431,7 @@ simulation <- function(){
     preys.ix <- guiGetSafe("preys.ix")
     
     plott <-F
-    if(all(!is.na(preys))){preya=cbind(preya,compositions::alr(preys));preda=cbind(preda,compositions::alr(preds));plott <-T}
+    if(all(!is.na(preys))){preya=cbind(preya,compositions::clr(preys));preda=cbind(preda,compositions::clr(preds));plott <-T}
     if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,preds.SI);plott <-T}
     
     if(plott==T){
