@@ -38,10 +38,11 @@ n.covs = ncol(Covs)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)
     
-  res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res,Covnames=names(Covs))
-  class(output) <- 'cov_props'
-    return(output)
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
+  
+  class(res) <- 'cov_props'
+  return(res)
   
 }
 
@@ -80,11 +81,11 @@ n.covs = ncol(Covs)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)
 
-  res <- as.data.frame((res)[[1]])
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
   
-  output <- list(MCMC=res,Covnames=names(Covs))
-  class(output) <- 'cov_props'
-  return(output)
+  class(res) <- 'cov_props'
+  return(res)
 }
 
 .AnalysiswithCov.combined <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
@@ -134,9 +135,10 @@ n.covs = ncol(Covs)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)
   
-  res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res,Covnames=names(Covs))
-  class(output) <- 'cov_props'
-  return(output)
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
+  
+  class(res) <- 'cov_props'
+  return(res)
   
 }

@@ -1,9 +1,5 @@
 # simulate fatty acid proportions in 3 prey species ----
-require(MCMCpack)
-require(compositions)
-require(vegan)
-require(msm)
-require(MASS) #needed
+require(FASTIN)
 
 # try with Squid data -----------
 
@@ -116,7 +112,7 @@ for (i in (1:n.preys))
 PR.sim[,,i] <- apply(PR.sim[,,i],2,function(x){x[x<=0] = min(x[x>0])/10;return(x)})
 
 
-v1 = 0.5; v2 = 0.7
+v1 = 0.5; v2 = 0.3
 Q = rlnorm(n.preys,rlnorm(n.preys,0,v1),v2)
 # individual proportions
 props=MCMCpack::rdirichlet(n.preds,Q)
@@ -138,7 +134,7 @@ m.fats = (n.fats-1)
 ############ Priors #################################
 #####################################################
 
-# get sums of squares for each prey matri
+# get sums of squares for each prey matrix
 
 R <- array(,c(m.fats,m.fats,n.preys))
 ni<-rep(NA,n.preys)
@@ -163,7 +159,7 @@ fc_tau = 1/as.numeric(fc.sd.new^2)
 ########### make data object and run analysis ###############
 #############################################################
 
-# FAtty Acid data (stable isotopes are intigrated in the same way
+# Fatty Acid data (stable isotopes are intigrated in the same way
 
 datas.FA <- list(n.fats = n.fats,m.fats=m.fats,fc_mean=fc_mean,fc_tau =fc_tau,R=R,Rnot = Rnot,preym=preym,preds = preds,ni=ni,mean_c=mean_c,tau_c = tau_coeffs)
 

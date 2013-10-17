@@ -29,10 +29,11 @@
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
   
-  res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res)
-  class(output) <- 'ind_props'
-  return(output)
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
+  
+  class(res) <- 'ind_props'
+  return(res)
   
 }
 
@@ -65,17 +66,11 @@
   cat('\n','sampling from parameters','\n')
   res <- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
 
-  res <- as.data.frame((res)[[1]])
-  #head(res)
-
-  #qres <- function(res){apply(res,2,function(x){quantile(x,c(0.025,0.5,0.975))})}
-  #qres(res)
-
-  #  plot(res[,5])
-    
-  output <- list(MCMC=res)
-  class(output) <- 'ind_props'
-  return(output)
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
+  
+  class(res) <- 'ind_props'
+  return(res)
 }
 
 .PopandIndprops.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
@@ -119,9 +114,10 @@ jagsdata <- list(
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
   
-  res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res)
-  class(output) <- 'ind_props'
-  return(output)
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
+  
+  class(res) <- 'ind_props'
+  return(res)
   
 }

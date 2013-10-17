@@ -23,10 +23,11 @@
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
   
-  res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res)
-  class(output) <- 'pop_props'
-  return(output)
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
+  
+  class(res) <- 'pop_props'
+  return(res)
   
 }
 
@@ -50,11 +51,12 @@
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
+
+  plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
   
-  res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res)
-  class(output) <- 'pop_props'
-  return(output)
+  class(res) <- 'pop_props'
+  return(res)
 }
 
 .Poppropanalysis.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
@@ -91,9 +93,10 @@
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
   
-  res <- as.data.frame((res)[[1]])
-  output <- list(MCMC=res)
-  class(output) <- 'pop_props'
-  return(output)
+ plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+  if (plotta==1) plot(res,ask=T)
+  
+  class(res) <- 'pop_props'
+  return(res)
   
 }

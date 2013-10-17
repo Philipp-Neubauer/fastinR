@@ -1,12 +1,5 @@
 # prelims ----
-require(MCMCpack)
-require(compositions)
-require(BRugs)
-require(vegan)
-require(msm)
-require(entropy)
-
-gmean <- function(x){exp(mean(log(x)))}
+require(FASTIN)
 
 # simulations for CC var dependence --------------
 

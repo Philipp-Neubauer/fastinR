@@ -1,21 +1,21 @@
 plot.pop_props <- function(x,...){
-    MCMCdatas <- x
+    
     sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
+   
     preya.names <- unique(guiGetSafe('datas')$prey.ix)
-    outs <- MCMCdatas$MCMC
-    if (sava==1) pdf("MCMCtrace.pdf")
-    plot(outs[,1],t='l',col=1,xlab='MCMC sample',ylab='Proportion',ylim=c(0,1))
-    for (i in 1:ncol(outs)) lines(outs[,i],col=i)
-    if (sava==1) dev.off()
 
-    par(ask=T)
+    outs <- matrix(unlist(x),mcpar(x[[1]])[1]-mcpar(x[[1]])[3],length(preya.names))
+    colnames(outs) <- preya.names
+    outs <- as.data.frame(outs)
+    
     if (sava==1) pdf("MCMC_correlations.pdf")
     plot(outs,main='Correlation of proportion estimates')
     if (sava==1) dev.off()
    
 
-    mp=reshape::melt(outs)
+    mp=reshape::melt.data.frame(outs)
     if (sava==1) pdf("Post_pop_proportions.pdf")
+    par(ask=T)
     rpp = bwplot(variable~value,data=mp,xlim=c(0,1),xlab=list(label=expression("Posterior distribution of diet proportions"),cex=1)
         ,panel = function(x, y) { 
             grid::grid.segments(1,0,0,0)
@@ -24,25 +24,24 @@ plot.pop_props <- function(x,...){
                 denstrip::panel.denstrip(x=xlist[[i]], at=i,colmax=(1),mticks=mean(xlist[[i]]))
         },par.settings = list(axis.line = list(col=NA)),scales=list(col=1,cex=1,x=list(col=1,at=seq(0,1,0.2)),y=list(draw=T,labels=preya.names)))
     print(rpp)
-    
+    par(ask=F)
     trellis.focus("panel", 1, 1)
     panel.abline(h=seq(1.5,ncol(outs),1),col=1,lty=2)
     trellis.unfocus()
     if (sava==1) dev.off()
 }
 plot.ind_props <- function(x,...){
-    MCMCdatas <- x
+    
     sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
     datas <-  guiGetSafe('datas')
     preya.names <- unique(datas$prey.ix)
-    outs <- MCMCdatas$MCMC
-    popix <- grep('pop',colnames(MCMCdatas$MCMC))
 
-    if (sava==1) pdf("MCMC_traces.pdf")
-    plot(outs[,popix[1]],t='l',col=1,xlab='MCMC iteration',ylab='Proportion',ylim=c(0,1))
-    for (i in 1:ncol(outs[,popix])) lines(outs[,popix[i]],col=i)
-    if (sava==1) dev.off()
-
+    outs <- matrix(unlist(x),mcpar(x[[1]])[1]-mcpar(x[[1]])[3],ncol(x[[1]]))
+    outs <- as.data.frame(outs)
+    
+    colnames(outs) <- colnames(x[[1]])
+    popix <- grep('pop',colnames(outs))
+    
     if (sava==1) pdf("MCMC_correlations.pdf")
     par(ask=T)
     plot(outs[,popix],main='Correlation of proportion estimates')
@@ -66,11 +65,11 @@ plot.ind_props <- function(x,...){
     if (sava==1) dev.off()
     
      # draw individual posteriors
-     popix <- grep('pop',colnames(MCMCdatas$MCMC))
-     indix <- (max(popix)+1):ncol(MCMCdatas$MCMC)
-     orders <- order(apply(MCMCdatas$MCMC[,indix[1:datas$n.preds]],2,median))
-     this.prey <- which.max(tapply(apply(MCMCdatas$MCMC[,indix],2,median),rep(1:datas$n.preys,each=datas$n.preds),median))
-     orders <- order(apply(MCMCdatas$MCMC[,indix[(1:datas$n.preds)+(this.prey-1)*datas$n.preds]],2,median))
+    
+     indix <- (max(popix)+1):ncol(outs)
+     orders <- order(apply(outs[,indix[1:datas$n.preds]],2,median))
+     this.prey <- which.max(tapply(apply(outs[,indix],2,median),rep(1:datas$n.preys,each=datas$n.preds),median))
+     orders <- order(apply(outs[,indix[(1:datas$n.preds)+(this.prey-1)*datas$n.preds]],2,median))
      indix <- rep(orders,each=datas$n.preys)+c(0,datas$n.preds*1:(datas$n.preys-1))+max(popix)
      indix2 <- order(names(outs[,indix]))
      mp=reshape::melt.data.frame(outs[,indix])
@@ -95,11 +94,16 @@ par(ask=T)
     if (sava==1) dev.off()
 }
 plot.cov_props <- function(x,...){
-    MCMCdatas <- x
+   
     sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
     datas <-  guiGetSafe('datas')
     preya.names <- unique(datas$prey.ix)
 
+    outs <- matrix(unlist(x),mcpar(x[[1]])[1]-mcpar(x[[1]])[3],ncol(x[[1]]))
+    outs <- as.data.frame(outs)
+    
+    colnames(outs) <- colnames(x[[1]])
+    
     Covs <- guiGetSafe('Covs') 
     cidx <- apply(Covs,2,function(x){any(x!=0 & x!=1)})
                                         #number of groups and covariates
@@ -107,15 +111,10 @@ plot.cov_props <- function(x,...){
     Gridx <- which(cidx==F)
 
     outs <- MCMCdatas$MCMC
-    popix <- grep('pop',colnames(MCMCdatas$MCMC))
+    popix <- grep('pop',colnames(outs))
 
-    betaix <- grep('beta',colnames(MCMCdatas$MCMC))
+    betaix <- grep('beta',colnames(outs))
 
-    if (sava==1) pdf("MCMC_traces.pdf")
-    plot(outs[, popix[1]],t='l',col=1,xlab='MCMC iteration',ylab='Proportion',ylim=c(0,1),main='')
-    for (i in 1:ncol(outs[, popix])) lines(outs[, popix[i]],col=i)
-    if (sava==1) dev.off()
-    
     par(ask=T)
     this.eff <- outs[,popix[1:(nGr*datas$n.preys)]]
     k=1
@@ -143,11 +142,11 @@ plot.cov_props <- function(x,...){
     if (sava==1) dev.off()
     
      # draw individual posteriors
-     popix <- grep('pop',colnames(MCMCdatas$MCMC))
-     indix <- (max(popix)+1):ncol(MCMCdatas$MCMC)
+  
+     indix <- (max(popix)+1):ncol(outs)
     # check which prey to ordewr by (highest proportion)
-   this.prey <- which.max(tapply(apply(MCMCdatas$MCMC[,indix],2,median),rep(1:datas$n.preys,each=datas$n.preds),median))
-     orders <- order(apply(MCMCdatas$MCMC[,indix[(1:datas$n.preds)+(this.prey-1)*datas$n.preds]],2,median))
+   this.prey <- which.max(tapply(apply(outs[,indix],2,median),rep(1:datas$n.preys,each=datas$n.preds),median))
+     orders <- order(apply(outs[,indix[(1:datas$n.preds)+(this.prey-1)*datas$n.preds]],2,median))
      indix <- rep(orders,each=datas$n.preys)+c(0,datas$n.preds*1:(datas$n.preys-1))+max(popix)
      indix2 <- order(names(outs[,indix]))
      mp=reshape::melt.data.frame(outs[,indix])

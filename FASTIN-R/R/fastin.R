@@ -1,4 +1,4 @@
-.fastin <- function(SI.data=NULL,FA.data=NULL,groupings,Load.Data=NULL,Save.Data=NULL,add.covs,MCMC,Save.Outputs=NULL,Display.Summaries=NULL,Plot.Outputs=NULL){}
+.fastin <- function(SI.data=NULL,FA.data=NULL,groupings,Load.Data=NULL,Save.Data=NULL,add.covs,MCMC,Save.Outputs=NULL,Display.Summaries=NULL,Plot.Outputs=NULL,disp.diags=NULL){}
 
 addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=0.01){
         
@@ -454,6 +454,46 @@ addcovs <- function(Grps=NULL,Covs=NULL){
     }
   }
 
+diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
+    # do RL diag
+
+    cat('\n','\n')
+    cat('#################################','\n')
+    cat('Raftery-Lewis diagnostics','\n')
+    cat('#################################','\n','\n')
+    
+    if(length(MCMCout)>1){
+        class(MCMCout) <- 'mcmc.list'
+        rd <- raftery.diag(MCMCout, q=quant, r=accuracy, s=proba)
+    } else {
+        class(MCMCout) <- 'mcmc'
+        rd <- raftery.diag(MCMCout, q=quant, r=accuracy, s=proba)
+        rd <- list(rd)
+    }
+   
+    print(rd)
+    if(rd[[1]]$resmatrix[1]=='Error'){
+    cat('\n','Based on these diagnostics you should repeat the pilot MCMC with at least ',rd[[1]]$resmatrix[2],' \n','iterations to calculate diagnostics')
+   } else{
+    rit <- max(unlist(lapply(rd,function(x){x$resmatrix[,2]})))
+    thin <- max(unlist(lapply(rd,function(x){x$resmatrix[,4]})))
+    cat('\n','Based on these diagnostics you should repeat the MCMC with ',rit,' iterations','\n','and a thinning interval of ',thin,' ,if these values are higher than the values','\n','used to produce these diagnostics','\n','\n')
+    }
+
+    # do GR diag
+    if(length(rd)>1){
+       cat('\n','\n')
+       cat('#################################','\n')
+       cat('Gelman-Rubin diagnostics','\n')
+       cat('#################################','\n','\n')
+
+       print(gelman.diag(MCMCout,t=T))
+        
+       cat('\n','Both univariate upper C.I. and multivariate psrf','\n','should be close to 1 if the chains converged','\n','\n','\n')
+    }
+    
+}
+
 
 FASTIN <- function(){
   #require(tcltk)   # this is needed - but leads to crashes...
@@ -501,6 +541,15 @@ FASTIN <- function(){
                               if(class(output)=='pop_props'|class(output)=='ind_props'|class(output)=='cov_props')
                               {summary(output)}
   }
+
+    dispdiags <- function(accuracy=0.01,proba=0.95,quant=0.025){
+        output <- guiGetSafe('MCMCout') 
+        if(class(output)=='pop_props'|class(output)=='ind_props'|class(output)=='cov_props')
+            {
+                diags(MCMCout=output,accuracy,proba,quant)
+            }
+    }
+    
     plotoutputs<- function(){output <- guiGetSafe('MCMCout') 
                            if(class(output)=='pop_props'|class(output)=='ind_props'|class(output)=='cov_props')
                            {plot(output)}
@@ -558,13 +607,13 @@ FASTIN <- function(){
     output <- gui(.fastin, title = 'FASTIN main menu',
                  argCommand=list(add.covs=guiNestedF(addcovs,"add.covs",  argFilter=list(Groups="{{} {.csv}}",Covariates="{{} {.csv}}"),
                                                      argText=c(Covariates = "Add Covariates (optional)",Groups = "Add Groups (optional)"),cancelButton=F,exec='Add'),
-                                 Save.Outputs=guiNestedF(saveoutputs,"Save.Outputs",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
-                                 Save.Data=guiNestedF(SaveData,"Save.Data",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
-                                 Load.Data=guiNestedF(LoadData,"Load.Data",argFilter=list(Path= "{{} {.Rdata}}"),cancelButton=F,exec='load'),
-                                 Display.Summaries=dispsummaries,
-                                 groupings = resetsc,
-                                 Plot.Outputs=plotoutputs,
-                                 SI.data = guiNestedF(addSI,"SI.data",
+                     Save.Outputs=guiNestedF(saveoutputs,"Save.Outputs",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
+                     Save.Data=guiNestedF(SaveData,"Save.Data",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
+                     Load.Data=guiNestedF(LoadData,"Load.Data",argFilter=list(Path= "{{} {.Rdata}}"),cancelButton=F,exec='load'),
+                     Display.Summaries=dispsummaries,
+                     groupings = resetsc,
+                     Plot.Outputs=plotoutputs,
+                     SI.data = guiNestedF(addSI,"SI.data",
                                                       argFilter=list(predators.SI= "{{} {.csv}}",preys.SI= "{{} {.csv}}",Frac.Coeffs.mean="{{} {.csv}}",Frac.Coeffs.var="{{} {.csv}}"), 
                                                       title = 'Stable Isotope data entry form',
                                                       exec = "Add Stable Isotope data", closeOnExec = TRUE,
@@ -577,7 +626,7 @@ FASTIN <- function(){
                                                                 FC.var="SD of fractionation coefficients (use R's c() notation)",
                                                                 R.diag.SI = "Diagonal of the prior for predator (co)-variance matrix (>0, smaller value is less informative)"),
                                                       cancelButton=F), 
-                                 FA.data = guiNestedF(addFA,"FA.data",argFilter=list(predators.FA= "{{} {.csv}}",preys.FA= "{{} {.csv}}",fat.conts = "{{} {.csv}}",Conv.Coeffs.mean="{{} {.csv}}",Conv.Coeffs.var="{{} {.csv}}"), 
+                     FA.data = guiNestedF(addFA,"FA.data",argFilter=list(predators.FA= "{{} {.csv}}",preys.FA= "{{} {.csv}}",fat.conts = "{{} {.csv}}",Conv.Coeffs.mean="{{} {.csv}}",Conv.Coeffs.var="{{} {.csv}}"), 
                                                       #argEdit = list(CC.mean=NULL,CC.var=NULL,R.diag=NULL),
                                                       title = 'Fatty Acid Profile data entry form',
                                                       argText=c(predators.FA="Load predator(s) fatty acid data (csv)",
@@ -591,7 +640,7 @@ FASTIN <- function(){
                                                                 CC.var="SD of conversion coefficients (use R's c() notation)",
                                                                 R.diag = "Diagonal of the prior for predator (co)-variance matrix (>0, smaller value is less informative)"),
                                                       exec = "Add Fatty Acid data", cancelButton=F,closeOnExec = TRUE,output = NULL),  
-                                 MCMC = guiNestedF(run_MCMC,"MCMC",
+                     MCMC = guiNestedF(run_MCMC,"MCMC",
                                                    title = 'Run FASTIN analysis',
                                                    exec = "Run MCMC", closeOnExec = TRUE,
                                                    output = NULL,
@@ -602,6 +651,12 @@ FASTIN <- function(){
                                                              nChains = 'Number of Markov Chains',
                                                              nThin = 'Thinning interval of MCMC chains',
                                                              even= 'Prior eveness of proportions'
+                                                   ),cancelButton=F),
+                     disp.diags = guiNestedF(dispdiags,"disp.diags",
+                                                   title = 'Show Convergence Diagnositcs', 
+                                                   exec = "Display diagnostics in the R console",
+                                                   argText=c(proba = 'probability',
+                                                       quant='quantile to estiamte'
                                                    ),cancelButton=F)
                  ),                                 
                  argText=c(SI.data='Add Stable Isotope data', 
@@ -610,9 +665,10 @@ FASTIN <- function(){
                            Save.Data= "Save data",
                            Load.Data = 'Load previously saved dataset',
                            add.covs='Add covariates and/or groups',
-                           MCMC = 'Run Bayesian analysis (MCMC)'
+                           MCMC = 'Run Bayesian analysis (MCMC)',
+                     disp.diags = 'Show convergence diagnostics'
                  ),
-                 exec=NULL,output=NULL,argGridOrder=c(1,1,1,2,2,2,3,3,4,4), argGridSticky=rep("w",length(formals(.fastin)))
+                 exec=NULL,output=NULL,argGridOrder=c(1,1,1,2,2,2,3,3,4,4,4), argGridSticky=rep("w",length(formals(.fastin)))
   )
   #detach("package:fgui", unload=TRUE)
   #detach("package:tcltk", unload=TRUE)
