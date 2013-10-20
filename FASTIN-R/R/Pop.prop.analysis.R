@@ -1,6 +1,6 @@
-.Poppropanalysis <- function(datas,nIter=1000,nBurnin=1000,nChains=1,nThin=10) UseMethod(".Poppropanalysis", datas)
+.Poppropanalysis <- function(datas,nIter=1000,nBurnin=1000,nChains=1,nThin=10,plott=T) UseMethod(".Poppropanalysis", datas)
 
-.Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
   n.preys = datas$n.preys
   R = datas$datas.FA$R
@@ -22,16 +22,17 @@
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
-  
- plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+
+  if (plott){
+      plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+      if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'pop_props'
   return(res)
   
 }
 
-.Poppropanalysis.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.Poppropanalysis.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
   n.preys = datas$n.preys
   n.preds = datas$n.preds
@@ -52,14 +53,15 @@
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
 
-  plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+  if (plott){
+      plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+      if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'pop_props'
   return(res)
 }
 
-.Poppropanalysis.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.Poppropanalysis.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
   
   n.preys = datas$n.preys
@@ -92,9 +94,10 @@
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
-  
- plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+
+  if (plott){
+      plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+      if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'pop_props'
   return(res)

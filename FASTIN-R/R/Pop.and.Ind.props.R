@@ -1,6 +1,6 @@
-.PopandIndprops <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod(".PopandIndprops", datas)
+.PopandIndprops <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T) UseMethod(".PopandIndprops", datas)
 
-.PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.PopandIndprops.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
   n.preys = datas$n.preys
   m.preys = datas$n.preys-1
@@ -28,16 +28,17 @@
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
-  
- plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+
+  if (plott){
+      plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+      if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'ind_props'
   return(res)
   
 }
 
-.PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.PopandIndprops.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
 
     eveness = datas$even
@@ -66,14 +67,15 @@
   cat('\n','sampling from parameters','\n')
   res <- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
 
+if (plott){    
  plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+  if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'ind_props'
   return(res)
 }
 
-.PopandIndprops.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.PopandIndprops.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
 
   eveness = datas$even
@@ -113,9 +115,10 @@ jagsdata <- list(
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
-  
- plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+
+  if (plott){
+      plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+      if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'ind_props'
   return(res)

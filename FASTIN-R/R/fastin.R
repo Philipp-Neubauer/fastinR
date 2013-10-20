@@ -383,7 +383,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
 
 resetsc <- function(datas=NULL){if (is.null(datas)){datas <- guiGetSafe('datas')};if(length(datas)>1){datas$SC=F;guiSet('datas',datas);return(datas)}}
 
-run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1){
+run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1,plott=T){
     # have three types here: FA, SI and combined, then methods dispatch based on type of arg
     
     if(missing(datas)) {datas = guiGetSafe('datas');GUI = T} else {GUI=F}
@@ -409,9 +409,9 @@ run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data
       if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates'){stop('analysis with covariates selected, but no covariates entered.')}
       
       outputs <- switch(Analysis.Type,
-                        Population.proportions = .Poppropanalysis(datas,nIter,nBurnin,nChains,nThin),
-                        Individual.proportions = .PopandIndprops(datas,nIter,nBurnin,nChains,nThin),
-                        Analysis.with.Covariates = .AnalysiswithCov(datas,Covs,nIter,nBurnin,nChains,nThin)
+                        Population.proportions = .Poppropanalysis(datas,nIter,nBurnin,nChains,nThin,plott),
+                        Individual.proportions = .PopandIndprops(datas,nIter,nBurnin,nChains,nThin,plott),
+                        Analysis.with.Covariates = .AnalysiswithCov(datas,Covs,nIter,nBurnin,nChains,nThin,plott)
       )
       guiSet('MCMCout',outputs)
       if(GUI==F) return(outputs)

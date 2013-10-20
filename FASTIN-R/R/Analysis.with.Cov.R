@@ -1,6 +1,6 @@
-.AnalysiswithCov <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10) UseMethod(".AnalysiswithCov",datas)
+.AnalysiswithCov <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T) UseMethod(".AnalysiswithCov",datas)
 
-.AnalysiswithCov.FA <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.AnalysiswithCov.FA <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
 
     n.preys =datas$n.preys
@@ -38,15 +38,16 @@ n.covs = ncol(Covs)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)
     
- plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+    if (plott){
+        plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+        if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'cov_props'
   return(res)
   
 }
 
-.AnalysiswithCov.SI <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.AnalysiswithCov.SI <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
   n.preys =datas$n.preys
   m.preys =datas$n.preys-1
@@ -81,14 +82,15 @@ n.covs = ncol(Covs)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)
 
- plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+  if (plott){
+      plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+      if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'cov_props'
   return(res)
 }
 
-.AnalysiswithCov.combined <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10)
+.AnalysiswithCov.combined <- function(datas,Covs,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
 
     n.preys =datas$n.preys
@@ -134,9 +136,10 @@ n.covs = ncol(Covs)
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameters','\n')
   res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)
-  
- plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-  if (plotta==1) plot(res,ask=T)
+
+    if (plott){
+        plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+        if (plotta==1) plot(res,ask=T)}
   
   class(res) <- 'cov_props'
   return(res)
