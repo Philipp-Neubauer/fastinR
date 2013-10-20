@@ -2,7 +2,22 @@
 simulation <- function(){
   
   ######### sim functions
-#  require(fgui)  
+#  require(fgui)
+    clo <- function(x){
+        if (is.null(dim(x))){xc <- x/sum(x)} else {xc <- t(apply(x,1,function(y){y/sum(y)}))}
+        return(xc)
+    }
+
+    alr <- function(x){
+        x<-clo(x)
+        if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
+    }
+
+    clr <- function(x){
+        x<-clo(x)
+        if (is.null(dim(x))){xc <- log(x)-mean(log(x))} else { t(apply(x,1,function(y){log(y)-mean(log(y))}))}
+    }
+    
   
   simulator <- function(n.preys=3,n.preds=10,nsamples=30,simProps=NULL,simGroups=NULL,simCovs=NULL,FAsim.data=NULL,SIsim.data=NULL,simplot=NULL,simwrite=NULL){
     
@@ -88,7 +103,7 @@ simulation <- function(){
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")
       } else if (switchin == 'combined') {
-        # if I compositions::already have combined data, only take the covs and discard prior groups
+        # if I already have combined data, only take the covs and discard prior groups
         n.covs.old <- guiGetSafe("n.covs")        
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")[,c(1,(ncol(Covs)-(n.covs.old-1)):ncol(Covs))]
@@ -142,7 +157,7 @@ simulation <- function(){
       p_unn <- exp(pnorm)
       for(j in 1:n.preys) {    
         
-        #compositions::closure
+        #closure
         props[i,j] <- (p_unn[i,j])/sum(p_unn[i,1:n.preys])
         
       }  
@@ -182,7 +197,7 @@ simulation <- function(){
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")
       } else if (switchin == 'combined') {
-        # if I compositions::already have combined data, only take the groups and discard prior Covs
+        # if I already have combined data, only take the groups and discard prior Covs
         n.covs.old    <- guiGetSafe("n.covs")
         Covs    <- guiGetSafe("Covs")
         beta    <- guiGetSafe("beta")[,1:(ncol(Covs)-n.covs.old)]
@@ -238,7 +253,7 @@ simulation <- function(){
       p_unn <- exp(pnorm)
       for(j in 1:n.preys) {    
         
-        #compositions::closure
+        #closure
         props[i,j] <- (p_unn[i,j])/sum(p_unn[i,1:n.preys])
         
       }  
@@ -304,8 +319,8 @@ simulation <- function(){
     sd_css=matrix(0.05,n.preys,n.fats)
     rownames(sd_css) <- unique(preys.ix)
     
-    mprey <-  compositions::clo(t(apply(preys,c(3),function(x){exp(colMeans(log(x)))})))
-    preds <-  compositions::clo(props%*%(as.vector(fc_mean)*mprey*mean_css))
+    mprey <-  clo(t(apply(preys,c(3),function(x){exp(colMeans(log(x)))})))
+    preds <-  clo(props%*%(as.vector(fc_mean)*mprey*mean_css))
     
     
     guiSet("preds",preds)
@@ -431,7 +446,7 @@ simulation <- function(){
     preys.ix <- guiGetSafe("preys.ix")
     
     plott <-F
-    if(all(!is.na(preys))){preya=cbind(preya,compositions::clr(preys));preda=cbind(preda,compositions::clr(preds));plott <-T}
+    if(all(!is.na(preys))){preya=cbind(preya,clr(preys));preda=cbind(preda,clr(preds));plott <-T}
     if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,preds.SI);plott <-T}
     
     if(plott==T){

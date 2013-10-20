@@ -159,6 +159,17 @@ addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coe
   }
 
 addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.01){
+
+
+    clo <- function(x){
+        if (is.null(dim(x))){xc <- x/sum(x)} else {xc <- t(apply(x,1,function(y){y/sum(y)}))}
+        return(xc)
+    }
+
+    alr <- function(x){
+        x<-clo(x)
+        if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
+    }
     
     # combine sources function
       source.combine <- function(k,preys.ix){
@@ -289,10 +300,10 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
     ## NOW DO variable selection -----
     x11()  
-    plot(cumsum(sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)),ylab='cumulative proportion')
+    plot(cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)),ylab='cumulative proportion')
     
     cumsums <- as.data.frame(matrix(,n.fats,1))
-    cumsums[,1] <- cumsum(sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T))
+    cumsums[,1] <- cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T))
     names(cumsums) <- 'Cumulative Proportion'
     print(cumsums)
     
@@ -308,7 +319,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
       #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
       #legend(locator(2),(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
       
-      sv = sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
+      sv = sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
       
       nv <- menu(title='please choose the number of fatty acids to use',choices = 1:n.fats,graphics=T)
       
@@ -331,14 +342,14 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     for (i in 1:n.preys){
       
       if (is.null(dim(fat.cont))){
-        mprey[i,] <- compositions::clo(apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],2,function(x){exp(weighted.mean(log(x),w=fat.cont[prey.ix==unique(prey.ix)[i]]))}))
+        mprey[i,] <- clo(apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],2,function(x){exp(weighted.mean(log(x),w=fat.cont[prey.ix==unique(prey.ix)[i]]))}))
         var_c[i,] <- (sd_c[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]],six])^2
         fcc.mean[i] <- exp(mean(log(fat.cont[prey.ix==unique(prey.ix)[i]])))
         fcc.var[i] <- exp(sd(log((fat.cont[prey.ix==unique(prey.ix)[i]]))))^2
         
       } else # combine means and variance
       {
-        mprey[i,] <- compositions::clo(apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],2,function(x){exp(weighted.mean(log(x),w=fc.mean[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c))]))}))
+        mprey[i,] <- clo(apply(preys[prey.ix==unique(prey.ix)[i],six]*mean_c[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c)),six],2,function(x){exp(weighted.mean(log(x),w=fc.mean[match(preys.ix[prey.ix==unique(prey.ix)[i]],rownames(mean_c))]))}))
         
         fcc.mean[i] <- exp(mean(log(fc.mean[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]])))
         fcc.var[i] <- (mean(fc.sd[rownames(mean_c) %in% preys.ix[prey.ix==unique(prey.ix)[i]]]))^2
@@ -348,8 +359,8 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     
     mean_c <- mean_c[1:n.preys,six]*0+1         
     
-    preym <- unclass(compositions::alr(mprey))
-    preds <- unclass(compositions::alr(predators[,six]))    
+    preym <- unclass((mprey))
+    preds <- unclass(alr(predators[,six]))    
     
     # now prepare data for analysis
     
@@ -357,7 +368,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     ni<-rep(NA,n.preys)
     for (i in 1:n.preys){
       ni[i] <- max(n.fats+1,sum(prey.ix==unique(prey.ix)[i])-1)
-      R[,,i]=cov(compositions::alr(preys[prey.ix==unique(prey.ix)[i],six]))*ni[i]
+      R[,,i]=cov(alr(preys[prey.ix==unique(prey.ix)[i],six]))*ni[i]
     }
     
     ## first some data and inits ----
