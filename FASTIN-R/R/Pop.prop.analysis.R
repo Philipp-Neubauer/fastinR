@@ -73,7 +73,7 @@
   tau_cs = datas$datas.SI$tau_cs
   Rnot_SI = datas$datas.SI$Rnot.SI
   ni.SI = datas$datas.SI$ni.SI
-  preds.SI = datas$datas.SI$preds.SI
+  preds.SI = matrix(unlist(datas$datas.SI$preds.SI),n.preds,isos)
   preym.SI = datas$datas.SI$preym.SI
   
   R = datas$datas.FA$R
@@ -85,7 +85,7 @@
   Rnot = datas$datas.FA$Rnot
   m.fats = datas$datas.FA$m.fats
   ni = datas$datas.FA$ni
-  preds = datas$datas.FA$preds[,]
+  preds = matrix(datas$datas.FA$preds,n.preds,m.fats)
   preym = datas$datas.FA$preym[,]
   
   JM <- jags.model(file=paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.combined.bugs",sep=''),n.chains=nChains)

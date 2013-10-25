@@ -305,6 +305,8 @@ simulation <- function(){
     for (i in 1:n.preys){
       preya<- rbind(preya,preys[,,i])
     }
+
+    colnames(preya) <- sprintf(paste0("FA_%d"),1:n.fats)
     
     #randomly draw fat content
     fc_mean <- as.matrix(sample(40,n.preys))/10+1
@@ -410,7 +412,7 @@ simulation <- function(){
     switchin <- guiGetSafe("gswitch")
     
     if(all(!is.na(preys))){
-      write.table(cbind(preys.ix,preys),file=paste(filename,'_FA_preys.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
+      write.table(cbind(preys.ix,preys),file=paste(filename,'_FA_preys.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
       write.table(preds,file=paste(filename,'_FA_preds.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(cbind(fc_mean,fc_sd),file=paste(filename,'_fat_cont.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(mean_c,file=paste(filename,'_FA_cc_means.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)

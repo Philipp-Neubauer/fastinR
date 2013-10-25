@@ -3,13 +3,44 @@ require(FASTIN)
 
 # try with Squid data -----------
 
-#setwd("examples/Squid/")
+ kappas <- function(mat,vars){
+        ks <- vector(,length(vars))
+        for (i in 1:length(vars)){
+            ks[i] <- kappa(mat[,vars[1:i]],exact=T)
+        }
+        return(ks)
+    }
+    
+  clo <- function(x){
+      
+        if (is.null(dim(x))){xc <- x/sum(x)} else {xc <- t(apply(x,1,function(y){y/sum(y)}))}
+        return(xc)
+    }
+
+    alr <- function(x){
+        x<-clo(x)
+        if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
+    }
+
+      adist <- function(mat){
+
+        dims <- dim(mat)
+        dists <- matrix(,dims[1],dims[1])
+        for (i in 1:(dims[1]-1)){
+            for (j in (i+1):dims[1]){
+                dists[j,i] <- robCompositions::aDist(mat[i,],mat[j,])
+            }}
+        dista <- as.dist(dists)
+              return(dista)
+    }
+
+#setwd("../Squid/")
 
 SQ <- read.csv("Squid data.csv",header=T,sep=',')
 PR <- read.csv("Squid prey data.csv",header=T)
 
 # SQuid means and SD from std error - divided by 100 to get proportion rather than percent
-SQ.means <- t(apply(SQ[2:nrow(SQ),seq(1,ncol(SQ),2)],2,compositions::clo) )
+SQ.means <- t(apply(SQ[2:nrow(SQ),seq(1,ncol(SQ),2)],2,clo) )
 SQ.sd <- (apply(data.matrix(SQ[2:nrow(SQ),seq(2,ncol(SQ),2)]),1,function(x){x*sqrt(data.matrix(SQ[1,seq(2,ncol(SQ),2)]))}))
 SQ.sd <- SQ.sd/100
 
@@ -32,17 +63,17 @@ fc.mean.new = c(exp(mean(log(fc.means[1:4]))),exp(mean(log(fc.means[5:8]))),exp(
 fc.sd.new = c(mean(fc.sd[1:4]),mean(fc.sd[5:8]),mean(fc.sd[c(9,11:12,14)]),t(fc.sd[c(10,13)]))
 
 # Prey means and SD
-PR.means <- apply(PR[3:nrow(PR),seq(1,ncol(PR),2)],2,compositions::clo)
+PR.means <- apply(PR[3:nrow(PR),seq(1,ncol(PR),2)],2,clo)
 
 # replace zeros in means with min/10 (pretending we had more than 1 sample...) 
 for (i in 1:nrow(PR.means))
   PR.means[i,PR.means[i,]==0] <- min(PR.means[i,PR.means[i,]!=0])/10
 
-# pool data for crustatcians, my...fish
+# pool data for crustatcians, myctophid fish
 # pool means using the geometric mean
-PR.means.new <- cbind(apply(PR.means[,1:4],1,function(x){exp(weighted.mean(log(x),w=compositions::clo(fc.means[1:4])))}),apply(PR.means[,5:8],1,function(x){exp(weighted.mean(log(x),w=compositions::clo(fc.means[5:8])))}),apply(PR.means[,c(9,11:12,14)],1,function(x){exp(weighted.mean(log(x),w=compositions::clo(fc.means[c(9,11:12,14)])))}),PR.means[,c(10,13)])
+PR.means.new <- cbind(apply(PR.means[,1:4],1,function(x){exp(weighted.mean(log(x),w=clo(fc.means[1:4])))}),apply(PR.means[,5:8],1,function(x){exp(weighted.mean(log(x),w=clo(fc.means[5:8])))}),apply(PR.means[,c(9,11:12,14)],1,function(x){exp(weighted.mean(log(x),w=clo(fc.means[c(9,11:12,14)])))}),PR.means[,c(10,13)])
 
-PR.means.new <- t(apply(PR.means.new,2,compositions::clo))
+PR.means.new <- t(apply(PR.means.new,2,clo))
 
 #SDs
 
@@ -50,7 +81,7 @@ PR.sds <- t(apply(data.matrix(PR[3:nrow(PR),seq(2,ncol(PR),2)]),1,function(x){x*
 PR.sd <- PR.sds/100
 
 # use simple sd instead of geometric sd since we do not have the original data
-PR.sd.new <- cbind(apply(PR.sd[,1:4],1,function(x){sqrt(sum(compositions::clo(fc.means[1:4])^2*x^2))}),apply(PR.sd[,5:8],1,function(x){sqrt(sum(compositions::clo(fc.means[5:8])^2*x^2))}),apply(PR.sd[,c(9,11:12,14)],1,function(x){sqrt(sum(compositions::clo(fc.means[c(9,11:12,14)])^2*x^2))}),PR.sd[,c(10,13)])
+PR.sd.new <- cbind(apply(PR.sd[,1:4],1,function(x){sqrt(sum(clo(fc.means[1:4])^2*x^2))}),apply(PR.sd[,5:8],1,function(x){sqrt(sum(clo(fc.means[5:8])^2*x^2))}),apply(PR.sd[,c(9,11:12,14)],1,function(x){sqrt(sum(clo(fc.means[c(9,11:12,14)])^2*x^2))}),PR.sd[,c(10,13)])
 
 # replace zeros in sds with min sd (pretending we had more than 1 sample...) 
 for (i in 1:nrow(PR.sd.new))
@@ -69,26 +100,35 @@ n.fats=ncol(PR.means.new)
 #### Plot data in multivariate (CAP) space ######
 #################################################
 
-dists <- matrix(,nrow(PR.means.new),nrow(PR.means.new))
-for (i in 1:(nrow(PR.means.new)-1)){
-  for (j in (i+1):nrow(PR.means.new)){
-    dists[j,i] <- robCompositions::aDist(PR.means.new[i,],PR.means.new[j,])
-  }}
-dista <- as.dist(dists)
+dista <- adist(PR.means.new)
 
 PR.RDA <- vegan::capscale(dista~as.factor(1:5),comm=PR.means.new)
 #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
 plot(t(apply((PR.means.new)%*%PR.RDA$CCA$v[,1:2],1,function(x){x})),pch=1:6)
 points((SQ.means[1,])%*%PR.RDA$CCA$v[,1:2],pch=16)
 points((SQ.means[2,])%*%PR.RDA$CCA$v[,1:2],pch=17)
-legend('topleft',c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi','Small Squid','Large Squid'),pch=c(1:5,16,17))
+legend('bottomleft',c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi','Small Squid','Large Squid'),pch=c(1:5,16,17))
 
-plot(cumsum(sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v)*c(PR.RDA$CCA$eig))^2))),decreasing =T)),ylab='cumulative proportion',xlab='Number of fatty acids')
+par(mfcol=c(2,1))
+sv = sort(clo(rowSums(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)),decreasing =T,index.return=T)
+plot(cumsum(sort(clo(rowSums(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)),decreasing =T)),axes=F,xlab='',ylab='Cumulative source separation',ylim=c(0,1))
+axis(2)
+axis(1,at=1:n.fats,labels=F)
+text(1:n.fats, par("usr")[3] - 0.2, srt = 45, adj = 1,
+     labels = colnames(PR.means.new)[sv$ix], xpd = TRUE)
 
-sv = sort(compositions::clo(rowSums(t(t(cbind(PR.RDA$CCA$v))*c(PR.RDA$CCA$eig))^2)),decreasing =T,index.return=T)
-sv
-nv <- 7
-six <- sv$ix[1:nv]
+ks <- kappas(PR.means.new,sv$ix)
+plot(ks,axes=F,ylab='Prey matrix condition number',xlab='',ylim=c(0,max(ks)))
+axis(2)
+axis(1,at=1:n.fats,labels=F)
+text(1:n.fats, par("usr")[3] - max(ks)/5 , srt = 45, adj = 1,
+     labels = colnames(PR.means.new)[sv$ix], xpd = TRUE)
+   
+
+ nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(PR.means.new)[sv$ix],graphics=T,multiple=T)
+      
+      #nv <- readline(prompt = "please enter number of variables for analysis \n")
+six <- match(nv,colnames(PR.means.new))
 
 n.fats=length(six)
 n.preys=nrow(PR.means.new)
@@ -98,7 +138,7 @@ n.preys=nrow(PR.means.new)
 #################################
 
 # number of predators to simulate
-n.preds=5
+n.preds=4
 
 # since we do not have individual prey samples from the study, we simulate them, to get an idea of the correlation structure in the composition introduced by the sum constraint itself. More complex correlations tructure is unfortuantelly lost...
 
@@ -112,20 +152,20 @@ for (i in (1:n.preys))
 PR.sim[,,i] <- apply(PR.sim[,,i],2,function(x){x[x<=0] = min(x[x>0])/10;return(x)})
 
 
-v1 = 0.5; v2 = 0.3
+v1 = 0.1; v2 = 0.3
 Q = rlnorm(n.preys,rlnorm(n.preys,0,v1),v2)
 # individual proportions
 props=MCMCpack::rdirichlet(n.preds,Q)
 # show simulated proportions
 props
 
-mprey <-  data.matrix(compositions::clo(PR.means.new))
-preda <-  compositions::clo((props) %*%(as.numeric(fc.mean.new)*mprey))
+mprey <-  data.matrix(clo(PR.means.new))
+preda <-  clo((props) %*%(as.numeric(fc.mean.new)*mprey))
 # normalize and transform
-preds <- unclass(data.matrix(compositions::alr(preda[,six])))
+preds <- unclass(data.matrix(alr(preda[,six])))
 
 # transform prey stats
-preym <-  unclass(compositions::alr(mprey[,six]))
+preym <-  unclass(alr(mprey[,six]))
 
 m.fats = (n.fats-1)
 
@@ -140,7 +180,7 @@ R <- array(,c(m.fats,m.fats,n.preys))
 ni<-rep(NA,n.preys)
 for (i in 1:n.preys){
     ni[i] <- max(n.fats+1,n.preys-1)
-    R[,,i]=cov(compositions::alr(PR.sim[,,i]))*ni[i]
+    R[,,i]=cov(alr(PR.sim[,,i]))*ni[i]
 }
 
 # set uninformative prior SS matrix for wishart prior alr transformed predator data
@@ -168,7 +208,7 @@ Squid.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,p
 guiSet('datas',Squid.data)
 
 # MCMC defaults to population proportions only from FA data,
-outs <- run_MCMC(nIter=100000,nBurnin=10000,nChains=1,nThin=10,datas = Squid.data)
+outs <- run_MCMC(nIter=50000,nBurnin=10000,nChains=3,nThin=50,datas = Squid.data)
 
 #compare props to outs
  colMeans(outs[[1]])[1:n.preys]-colMeans(props)
@@ -178,10 +218,13 @@ plot(outs)
 
 summary(outs)
 
-proppop.ix <- grep('prop',names(outs[[1]]))
+preya.names <- unique(guiGetSafe('datas')$prey.ix)
 
-ggs_density(outs[[1]][,pop.ix],colMeans(props))
+outs <- matrix(unlist(x),(mcpar(x[[1]])[2]-(mcpar(x[[1]])[1]-mcpar(x[[1]])[3]))/mcpar(x[[1]])[3],length(preya.names))
 
+source('ggdensity.R')
+ggs_density(outs,colMeans(props))
+ggsave('pop_prop_squid.pdf')
 
 # now try individual proportions from FA data,
 outs.ind <- run_MCMC(nIter=100000,nBurnin=10000,nChains=1,nThin=10,datas = Squid.data,Analysis.Type='Individual.proportions')
@@ -210,7 +253,7 @@ ggs_density(outs[[1]][,pop.ix],colMeans(props))
 nsims=50
 delta.p <- matrix(,nsims,n.preys)
 
-for (k in 22:nsims){
+for (k in 1:nsims){
     n.preds=1
     
     v1 = 0.5; v2 = 0.7
@@ -218,9 +261,9 @@ for (k in 22:nsims){
                                         # individual proportions
     props= MCMCpack::rdirichlet(n.preds,Q)
                                        # re-calculate simulated predators       
-    preda <-  compositions::clo((props) %*%(as.numeric(fc.mean.new)*mprey))
+    preda <-  clo((props) %*%(as.numeric(fc.mean.new)*mprey))
                                         # normalize and transform
-    preds <- unclass(data.matrix(compositions::alr(preda[,six])))
+    preds <- unclass(data.matrix(alr(preda[,six])))
     
                                         # new data object
     datas.FA <- list(n.fats = n.fats,m.fats=m.fats,fc_mean=fc_mean,fc_tau =fc_tau,R=R,Rnot = Rnot,preym=preym,preds = preds,ni=ni,mean_c=mean_c,tau_c = tau_coeffs)
@@ -228,15 +271,13 @@ for (k in 22:nsims){
     Squid.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,prey.ix=c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi'))
     
                                         # MCMC defaults to population proportions only from FA data,
-    outs <- run_MCMC(nIter=10000,nBurnin=1000,nChains=1,nThin=10,datas = Squid.data)
+    outs <- run_MCMC(nIter=10000,nBurnin=1000,nChains=1,nThin=10,datas = Squid.data,plott=F)
     
     delta.p[k,] = colMeans(outs[[1]])[1:n.preys]-colMeans(props)
 }
 
 delta.p <- as.data.frame(delta.p)
 names(delta.p)<-c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi')
-
-summary(lm(pdiffs[,1]~pdiffs[,5]))
 
 pdf("boxplot_squid_errors.pdf")
 boxplot(delta.p)
@@ -249,32 +290,55 @@ dev.off()
 
 
 ###########################################
-##### 'Real' simulation WITH ANOVA ########
+##### 'Real' analysis  ########
 ###########################################
 
-# simulate 13 predators from both size classes
-n.preds =2#*13
+########## small squid ############
 
-spreds1 <- SQ.means[1,]#compositions::clo(abs(mvrnorm(n.preds/2,SQ.means[1,],diag(SQ.sd[1,])^2)))
-spreds2 <- SQ.means[2,]#compositions::clo(abs(mvrnorm(n.preds/2,SQ.means[2,],diag(SQ.sd[2,])^2)))
+n.preds =1
 
-Grps=as.data.frame(c(rep('small',1),rep('large',1)))
-addcovs(Grps)
+small <- SQ.means[1,]#clo(abs(mvrnorm(n.preds/2,SQ.means[1,],diag(SQ.sd[1,])^2)))
 
-preda <-  rbind(spreds1,spreds2)
                                         # normalize and transform
-preds <- unclass(data.matrix(compositions::alr(preda[,six])))
+preds <- unclass(data.matrix(alr(small[six])))
 
                                         # new data object
-datas.FA <- list(n.fats = n.fats,m.fats=m.fats,fc_mean=fc_mean,fc_tau =fc_tau,R=R,Rnot = Rnot,preym=preym,preds = preds,ni=ni,mean_c=mean_c,tau_c = tau_coeffs/1000)
+datas.FA <- list(n.fats = n.fats,m.fats=m.fats,fc_mean=fc_mean,fc_tau =fc_tau,R=R,Rnot = Rnot*100,preym=preym,preds = preds,ni=ni,mean_c=mean_c,tau_c = tau_coeffs)
 
 Squid.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,prey.ix=c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi'))
 
 guiSet('datas',Squid.data)
 
                                         # MCMC defaults to population proportions only from FA data,
-outs.anova <- run_MCMC(nIter=1000000,nBurnin=50000,nChains=2,nThin=1000,datas = Squid.data,Analysis.Type='Analysis.with.Covariates')
+outs.small <- run_MCMC(nIter=100000,nBurnin=5000,nChains=3,nThin=100,datas = Squid.data)
 
-plot(outs.anova)
+plot(outs.small)
 
-summary(outs.anova)
+summary(outs.small)
+
+
+###### Large squid ###########
+
+large <- SQ.means[2,]#clo(abs(mvrnorm(n.preds/2,SQ.means[2,],diag(SQ.sd[2,])^2)))
+
+preds <- unclass(data.matrix(alr(large[six])))
+
+                                        # new data object
+datas.FA <- list(n.fats = n.fats,m.fats=m.fats,fc_mean=fc_mean,fc_tau =fc_tau,R=R,Rnot = Rnot*100,preym=preym,preds = preds,ni=ni,mean_c=mean_c,tau_c = tau_coeffs)
+
+Squid.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,prey.ix=c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi'))
+
+guiSet('datas',Squid.data)
+
+                                        # MCMC defaults to population proportions only from FA data,
+outs.large <- run_MCMC(nIter=100000,nBurnin=5000,nChains=3,nThin=100,datas = Squid.data)
+
+plot(outs.large)
+
+summary(outs.large)
+
+
+Squid.list <- list('Small Squid'=outs.small,'Large Squid' = outs.large)
+multiplot(Squid.list,density=F)
+multiplot(Squid.list,density=T)
+    

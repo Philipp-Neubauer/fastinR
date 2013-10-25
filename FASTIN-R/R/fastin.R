@@ -171,8 +171,28 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
         if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
     }
     
+    kappas <- function(mat,vars){
+        ks <- vector(,length(vars))
+        for (i in 1:length(vars)){
+            ks[i] <- kappa(mat[,vars[1:i]],exact=T)
+        }
+        return(ks)
+    }
+
+    adist <- function(mat){
+
+        dims <- dim(mat)
+        dists <- matrix(,dims[1],dims[1])
+        for (i in 1:(dims[1]-1)){
+            for (j in (i+1):dims[1]){
+                dists[j,i] <- robCompositions::aDist(mat[i,],mat[j,])
+            }}
+        dista <- as.dist(dists)
+              return(dista)
+    }
+        
     # combine sources function
-      source.combine <- function(k,preys.ix){
+    source.combine <- function(k,preys.ix){
           n.preys <- length(unique(preys.ix))
           preys.names <- as.character(unique(preys.ix))
           x11()
@@ -213,7 +233,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     
     # import predator and prey FA profiles
     predators = read.csv(predators.FA,header=F,row.names=1)
-    preys = read.csv(preys.FA,header=F)
+    preys = read.csv(preys.FA,header=T)
     n.preds <- dim(predators)[1]
     preys.ix <- as.character(preys[,1])
     
@@ -276,12 +296,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     } else {SC=F}
     
     ## first, calculate distances for preys
-    dists <- matrix(,nrow(preys),nrow(preys))
-      for (i in 1:nrow(preys)){
-        for (j in i:nrow(preys)){
-          dists[j,i] <- robCompositions::aDist(preys[i,],preys[j,])
-        }}
-      dista <- as.dist(dists)
+    dista <- adist(preys)
 
     # combine sources? SC refers to potential prior combination based on other sources.
     if(SC==F){
@@ -299,12 +314,28 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
 
     PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
     ## NOW DO variable selection -----
-    x11()  
-    plot(cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)),ylab='cumulative proportion')
+    x11()
+    par(mar = c(7, 4, 4, 2) + 0.1)
+    par(mfcol=c(2,1))
+    sv = sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
+    plot(cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T)),axes=F,xlab='',ylab='Cumulative source separation',ylim=c(0,1))
+    axis(2)
+    axis(1,at=1:n.fats,labels=F)
+    text(1:n.fats, par("usr")[3] - 0.2, srt = 45, adj = 1,
+     labels = colnames(preys)[sv$ix], xpd = TRUE)
+
+    ks <- kappas(preys,sv$ix)
+    plot(ks,axes=F,ylab='Prey matrix condition number',xlab='',ylim=c(0,max(ks)))
+    axis(2)
+    axis(1,at=1:n.fats,labels=F)
+    text(1:n.fats, par("usr")[3] - max(ks)/5 , srt = 45, adj = 1,
+     labels = colnames(preys)[sv$ix], xpd = TRUE)
+
     
     cumsums <- as.data.frame(matrix(,n.fats,1))
     cumsums[,1] <- cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T))
     names(cumsums) <- 'Cumulative Proportion'
+    rownames(cumsums) <-  colnames(preys)[sv$ix]
     print(cumsums)
     
     # new CAP for vs
@@ -319,13 +350,10 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
       #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
       #legend(locator(2),(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
       
-      sv = sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T,index.return=T)
-      
-      nv <- menu(title='please choose the number of fatty acids to use',choices = 1:n.fats,graphics=T)
+      nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(preys)[sv$ix],graphics=T,multiple=T)
       
       #nv <- readline(prompt = "please enter number of variables for analysis \n")
-      six <- sv$ix[1:as.numeric(nv)]
-      
+      six <- match(nv,colnames(preys))
       n.fats <- length(six)
       m.fats=n.fats-1
     } else {six = 1:n.fats}
@@ -473,22 +501,22 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     cat('Raftery-Lewis diagnostics','\n')
     cat('#################################','\n','\n')
     
-    if(length(MCMCout)>1){
+    #if(length(MCMCout)>1){
         class(MCMCout) <- 'mcmc.list'
         rd <- raftery.diag(MCMCout, q=quant, r=accuracy, s=proba)
-    } else {
-        class(MCMCout) <- 'mcmc'
-        rd <- raftery.diag(MCMCout, q=quant, r=accuracy, s=proba)
-        rd <- list(rd)
-    }
+   # } else {
+    #    class(MCMCout) <- 'mcmc'
+     #   rd <- raftery.diag(MCMCout, q=quant, r=accuracy, s=proba)
+      #  rd <- list(rd)
+    #}
    
     print(rd)
     if(rd[[1]]$resmatrix[1]=='Error'){
-    cat('\n','Based on these diagnostics you should repeat the pilot MCMC with at least ',rd[[1]]$resmatrix[2],' \n','iterations to calculate diagnostics')
+    cat('\n','Based on these diagnostics you should repeat the pilot MCMC with at least ',rd[[1]]$resmatrix[2],' \n','iterations to calculate diagnostics',' \n',' \n')
    } else{
     rit <- max(unlist(lapply(rd,function(x){x$resmatrix[,2]})))
     thin <- max(unlist(lapply(rd,function(x){x$resmatrix[,4]})))
-    cat('\n','Based on these diagnostics you should repeat the MCMC with ',rit,' iterations','\n','and a thinning interval of ',thin,' ,if these values are higher than the values','\n','used to produce these diagnostics','\n','\n')
+    cat('\n','Based on these diagnostics you should repeat the MCMC with ',rit,' iterations','\n','and a thinning interval of ',round(thin),' ,if these values are higher than the values','\n','used to produce these diagnostics','\n','\n')
     }
 
     # do GR diag

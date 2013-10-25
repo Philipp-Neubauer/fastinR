@@ -2,6 +2,7 @@ Package: FASTIN
 Type: Package
 Depends: vegan,fgui,tcltk,rjags,lattice,MASS
 Imports: robCompositions,MCMCpack,grid,denstrip,reshape
+Suggests: ggplot2
 Title: Fatty Acids and Stable Isotopes in R
 Version: 0.2
 Date: 2013-09-26

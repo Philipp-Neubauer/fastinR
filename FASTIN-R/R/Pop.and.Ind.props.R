@@ -14,7 +14,7 @@
   n.preds = datas$n.preds
   m.fats = datas$datas.FA$m.fats
   ni = datas$datas.FA$ni
-  preds = datas$datas.FA$preds
+  preds =  matrix(datas$datas.FA$preds,n.preds,m.fats)
   preym = datas$datas.FA$preym
   eveness = datas$even
   
@@ -53,7 +53,7 @@
         tau_cs = datas$datas.SI$tau_cs,
         Rnot_SI = datas$datas.SI$Rnot.SI,
         ni.SI = datas$datas.SI$ni.SI,
-        preds.SI = datas$datas.SI$preds.SI,
+        preds.SI = matrix(unlist(datas$datas.SI$preds.SI),n.preds,isos),
         preym.SI = datas$datas.SI$preym.SI,    
         S = diag(1,n.preys-1),
         SS = diag(eveness,n.preys-1),
@@ -91,9 +91,10 @@ jagsdata <- list(
   tau_cs = datas$datas.SI$tau_cs,
   Rnot_SI = datas$datas.SI$Rnot.SI,
   ni.SI = datas$datas.SI$ni.SI,
-  preds.SI = datas$datas.SI$preds.SI,
+  preds.SI = matrix(unlist(datas$datas.SI$preds.SI),n.preds,isos),
   preym.SI = datas$datas.SI$preym.SI,  
-  n.fats = datas$datas.FA$n.fats,
+
+    n.fats = datas$datas.FA$n.fats,
   R = datas$datas.FA$R,
   fc_mean = datas$datas.FA$fc_mean,
   fc_tau = datas$datas.FA$fc_tau,
@@ -102,7 +103,7 @@ jagsdata <- list(
   Rnot = datas$datas.FA$Rnot,
   m.fats = datas$datas.FA$m.fats,
   ni = datas$datas.FA$ni,
-  preds = datas$datas.FA$preds,
+  preds = matrix(datas$datas.FA$preds,n.preds,m.fats),
   preym = datas$datas.FA$preym,
   S = diag(eveness,n.preys-1),
   SS = diag(1,n.preys-1),

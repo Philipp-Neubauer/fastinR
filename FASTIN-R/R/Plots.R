@@ -4,7 +4,11 @@ plot.pop_props <- function(x,...){
    
     preya.names <- unique(guiGetSafe('datas')$prey.ix)
 
-    outs <- matrix(unlist(x),mcpar(x[[1]])[1]-mcpar(x[[1]])[3],length(preya.names))
+     outs={}
+        for (k in 1:length(x)){
+            outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
+            outs <- rbind(outs,outp)
+        }
     colnames(outs) <- preya.names
     outs <- as.data.frame(outs)
     
@@ -25,7 +29,7 @@ plot.pop_props <- function(x,...){
         },par.settings = list(axis.line = list(col=NA)),scales=list(col=1,cex=1,x=list(col=1,at=seq(0,1,0.2)),y=list(draw=T,labels=preya.names)))
     print(rpp)
     par(ask=F)
-    trellis.focus("panel", 1, 1)
+    trellis.focus("panel", 1, 1,highlight=F)
     panel.abline(h=seq(1.5,ncol(outs),1),col=1,lty=2)
     trellis.unfocus()
     if (sava==1) dev.off()
@@ -36,7 +40,11 @@ plot.ind_props <- function(x,...){
     datas <-  guiGetSafe('datas')
     preya.names <- unique(datas$prey.ix)
 
-    outs <- matrix(unlist(x),mcpar(x[[1]])[1]-mcpar(x[[1]])[3],ncol(x[[1]]))
+    outs={}
+        for (k in 1:length(x)){
+            outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
+            outs <- rbind(outs,outp)
+        }
     outs <- as.data.frame(outs)
     
     colnames(outs) <- colnames(x[[1]])
@@ -59,7 +67,7 @@ plot.ind_props <- function(x,...){
         },par.settings = list(axis.line = list(col=NA)),scales=list(col=1,cex=1,x=list(col=1,at=seq(0,1,0.2)),y=list(draw=T,labels=preya.names)))
     print(rpp)
     par(ask=F)
-    trellis.focus("panel", 1, 1)
+    trellis.focus("panel", 1, 1,highlight=F)
     panel.abline(h=seq(1.5,ncol(outs),1),col=1,lty=2)
     trellis.unfocus()
     if (sava==1) dev.off()
@@ -99,7 +107,11 @@ plot.cov_props <- function(x,...){
     datas <-  guiGetSafe('datas')
     preya.names <- unique(datas$prey.ix)
 
-    outs <- matrix(unlist(x),mcpar(x[[1]])[1]-mcpar(x[[1]])[3],ncol(x[[1]]))
+     outs={}
+        for (k in 1:length(x)){
+            outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
+            outs <- rbind(outs,outp)
+        }
     outs <- as.data.frame(outs)
     
     colnames(outs) <- colnames(x[[1]])
@@ -167,7 +179,7 @@ plot.cov_props <- function(x,...){
         },par.settings = list(axis.line = list(col=NA)),scales=list(col=1,cex=1,x=list(col=1,at=seq(0,1,0.2)),y=list(draw=T,labels=sprintf(paste0("Predator %d"),orders),at=seq(datas$n.preys/2+0.5,datas$n.preys*datas$n.preds,datas$n.preys))))
     print(rpp)
     par(ask=F)
-    trellis.focus("panel", 1, 1)
+    trellis.focus("panel", 1, 1,highlight=F)
     panel.abline(h=seq(datas$n.preys+0.5,datas$n.preys*datas$n.preds,datas$n.preys),col=1,lty=2)
     trellis.unfocus()
     if (sava==1) dev.off()
