@@ -101,6 +101,7 @@ axis(1,at=1:n.fats,labels=F)
 text(1:n.fats, par("usr")[3] - max(ks)/5 , srt = 45, adj = 1,
      labels = colnames(RLR.means.new)[sv$ix], xpd = TRUE)
    
+cumsum(sort(clo(rowSums(t(t(RLR.RDA$CCA$v)*RLR.RDA$CCA$eig)^2)),decreasing =T))
 
  nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(RLR.means.new)[sv$ix],graphics=T,multiple=T)
       
@@ -167,7 +168,7 @@ RLR.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,pre
 guiSet('datas',RLR.data)
 
 # MCMC defaults to population proportions only from FA data,
-RLR.out <- run_MCMC(nIter=100000,nBurnin=1000,nChains=3,nThin=100,datas = RLR.data,plott=F)
+RLR.out <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=100,datas = RLR.data)
 
 plot(RLR.out)
 
@@ -385,7 +386,7 @@ FLR.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,pre
 guiSet('datas',FLR.data)
 
 # MCMC defaults to population proportions only from FA data,
-FLR.out <- run_MCMC(nIter=10000,nBurnin=1000,nChains=3,nThin=10,datas = FLR.data)
+FLR.out <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=100,datas = FLR.data)
 
 plot(FLR.out)
 
@@ -443,12 +444,12 @@ FLR.data.full <- list(datas.FA=datas.FA,datas.SI=datas.SI,n.preys=n.preys,n.pred
 guiSet('datas',FLR.data.full)
 
 # MCMC defaults to population proportions only from FA data, so need to put SI data in explicitly
-FLR.out.SI <- run_MCMC(nIter=10000,nBurnin=10000,nChains=3,nThin=10,datas = FLR.data.full,Data.Type='Stable.Isotopes')
+FLR.out.SI <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=100,datas = FLR.data.full,Data.Type='Stable.Isotopes')
 
 plot(FLR.out.SI)
 
 # Do the combined analysis
-FLR.out.full <- run_MCMC(nIter=10000,nBurnin=10000,nChains=3,nThin=10,datas = FLR.data.full,Data.Type='Combined.Analysis')
+FLR.out.full <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=100,datas = FLR.data.full,Data.Type='Combined.Analysis')
 
 plot(FLR.out.full)
 

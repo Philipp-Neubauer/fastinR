@@ -341,4 +341,3 @@ summary(outs.large)
 Squid.list <- list('Small Squid'=outs.small,'Large Squid' = outs.large)
 multiplot(Squid.list,density=F)
 multiplot(Squid.list,density=T)
-    
