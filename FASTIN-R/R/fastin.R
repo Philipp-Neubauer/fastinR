@@ -168,7 +168,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
 
     alr <- function(x){
         x<-clo(x)
-        if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
+        if (is.null(dim(x))){log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
     }
     
     kappas <- function(mat,vars){
@@ -387,7 +387,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     
     mean_c <- mean_c[1:n.preys,six]*0+1         
     
-    preym <- unclass((mprey))
+    preym <- unclass(alr(mprey))
     preds <- unclass(alr(predators[,six]))    
     
     # now prepare data for analysis

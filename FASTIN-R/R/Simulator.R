@@ -427,7 +427,7 @@ simulation <- function(){
     if(switchin == 'Covas' | switchin == 'combined'){
       write.table(Covs,file=paste(filename,'_Covariates.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
       write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)}
-     if(switchin == 'grouped' | switchin == 'combined'){
+     if(switchin == 'groups' | switchin == 'combined'){
       write.table(Grps,file=paste(filename,'_Groups.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
       write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
     }

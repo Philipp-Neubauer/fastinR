@@ -1,4 +1,4 @@
-multiplot <- function(MCMCouts,density=F){
+multiplot <- function(MCMCouts,density=T){
    
     sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
     datas <-  guiGetSafe('datas')
@@ -34,7 +34,7 @@ multiplot <- function(MCMCouts,density=F){
             grid::grid.segments(1,0,0,0)
             xlist <- split(x, factor(y))
             for (i in seq(along=xlist))
-                denstrip::panel.denstrip(x=xlist[[i]], at=i,colmax=((i-1)%%datas$n.preys)+1,mticks=mean(xlist[[i]]))
+                denstrip::panel.denstrip(x=xlist[[i]], at=i,colmax=((i-1)%%datas$n.preys)+1,ticks=quantile(xlist[[i]],c(0.025,0.975)),mticks=quantile(xlist[[i]],0.5),tlen=1.2,mlen=1.2,nwd=1.5)
         },par.settings = list(axis.line = list(col=NA)),scales=list(col=1,cex=1,x=list(col=1,at=seq(0,1,0.2)),y=list(draw=T)))
     print(rpp)
 
@@ -77,13 +77,13 @@ multiplot <- function(MCMCouts,density=F){
    
   # Plot
  
-    f <- ggplot(aes(x=value, col=as.factor(V1)),data=D)
+    f <- ggplot(aes(x=value, fill=as.factor(V1), col=as.factor(V1)),data=D)
  
-  f <- f + geom_density(alpha=0.3,adjust=4,data=D) + 
+  f <- f + geom_density(alpha=0.3,adjust=3,data=D) + 
     geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
     geom_vline(aes(xintercept=0),colour=1)+
     geom_hline(aes(yintercept=0),colour=1)+
-    coord_cartesian(xlim=c(0,1))+
+    scale_x_continuous(limits=c(0,1))+
         xlab('Proportion')+
         ylab('Posterior Density')+
     ggtitle(title)+    
