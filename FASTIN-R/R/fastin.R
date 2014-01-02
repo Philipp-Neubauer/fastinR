@@ -13,17 +13,15 @@ addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coe
                 plot(preys.SI[,1:ncol(preys.SI)],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
                 points(predators.SI[,1:2],pch=16)
                 legend("topright",legend=preys.names,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
-                                        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
-        #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
+                                  
         
             } else {
                 x11()
-                PR.RDA <- capscale(preys.SI~as.factor(preys.ix))
-                plot(data.matrix(preys.SI)%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
-                points(data.matrix(predators.SI)%*%PR.RDA$CCA$v[,1:2],pch=16)
-                legend("topright",legend=preys.names,xpd=T,pch=1:n.preys,col=2:(n.preys+1))
-                                        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
-                                        #legend(locator(2),(unique(preys.ix.SI)),xpd=T,pch=1:n.preys.SI,col=2:(n.preys.SI+1))
+                dista <- dist(rbind(preys.SI,predators.SI))
+                mds <- metaMDS(dista)
+                pl <- plot(mds,type='n')
+                points(pl,'sites',pch=cbind(as.numeric(as.factor(preys.ix)),rep(16,n.preds)),col=cbind(1+as.numeric(as.factor(preys.ix)),rep(1,n.preds)))
+                legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))
           
       }
       # combination choice
@@ -48,7 +46,7 @@ addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coe
       }
       
       return(preys.ix)
-       return(datas)
+            return(datas)
     }
     
     datas <- guiGetSafe('datas')
@@ -58,8 +56,8 @@ addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coe
     stopifnot(nchar(predators.SI)>0 & nchar(preys.SI)>0)
     
     # import predator and prey data - note that the first column is names, or an index
-    predators.SI = read.csv(predators.SI,header=F,row.names=1)
-    preys.SI = read.csv(preys.SI,header=F)
+    predators.SI = read.csv(predators.SI,header=T,row.names=1)
+    preys.SI = read.csv(preys.SI,header=T)
     
     n.preds <- dim(predators.SI)[1]
     
@@ -155,7 +153,7 @@ addSI <- function(predators.SI=NULL,preys.SI=NULL,Frac.Coeffs.mean=NULL,Frac.Coe
     }
     
     guiSet('datas',datas)
-    
+    return(datas)
   }
 
 addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.01){
@@ -196,14 +194,11 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
           n.preys <- length(unique(preys.ix))
           preys.names <- as.character(unique(preys.ix))
           x11()
-          PR.RDA <- capscale(dista~as.factor(preys.ix),comm=preys)
-                                        #plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
-      
-          plot(data.matrix(preys)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
-          points(data.matrix(predators)%*%data.matrix(PR.RDA$CCA$v[,1:2]),pch=16)
-                                        #cat('please select lower right and upper left corner for legend','\n','(can be outside of plot region)')
-      
-          legend("topright",legend=(unique(preys.ix)),xpd=T,pch=1:n.preys,col=2:(n.preys+1))
+          dista <- dist(rbind(preys,predators))
+          mds <- metaMDS(dista)
+          pl <- plot(mds,type='n')
+          points(pl,'sites',pch=cbind(as.numeric(as.factor(preys.ix)),rep(16,n.preds)),col=cbind(1+as.numeric(as.factor(preys.ix)),rep(1,n.preds)))
+          legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))
          
                                         # combination choice
           cat('please select from source combination menu','\n')
@@ -232,7 +227,7 @@ addFA <- function(predators.FA=NULL,preys.FA=NULL,fat.conts = NULL,Conv.Coeffs.m
     
     
     # import predator and prey FA profiles
-    predators = read.csv(predators.FA,header=F,row.names=1)
+    predators = read.csv(predators.FA,header=T,row.names=1)
     preys = read.csv(preys.FA,header=T)
     n.preds <- dim(predators)[1]
     preys.ix <- as.character(preys[,1])
@@ -526,13 +521,12 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
        cat('Gelman-Rubin diagnostics','\n')
        cat('#################################','\n','\n')
 
-       print(gelman.diag(MCMCout,t=T))
+       print(gelman.diag(MCMCout,transform=T))
         
        cat('\n','Both univariate upper C.I. and multivariate psrf','\n','should be close to 1 if the chains converged','\n','\n','\n')
     }
     
 }
-
 
 FASTIN <- function(){
   #require(tcltk)   # this is needed - but leads to crashes...
@@ -637,7 +631,7 @@ FASTIN <- function(){
   }
   
     SaveData <- function(Path="datas.Rdata"){datas <- guiGetSafe('datas');stopifnot(length(datas)>1);save(datas,file=Path)}
-    LoadData <- function(Path=NULL){load(Path); guiSet('datas',datas)}
+    LoadData <- function(Path=NULL){ load(Path); guiSet('datas',datas)}
   
     guiSet( "LIST_WIDTH", 50)
     guiSet( "ENTRY_WIDTH", 10)

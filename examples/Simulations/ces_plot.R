@@ -4,15 +4,20 @@ ces <- matrix(unlist(ces.test),ncol=4,byrow=T)
 
 colnames(ces) <- c('Eveness','Condition','Sep','Error')
 
-ces <- as.data.frame(ces)
+ces[,1] <- log(ces[,1]/(1-ces[,1]))/(2*sd(ces[,1]))
+ces[,1:3] <- apply(ces[,1:3],2,function(x){(x-mean(x))/(2*sd(x))})
 
-mod <- lm(log(Error) ~ 0+Eveness+Condition*Sep,data=ces)
+
+ces <- as.data.frame(ces)
+attach(ces)
+
+mod <- glm(log(Error) ~ Eveness,data=ces)
 plot(mod)
 summary(mod)
 
 require(ggplot2)
 
-qplot(Eveness,log(Error),color=log(Sep),data=ces,geom=c('point','smooth'),method='lm')
+qplot(Eveness,log(Error),color=Condition,data=ces,geom=c('point','smooth'),method='lm')
 
 require(effects)
 

@@ -67,13 +67,13 @@ var.select.tests <- function(selecta=c(0.75,0.9,0.95,0.98,0.99),n.fats=20,n.prey
 
     PR.RDA <- vegan::capscale(dista~preys.ix,comm=preya)
     
-    sv = sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v))*c(PR.RDA$CCA$eig))^2)),decreasing =T,index.return=T)
+    sv = sort(clo(rowSums(sqrt(t(t(cbind(PR.RDA$CCA$v))*c(PR.RDA$CCA$eig))^2))),decreasing =T,index.return=T)
        
     a=0
     for (rnd in selecta){
         a=a+1
         
-        n.fats <- max(which(cumsum(sv$x)>rnd)[1],3)
+        n.fats <- max(which(cumsum(sv$x)>=rnd)[1],3)
         six <- sv$ix[1:n.fats]
                                         # normalize and transform
         preds <- unclass(data.matrix(alr(preda[,six])))

@@ -12,13 +12,13 @@ ces.tests <- function(seps=seq(0.5,5,0.5),n.fats=12,n.preys=5,nsamples=20,n.pred
         if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
     }
 
-    adist <- function(mat){
+    adist <- function(mat,R){
 
         dims <- dim(mat)
         dists <- matrix(,dims[1],dims[1])
         for (i in 1:(dims[1]-1)){
             for (j in (i+1):dims[1]){
-                dists[j,i] <- robCompositions::aDist(mat[i,],mat[j,])
+                dists[j,i] <- mahalanobis(alr(mat[i,]),alr(mat[j,]),R[,,j])
             }}
         dista <- as.dist(dists)
               return(dista)
@@ -120,8 +120,8 @@ ces.tests <- function(seps=seq(0.5,5,0.5),n.fats=12,n.preys=5,nsamples=20,n.pred
         outs <- run_MCMC(nIter=10000,nBurnin=1000,nChains=1,nThin=10,datas = test.data,plott=F)   
 
         cc_test[a,1] <- this.ent/maxent
-        cc_test[a,2] <- kappa(mprey,exact=T)
-        cc_test[a,3] <- min(adist(mprey))
+        cc_test[a,2] <- kappa(preya,exact=T)
+        cc_test[a,3] <- mean(adist(mprey,R))
         cc_test[a,4] <- robCompositions::aDist(colMeans(outs[[1]]),colMeans(props))
 
   }

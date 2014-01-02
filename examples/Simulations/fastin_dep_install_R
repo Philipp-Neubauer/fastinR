@@ -1,6 +1,6 @@
 for (i in 1:length(cl)){
     
-    system(paste('scp fastin_dep_install.sh philipp@',cl[i],':/home/philipp/',sep=''))
+    system(paste('scp expo_dep_inst.sh philipp@',cl[i],':/home/philipp/',sep=''))
     
     system(paste('ssh',cl[i],'chmod 700 fastin_dep_install.sh'))
 

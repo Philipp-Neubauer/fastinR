@@ -413,14 +413,14 @@ simulation <- function(){
     
     if(all(!is.na(preys))){
       write.table(cbind(preys.ix,preys),file=paste(filename,'_FA_preys.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
-      write.table(preds,file=paste(filename,'_FA_preds.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
+      write.table(preds,file=paste(filename,'_FA_preds.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
       write.table(cbind(fc_mean,fc_sd),file=paste(filename,'_fat_cont.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(mean_c,file=paste(filename,'_FA_cc_means.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(sd_c,file=paste(filename,'_FA_cc_sd.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
     }
     if(all(!is.na(preys.SI))){
-      write.table(cbind(preys.ix,preys.SI),file=paste(filename,'_SI_preys.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
-      write.table(preds.SI,file=paste(filename,'_SI_preds.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
+      write.table(cbind(preys.ix,preys.SI),file=paste(filename,'_SI_preys.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
+      write.table(preds.SI,file=paste(filename,'_SI_preds.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
       write.table(mean_cs,file=paste(filename,'_SI_fc_means.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
       write.table(sd_cs,file=paste(filename,'_SI_fc_sd.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
     }
@@ -439,7 +439,8 @@ simulation <- function(){
   simplott <- function(){
     preya <- {}
     preda <- {}
-    
+
+    n.preds <- guiGetSafe("n.preds")
     n.preys <- guiGetSafe("n.preys")
     preys   <- guiGetSafe("preys")
     preds   <- guiGetSafe("preds")
@@ -452,12 +453,24 @@ simulation <- function(){
     if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,preds.SI);plott <-T}
     
     if(plott==T){
-      x11() 
-      PR.RDA <- capscale(preya~as.factor(preys.ix))
+      x11()
+      
+      adist <- function(mat){
 
-      plot(rbind(preya,preda)%*%PR.RDA$CCA$v[,1:2],t='n')
-      points(preya%*%PR.RDA$CCA$v[,1:2],pch=as.numeric(as.factor(preys.ix)),col=as.numeric(as.factor(preys.ix))+1)
-      points(preda%*%PR.RDA$CCA$v[,1:2],pch=16)
+        dims <- dim(mat)
+        dists <- matrix(,dims[1],dims[1])
+        for (i in 1:(dims[1]-1)){
+            for (j in (i+1):dims[1]){
+                dists[j,i] <- robCompositions::aDist(mat[i,],mat[j,])
+            }}
+        dista <- as.dist(dists)
+              return(dista)
+    }
+
+      dista <- dist(rbind(preya,preda))
+      mds <- metaMDS(dista)
+      pl <- plot(mds,type='n')
+      points(pl,'sites',pch=cbind(as.numeric(as.factor(preys.ix)),rep(16,n.preds)),col=cbind(1+as.numeric(as.factor(preys.ix)),rep(1,n.preds)))
       legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))
       
     }
@@ -467,14 +480,14 @@ simulation <- function(){
   
   output <- gui(simulator,callback=guiExec,
                 argCommand=list(simplot=simplott,
-                                simProps = guiNestedF(simProps,'Props',exec='simulate simple proportions',
+                                simProps = guiNestedF(simProps,'Props',exec='Simulate simple proportions',
                                                        argText=list(eveness = 'Eveness of simulated diet proportions'),
                                                        argSlider=list(eveness=c(0.05,1,0.01)),helps=''),
-                                simGroups = guiNestedF(simGroups,'Groups',exec='simulate grouped diet proportions',
-                                                       argText=list(n.groups = 'number of groups'),
+                                simGroups = guiNestedF(simGroups,'Groups',exec='Simulate grouped diet proportions',
+                                                       argText=list(n.groups = 'Number of groups'),
                                                        argSlider=list(group.effect.size=c(0,5,0.1)),helps=''),
-                                simCovs = guiNestedF(simCovs,'Covars',exec='simulate diet proportions from covariates',
-                                                     argText=list(n.covs = 'number of covariates'),
+                                simCovs = guiNestedF(simCovs,'Covars',exec='Simulate diet proportions from covariates',
+                                                     argText=list(n.covs = 'Number of covariates'),
                                                      argSlider=list(covariate.effect.size=c(0,5,0.1)),helps=''),
                                 simwrite = guiNestedF(simwrite,'simwrite',exec='Write simulation to files',helps=''),
                                 FAsim.data = guiNestedF(sim.FA,'FAsim.data',
@@ -486,7 +499,7 @@ simulation <- function(){
                                                           cvar=c(0.05,0.5,0.01)),
                                                         argText=list(sep = 'Prey separation in FA space',
                                                                      n.fats= 'Number of fatty acids',
-                                                                     cvar='variability of conversion coefficients'
+                                                                     cvar='Variability of conversion coefficients'
                                                         ),helps=''
                                 ),
                                 SIsim.data = guiNestedF(sim.SI,'SIsim.data',
@@ -504,7 +517,7 @@ simulation <- function(){
                 argText=list(FAsim.data = 'Simulate Fatty Acid data',
                              SIsim.data = 'Simulate Stable Isotope data',                      
                              simwrite = 'Write simulation to files',
-                             simplot = 'Plot current simulation on CAP axes',
+                             simplot = 'Plot current simulation on NMDS axes',
                              simCovs = 'Simulate covariates',
                              simGroups = 'Simulate grouped predator data',
                              simProps = 'Simulate simple proportions',

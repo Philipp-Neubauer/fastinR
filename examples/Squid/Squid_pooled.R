@@ -3,7 +3,7 @@ require(FASTIN)
 
 # try with Squid data -----------
 
- kappas <- function(mat,vars){
+kappas <- function(mat,vars){
         ks <- vector(,length(vars))
         for (i in 1:length(vars)){
             ks[i] <- kappa(mat[,vars[1:i]],exact=T)
@@ -11,18 +11,18 @@ require(FASTIN)
         return(ks)
     }
     
-  clo <- function(x){
+clo <- function(x){
       
         if (is.null(dim(x))){xc <- x/sum(x)} else {xc <- t(apply(x,1,function(y){y/sum(y)}))}
         return(xc)
     }
 
-    alr <- function(x){
+alr <- function(x){
         x<-clo(x)
         if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
     }
 
-      adist <- function(mat){
+adist <- function(mat){
 
         dims <- dim(mat)
         dists <- matrix(,dims[1],dims[1])
@@ -97,17 +97,21 @@ nsamples = c(sum(nsample[1:4]),sum(nsample[5:8]),sum(nsample[c(9,11:13)]),nsampl
 n.fats=ncol(PR.means.new)
 
 #################################################
-#### Plot data in multivariate (CAP) space ######
+#### Plot data  ######
 #################################################
 
+dista <- adist(rbind(PR.means.new,SQ.means))
+
+mds <- metaMDS(dista)
+pl <- plot(mds,type='n')
+points(pl,'sites',pch=c(1:5,16,17))
+legend('topleft',c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi','Small Squid','Large Squid'),pch=c(1:5,16,17))
+
+
+#
 dista <- adist(PR.means.new)
 
 PR.RDA <- vegan::capscale(dista~as.factor(1:5),comm=PR.means.new)
-#plot(PR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
-plot(t(apply((PR.means.new)%*%PR.RDA$CCA$v[,1:2],1,function(x){x})),pch=1:6)
-points((SQ.means[1,])%*%PR.RDA$CCA$v[,1:2],pch=16)
-points((SQ.means[2,])%*%PR.RDA$CCA$v[,1:2],pch=17)
-legend('bottomleft',c('Crustaceans','Myctophid Fish','Other Fish','Salilota australis','Loligo gahi','Small Squid','Large Squid'),pch=c(1:5,16,17))
 
 par(mfcol=c(2,1))
 sv = sort(clo(rowSums(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)),decreasing =T,index.return=T)
@@ -138,7 +142,7 @@ n.preys=nrow(PR.means.new)
 #################################
 
 # number of predators to simulate
-n.preds=4
+n.preds=1
 
 # since we do not have individual prey samples from the study, we simulate them, to get an idea of the correlation structure in the composition introduced by the sum constraint itself. More complex correlations tructure is unfortuantelly lost...
 

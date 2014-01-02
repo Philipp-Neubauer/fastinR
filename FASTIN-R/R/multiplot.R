@@ -68,8 +68,7 @@ multiplot <- function(MCMCouts,density=T){
      
      ggs_density <- function(D, pos=0,title) {
   # Manage subsetting a family of parameters
-  require(ggplot2)
-  
+    
   dims = dim(D)
 #   if (is.null(dims)){
     D<-as.data.frame(D)
@@ -100,7 +99,6 @@ multiplot <- function(MCMCouts,density=T){
   return(f)
 }
      multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  require(grid)
 
   # Make a list from the ... arguments and plotlist
   plots <- c(list(...), plotlist)

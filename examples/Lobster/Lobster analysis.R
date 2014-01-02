@@ -62,33 +62,35 @@ for (i in 1:ncol(RLR.means.new))
 for (i in 1:ncol(RLR.sd.new))
   RLR.sd.new[RLR.sd.new[,i]==0,i] <- min(RLR.sd.new[RLR.sd.new[,i]!=0,i])
 
-n.preys=ncol(RLR.means.new)
+n.preys=nrow(RLR.means.new)
 n.fats=ncol(RLR.means.new)
 
 #get fat contents -set to one as lit values are jsut as unreliable
-fc.mean.new = rep(1,n.preys)# c(1.4,1.3,4.8,1,0.5,0.3)
-fc.sd.new = c(fc.mean.new /1)
+fc.mean.new = rep(1,n.preys)#c(1.4,1.3,4.8,1,0.5,0.3)
+fc.sd.new = c(fc.mean.new /10)
 
 nsample = as.numeric(RLR[1,seq(3,ncol(RLR-1),2)])
 nsamples = c(nsample[1:2],sum(nsample[3:4]),sum(nsample[5:7]),sum(nsample[8:9]),nsample[10])
 
-dista <- adist(RLR.means.new)
+dista <- adist(rbind(RLR.means.new,RLR.means))
 
-RLR.RDA <- vegan::capscale(dista~as.factor(1:n.preys),comm=RLR.means.new)
-#plot(RLR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
-plot(RLR.means.new%*%RLR.RDA$CCA$v[,1:2],pch=1:6)
-points(clo(RLR.means)%*%RLR.RDA$CCA$v[,1:2],pch=16)
-legend('topleft',c('H.rubra','T.undulatus','Sea Urchins','Ascidians','Brown Algae','Red Algae','Reserve Lobster'),pch=c(1:6,16,17))
-
+mds <- metaMDS(dista)
+pl <- plot(mds,type='n')
+points(pl,'sites',pch=c(1:6,16))
+legend('topleft',c('H.rubra','T.undulatus','Sea Urchins','Ascidians','Brown Algae','Red Algae','Reserve Lobster'),pch=c(1:6,16))
 
 ######################################
 ######## variable selection ##########
 ######################################
 
 n.fats=ncol(RLR.means.new)
+six=1:n.fats
+
+distan <- adist(RLR.means.new)
+RLR.RDA <- vegan::capscale(as.dist(distan)~as.factor(1:6),comm=rbind(RLR.means.new,RLR.means))
 par(mfcol=c(2,1))
-sv = sort(clo(rowSums(t(t(RLR.RDA$CCA$v)*RLR.RDA$CCA$eig)^2)),decreasing =T,index.return=T)
-plot(cumsum(sort(clo(rowSums(t(t(RLR.RDA$CCA$v)*RLR.RDA$CCA$eig)^2)),decreasing =T)),axes=F,xlab='',ylab='Cumulative source separation',ylim=c(0,1))
+sv = sort(clo(rowSums(sqrt((t(t(RLR.RDA$CCA$v)*RLR.RDA$CCA$eig)^2)))),decreasing =T,index.return=T)
+plot(cumsum(sort(clo(rowSums(sqrt(t(t(RLR.RDA$CCA$v)*RLR.RDA$CCA$eig)^2))),decreasing =T)),axes=F,xlab='',ylab='Cumulative source separation',ylim=c(0,1))
 axis(2)
 axis(1,at=1:n.fats,labels=F)
 text(1:n.fats, par("usr")[3] - 0.2, srt = 45, adj = 1,
@@ -101,7 +103,7 @@ axis(1,at=1:n.fats,labels=F)
 text(1:n.fats, par("usr")[3] - max(ks)/5 , srt = 45, adj = 1,
      labels = colnames(RLR.means.new)[sv$ix], xpd = TRUE)
    
-cumsum(sort(clo(rowSums(t(t(RLR.RDA$CCA$v)*RLR.RDA$CCA$eig)^2)),decreasing =T))
+cumsum(sort(clo(rowSums(sqrt(t(t(RLR.RDA$CCA$v)*RLR.RDA$CCA$eig)^2))),decreasing =T))
 
  nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(RLR.means.new)[sv$ix],graphics=T,multiple=T)
       
@@ -125,7 +127,7 @@ m.fats = (n.fats-1)
 
 # get sums of squares for each prey matrix
 #number of simulated prey samples per species/group
-ns <- 300
+ns <- 30
 RLR.sim <- array(,c(ns,n.fats,n.preys))
 
 for (i in 1:n.preys) RLR.sim[,,i] <- mvrnorm(ns,RLR.means.new[i,six],diag(RLR.sd.new[i,six]^2))
@@ -148,7 +150,7 @@ even=0.05
 2*(1-pnorm(log(95)/2,0,sqrt(1/even))) # chance that 95*p1<p2
 
 mean_c = matrix(1,n.preys,n.fats)
-tau_coeffs = matrix(1,n.preys,n.fats)
+tau_coeffs = matrix(1000,n.preys,n.fats)
 
 fc_mean = as.numeric(fc.mean.new)
 fc_tau = as.numeric(fc.sd.new)
@@ -170,9 +172,10 @@ guiSet('datas',RLR.data)
 # MCMC defaults to population proportions only from FA data,
 RLR.out <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=100,datas = RLR.data)
 
-plot(RLR.out)
+plot(RLR.out,save=F,density=T)
 
-summary(RLR.out)
+
+summary(RLR.outa)
 
 
 ###############################
@@ -214,9 +217,9 @@ for (i in 1:n.preys){
 
 Rnot_SI = diag(0.1,isos)
 
-mean_cs = c(2.1,2.9)
+mean_cs = c(0.4,2.3)
 mean_cs <- matrix(unlist(mean_cs), n.preys, isos,byrow=T)
-tau_cs =1/c(0.4,0.4)^2 # 1.61
+tau_cs =1/c(1.2,1.61)^2 # 1.61
 tau_cs <- matrix(unlist(tau_cs), n.preys, isos,byrow=T)
 
 datas.SI <- list(isos = isos,R.SI=R_SI,Rnot.SI = Rnot_SI,preym.SI=preym.SI,preds.SI = preds.SI,ni.SI=ni.SI,mean_cs=mean_cs,tau_cs = tau_cs)
@@ -230,8 +233,10 @@ RLR.out.SI <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=10,datas = RLR
 
 plot(RLR.out.SI)
 
+summary(RLR.out.SI)
+
 # Do the combined analysis
-RLR.out.full <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=10,datas = RLR.data.full,Data.Type='Combined.Analysis')
+RLR.outa.full <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=10,datas = RLR.data.full,Data.Type='Combined.Analysis')
 
 plot(RLR.out.full)
 
@@ -243,7 +248,7 @@ plot(RLR.out.full)
 reserve.list <- list('Reserve Full'=RLR.out.full,'Reserve SI'=RLR.out.SI,'Reserve FA'=RLR.out)
 
 multiplot(reserve.list,density=F)
-multiplot(fished.list,density=T)
+multiplot(reserve.list,density=T)
 
 
 
@@ -291,13 +296,12 @@ fc.sd.new = c(fc.mean.new /1)
 nsample = as.numeric(FLR[1,seq(3,ncol(FLR-1),2)])
 nsamples = c(nsample[1:2],sum(nsample[3:4]),sum(nsample[5:7]),sum(nsample[8:9]),nsample[10])
 
-dista <- adist(FLR.means.new)
+dista <- adist(rbind(FLR.means.new,FLR.means))
 
-FLR.RDA <- vegan::capscale(dista~as.factor(1:n.preys),comm=FLR.means.new)
-#plot(FLR.RDA,t='n',xlim=c(-0.5,0.5),ylim=c(-1,1))
-plot(FLR.means.new%*%FLR.RDA$CCA$v[,1:2],pch=1:6)
-points(clo(FLR.means)%*%FLR.RDA$CCA$v[,1:2],pch=16)
-legend('topleft',c('H.rubra','T.undulatus','Sea Urchins','Ascidians','Brown Algae','Red Algae','Reserve Lobster'),pch=c(1:6,16,17))
+mds <- metaMDS(dista)
+pl <- plot(mds,type='n')
+points(pl,'sites',pch=c(1:6,16))
+legend('topleft',c('H.rubra','T.undulatus','Sea Urchins','Ascidians','Brown Algae','Red Algae','Fished Lobster'),pch=c(1:6,16))
 
 
 ######################################
@@ -305,9 +309,12 @@ legend('topleft',c('H.rubra','T.undulatus','Sea Urchins','Ascidians','Brown Alga
 ######################################
 
 n.fats=ncol(FLR.means.new)
+dista <- adist(FLR.means.new)
+
+FLR.RDA <- vegan::capscale(dista~as.factor(1:n.preys),comm=FLR.means.new)
 par(mfcol=c(2,1))
-sv = sort(clo(rowSums(t(t(FLR.RDA$CCA$v)*FLR.RDA$CCA$eig)^2)),decreasing =T,index.return=T)
-plot(cumsum(sort(clo(rowSums(t(t(FLR.RDA$CCA$v)*FLR.RDA$CCA$eig)^2)),decreasing =T)),axes=F,xlab='',ylab='Cumulative source separation',ylim=c(0,1))
+sv = sort(clo(rowSums(sqrt(t(t(FLR.RDA$CCA$v)*FLR.RDA$CCA$eig)^2))),decreasing =T,index.return=T)
+plot(cumsum(sort(clo(rowSums(sqrt(t(t(FLR.RDA$CCA$v)*FLR.RDA$CCA$eig)^2))),decreasing =T)),axes=F,xlab='',ylab='Cumulative source separation',ylim=c(0,1))
 axis(2)
 axis(1,at=1:n.fats,labels=F)
 text(1:n.fats, par("usr")[3] - 0.2, srt = 45, adj = 1,
@@ -386,7 +393,7 @@ FLR.data <- list(datas.FA=datas.FA,n.preys=n.preys,n.preds=n.preds,even=even,pre
 guiSet('datas',FLR.data)
 
 # MCMC defaults to population proportions only from FA data,
-FLR.out <- run_MCMC(nIter=100000,nBurnin=10000,nChains=3,nThin=100,datas = FLR.data)
+FLR.out <- run_MCMC(nIter=100000,nBurnin=1000,nChains=3,nThin=100,datas = FLR.data)
 
 plot(FLR.out)
 

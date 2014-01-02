@@ -3,5 +3,9 @@
 .RData
 *.Rcheck
 *#
-*~
+*~*
 .pdf
+*.pdf
+*.Rdata
+*.tar.gz
+*#*

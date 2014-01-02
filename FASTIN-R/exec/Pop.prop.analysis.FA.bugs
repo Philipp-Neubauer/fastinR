@@ -25,7 +25,7 @@ model{
     preydd[j,n.fats] <- 1	    
     preyd[j,1:n.fats] <- preydd[j,1:n.fats]/sum(preydd[j,1:n.fats])    
    
-    preyf[j,1:n.fats] <- preyd[j,1:n.fats]*fracs[j,1:n.fats]*fc[j]
+    preyf[j,1:n.fats] <- preyd[j,1:n.fats]*fc[j]*fracs[j,1:n.fats]
       
   }
   

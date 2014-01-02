@@ -13,34 +13,56 @@ simulation()
 %- maybe also 'usage' for other objects documented here.
 \details{The function calls a gui to simulate data, functions are of little use outside the gui facility.
 
-Pressing the \code{New Simualtion} makes sense only after all desired compoenets were updated - i.e., when updating proportions, FA and/or SI data need to be re-simulated to have the new diet proportions alter the predator fatty acid makup. 
+Simulating data proceeds by selecting to simualte either individual diet
+proportions for each predator as drawn from a population level
+distribution for diet proportions, or by simulating grouped diet
+proportions (e.g., size groups, geographic groups) and/or by letting
+covariates influence the drawn diet proportions (e.g., size based diet shifts).
 
-\code{New Simualtion} will draw a CAP (Constrained Analysis of Princiipal Coordiantes) plot to show the simualted data. The user is prompted to use the cursor to select an area in the plot to draw a legend. Cacelling the window (upper right hand cross on window) may lead to crashes of the R gui, so be sure to press \code{OK} in the pop-up window. 
+Pressing \code{Simualte Fatty Acid data} or \code{Simualte Stable
+  Isotope data} makes sense only after proportions were simulated - converseley, when updating proportions, FA and/or SI data need to be re-simulated to have the new diet proportions alter the predator fatty acid/SI makeup. 
 
-The window will remain open to allow for many tries at simulating data. Variuous configurations can be written to file to allow for exploration of the model.
-%%  ~~ If necessary, more details than the description above ~~
+\code{Plot current simulation} will draw a NMDS (non-metric multidimensional scaling) plot to show the simulated data.
+
+The gui will remain open to allow for many tries at simulating data. Variuous configurations can be written to file to allow for exploration of the model.
 }
 \value{
 
-A number of .csv files, with customized filename *
+\code{Write simulations to files} will produce a series of files that
+can be used as inputs to the FASTIN gui or individual functions. The
+prefix of the files is entered by the user, the remainder of the
+filename suggests the contents:
 
  \item{*_props}{Simualted diet proportions}
 
 For Fatty Acids:
 
- \item{*_preys.csv}{Prey names (first column) and fatty acid profiles}
- \item{*_preds.csv}{Predator index (first column) and fatty acid profiles}
- \item{*_fat_cont.csv}{Prey fat contents (here as mean and sd, can be specified for each prey sample for the main analysis)}
- \item{*_FA_cc_means.csv}{Prey specific conversion coefficient means} 
- \item{*_FA_cc_sd.csv}{Prey specific conversion coefficient standard deviations} 
+ \item{*_FA_preys.csv}{Prey names (first column) and fatty acid
+ profiles, with fatty acids names across the first row}
+ \item{*_FA_preds.csv}{Predator index (first column) and fatty acid profiles, with fatty acids names across the first row}
+ \item{*_fat_cont.csv}{Prey fat contents (here as mean and sd, can be
+ specified for each prey sample for the main analysis, in that case the
+ first column is the prey id and the second column is the individual
+ sample's fat content)}
+ \item{*_FA_cc_means.csv}{Prey specific conversion coefficient means:
+ Prey names (first column) and an n x P matrix for n preys and P fatty acids} 
+ \item{*_FA_cc_sd.csv}{Prey specific conversion coefficient standard
+ deviations, dimensions as for the means} 
  
  For Stable Isotopes:
 
- \item{*_SI_preys.csv}{Prey names (first column) and stable isotope values}
- \item{*_SI_preds.csv}{Predator index (first column) and stable isotope values}
+ \item{*_SI_preys.csv}{Prey names (first column) and stable isotope values, with SI names across the first row}
+ \item{*_SI_preds.csv}{Predator index (first column) and stable isotope values, with SI names across the first row}
  \item{*_SI_fc_means.csv}{Prey specific SI additive fractionation coefficient means} 
  \item{*_SI_fc_sd.csv}{Prey specific additive fractionation coefficient standard deviations} 
 
+ For Covariates for predator proportions and grouped predators:
+
+ \item{*_Cov_n_Grp_effects.csv}{an n*p matrix of group and covariate
+ influences on diet proportions for n preys and p (groups+covariates)}
+ \item{*_Groups.csv}{Group membership for each predator}
+ \item{*_Covariates.csv}{Covariate values for each predator}
+ 
 }
 \references{
 
