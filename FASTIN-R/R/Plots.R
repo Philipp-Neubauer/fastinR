@@ -2,7 +2,7 @@ plot.pop_props <- function(x,save="FASTIN_MCMC_",density=T,...){
 
     if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
     
-    preya.names <- unique(guiGetSafe('datas')$prey.ix)
+    preya.names <- (guiGetSafe('datas')$prey.ix)
 
     outs={}
     for (k in 1:length(x)){
@@ -114,7 +114,7 @@ plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
     if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
     
     datas <-  guiGetSafe('datas')
-    preya.names <- unique(datas$prey.ix)
+    preya.names <- (datas$prey.ix)
 
     outs={}
     for (k in 1:length(x)){
@@ -353,7 +353,7 @@ plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
     if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
     
     datas <-  guiGetSafe('datas')
-    preya.names <- unique(datas$prey.ix)
+    preya.names <- (datas$prey.ix)
 
     outs={}
     for (k in 1:length(x)){
