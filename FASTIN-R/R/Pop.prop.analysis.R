@@ -1,58 +1,44 @@
 .Poppropanalysis <- function(datas,nIter=1000,nBurnin=1000,nChains=1,nThin=10,plott=T) UseMethod(".Poppropanalysis", datas)
 
-.Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
+.Poppropanalysis.FA <- function(datas,nIter=10000,nBurnin=100,nChains=1,nThin=10,plott=T)
 {
-  n.preys = datas$n.preys
-  R = datas$datas.FA$R
-  fc_mean = datas$datas.FA$fc_mean
-  fc_tau = datas$datas.FA$fc_tau
-  n.fats = datas$datas.FA$n.fats
-  mean_c = matrix(unlist(datas$datas.FA$mean_c),n.preys,n.fats)
-  tau_coeffs = datas$datas.FA$tau_c
-  Rnot = datas$datas.FA$Rnot
-  n.preds = datas$n.preds
-  m.fats = datas$datas.FA$m.fats
-  ni = datas$datas.FA$ni
-  preds = matrix(datas$datas.FA$preds,n.preds,m.fats)
-  preym = datas$datas.FA$preym
+  jagsdata <- delist(datas)
+ 
+  save(jagsdata,file='jagsdata.Rdata')
   
-  JM <- jags.model(file=paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.FA.bugs",sep=''),n.chains=nChains)
+  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.FA.bugs",sep='')
   
-  cat('\n','proceeding to burn-in phase','\n')
-  update(JM,n.iter=nBurnin)
-  cat('\n','sampling from parameters','\n')
-  res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
-
+  res <- spawn(sysfile,nBurnin,nIter,nThin)
+  
   if (plott){
-      plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-      if (plotta==1) plot(res,ask=T)}
+    plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
+    if (plotta==1) plot(res,ask=T)}
   
-  class(res) <- 'pop_props'
-  return(res)
+    class(res) <- 'pop_props'
+    return(res)
   
 }
 
 .Poppropanalysis.SI <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
-  n.preys = datas$n.preys
-  n.preds = datas$n.preds
+  jagsdata<- list(
+  n.preys = datas$n.preys,
+  n.preds = datas$n.preds,
+  isos = datas$datas.SI$isos,
+  R_SI = datas$datas.SI$R.SI,
+  mean_cs = matrix(unlist(datas$datas.SI$mean_cs),n.preys,isos),
+  tau_cs = datas$datas.SI$tau_cs,
+  Rnot_SI = datas$datas.SI$Rnot.SI,
+  ni.SI = datas$datas.SI$ni.SI,
+  preds.SI = matrix(unlist(datas$datas.SI$preds.SI),n.preds,isos),
+  preym.SI = datas$datas.SI$preym.SI)
   
-  isos = datas$datas.SI$isos
-  R_SI = datas$datas.SI$R.SI
-  mean_cs = matrix(unlist(datas$datas.SI$mean_cs),n.preys,isos)
-  tau_cs = datas$datas.SI$tau_cs
-  Rnot_SI = datas$datas.SI$Rnot.SI
-  ni.SI = datas$datas.SI$ni.SI
-  preds.SI = matrix(unlist(datas$datas.SI$preds.SI),n.preds,isos)
-  preym.SI = datas$datas.SI$preym.SI
+  save(jagsdata,file='jagsdata.Rdata')
   
-  JM <- jags.model(file=paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.SI.bugs",sep=''),n.chains=nChains)
+  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.SI.bugs",sep='')
   
-  cat('\n','proceeding to burn-in phase','\n')
-  update(JM,n.iter=nBurnin)
-  cat('\n','sampling from parameters','\n')
-  res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
-
+  res <- spawn(sysfile,nBurnin,nIter,nThin)
+  
   if (plott){
       plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
       if (plotta==1) plot(res,ask=T)}
@@ -63,38 +49,35 @@
 
 .Poppropanalysis.combined <- function(datas,nIter=10000,nBurnin=1000,nChains=1,nThin=10,plott=T)
 {
+  jagsdata <- list(
+  n.preys = datas$n.preys,
+  n.preds = datas$n.preds,
+  R_SI = datas$datas.SI$R.SI,
+  isos = datas$datas.SI$isos,
+  mean_cs = matrix(unlist(datas$datas.SI$mean_cs),n.preys,isos),
+  tau_cs = datas$datas.SI$tau_cs,
+  Rnot_SI = datas$datas.SI$Rnot.SI,
+  ni.SI = datas$datas.SI$ni.SI,
+  preds.SI = matrix(unlist(datas$datas.SI$preds.SI),n.preds,isos),
+  preym.SI = datas$datas.SI$preym.SI,
+  R = datas$datas.FA$R,
+  fc_mean = datas$datas.FA$fc_mean,
+  fc_tau = datas$datas.FA$fc_tau,
+  n.fats = datas$datas.FA$n.fats,
+  mean_c = matrix(unlist(datas$datas.FA$mean_c),n.preys,n.fats),
+  tau_coeffs = data.matrix(datas$datas.FA$tau_c),
+  Rnot = datas$datas.FA$Rnot,
+  m.fats = datas$datas.FA$m.fats,
+  ni = datas$datas.FA$ni,
+  preds = matrix(datas$datas.FA$preds,n.preds,m.fats),
+  preym = datas$datas.FA$preym[,])
   
-  n.preys = datas$n.preys
-  n.preds = datas$n.preds
+  save(jagsdata,file='jagsdata.Rdata')
   
-  R_SI = datas$datas.SI$R.SI
-  isos = datas$datas.SI$isos
-  mean_cs = matrix(unlist(datas$datas.SI$mean_cs),n.preys,isos)
-  tau_cs = datas$datas.SI$tau_cs
-  Rnot_SI = datas$datas.SI$Rnot.SI
-  ni.SI = datas$datas.SI$ni.SI
-  preds.SI = matrix(unlist(datas$datas.SI$preds.SI),n.preds,isos)
-  preym.SI = datas$datas.SI$preym.SI
+  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.combined.bugs",sep='')
   
-  R = datas$datas.FA$R
-  fc_mean = datas$datas.FA$fc_mean
-  fc_tau = datas$datas.FA$fc_tau
-  n.fats = datas$datas.FA$n.fats
-  mean_c = matrix(unlist(datas$datas.FA$mean_c),n.preys,n.fats)
-  tau_coeffs = data.matrix(datas$datas.FA$tau_c)
-  Rnot = datas$datas.FA$Rnot
-  m.fats = datas$datas.FA$m.fats
-  ni = datas$datas.FA$ni
-  preds = matrix(datas$datas.FA$preds,n.preds,m.fats)
-  preym = datas$datas.FA$preym[,]
+  res <- spawn(sysfile,nBurnin,nIter,nThin)
   
-  JM <- jags.model(file=paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.combined.bugs",sep=''),n.chains=nChains)
-  
-  cat('\n','proceeding to burn-in phase','\n')
-  update(JM,n.iter=nBurnin)
-  cat('\n','sampling from parameters','\n')
-  res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
-
   if (plott){
       plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
       if (plotta==1) plot(res,ask=T)}

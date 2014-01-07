@@ -452,6 +452,50 @@ run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data
     }
   }
 
+jagger <- function(sysfile,nBurnin,nIter,nThin,i){
+  
+  load('jagsdata.Rdata')
+  JM <- jags.model(file=sysfile,data=jagsdata,inits=list(.RNG.name="base::Mersenne-Twister",.RNG.seed=i),n.chains=1)
+  
+  cat('\n','proceeding to burn-in phase','\n')
+  update(JM,n.iter=nBurnin)
+  cat('\n','sampling from parameter distributions','\n')
+  res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
+  
+  return(res)
+   
+}
+
+spawn <- function(sysfile,nBurnin,nIter,nThin){
+  
+  options(useFancyQuotes=F)
+  # spawn seperate R slave processes for each chain and run jagger in them
+  for (i in 1:nChains){
+    outfile <- paste('MCout',i,'.Rdata',sep='')
+        
+    cmd <- paste("Rscript -e 'library(FASTIN,quietly=T,verbose=F);options(warn=-1);res",i,"<- jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save.image(file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
+    
+    if(i<nChains)
+    {
+      system(cmd,wait=F)
+    }
+    else {
+      system(cmd,wait=T)
+    }
+    
+  }
+  
+  res <- eval(parse(text=eval(load('MCout1.Rdata'))))
+  
+  if (nChains>1) {
+    for(i in 2:nChains)
+      res[[i]] <- eval(parse(text=eval(load(paste('MCout',i,'.Rdata',sep='')))))[[1]]
+  }
+  
+  return(res)
+  
+}
+
 addcovs <- function(Grps=NULL,Covs=NULL){
     
     if (length(Covs)>0 & length(Grps)==0)
