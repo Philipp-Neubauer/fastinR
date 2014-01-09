@@ -50,14 +50,16 @@ selectvars <- function(datas){
   nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(prey.mat)[sv$ix],graphics=T,multiple=T)
   
   #nv <- readline(prompt = "please enter number of variables for analysis \n")
-  six <- match(nv,rownames(prey.mat))
+  six <- match(nv,colnames(prey.mat))
   
   n.fats =length(six)
   list(selecta=six,n.fats=n.fats)
   
   datas$datas.FA$preys <- clo(datas$datas.FA$preys[,six])
+  datas$datas.FA$preds <- alr(datas$datas.FA$preds.FA[,six])
   datas$datas.FA$n.fats <- n.fats
   datas$datas.FA$preym <- clo(datas$datas.FA$preym[,six])
+  datas$datas.FA$preds <- clo(datas$datas.FA$preds[,six])
   
   ifelse(GUI,guiSet('datas',datas),return(datas))
   
