@@ -19,6 +19,11 @@ alr <- function(x){
   return(xc)
 }
 
+clr <- function(x){
+  x<-clo(x)
+  if (is.null(dim(x))){xc <- log(x)-mean(log(x))} else { t(apply(x,1,function(y){log(y)-mean(log(y))}))}
+}
+
 adist <- function(mat){
   
   dims <- dim(mat)
@@ -30,3 +35,5 @@ adist <- function(mat){
   dista <- as.dist(dists)
   return(dista)
 }
+
+gmean <- function(x) if (is.null(dim(x))) {exp(mean(log(x)))} else { t(apply(x,1,function(y){exp(mean(log(x)))}))}

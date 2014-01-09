@@ -54,17 +54,10 @@ points(pl,'sites',pch=21,col=1,bg=c(factor(group),8),cex=2)
 ######## variable selection ##########
 ######################################
 
-n.fats=nrow(RLR.prey.means)
+sv <- selectvars(RLR.prey.means)
 
-sv <- plot_var_select(t(t(RLR.prey.means)*fc.mean.new))
-
-six=1:n.fats
-nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = rownames(RLR.prey.means)[sv$ix],graphics=T,multiple=T)
-
-#nv <- readline(prompt = "please enter number of variables for analysis \n")
-six <- match(nv,rownames(RLR.prey.means))
-
-n.fats =length(six)
+n.fats <- sv$n.fats
+six <- sv$selecta
 
 #### mds plot seleciton ####
 

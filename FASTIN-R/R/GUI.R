@@ -5,7 +5,7 @@ resetsc <- function(datas=NULL){if (is.null(datas)){datas <- guiGetSafe('datas')
 FASTIN <- function(){
   #require(tcltk)   # this is needed - but leads to crashes...
   #require(fgui)
-  GUI <- TRUE
+  GUI <<- TRUE
   # gui helper functions
     
     pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
@@ -103,7 +103,7 @@ FASTIN <- function(){
                  ),
                  exec=NULL,output=NULL,argGridOrder=c(1,1,1,2,2,2,3,3,4,4,4), argGridSticky=rep("w",length(formals(.fastin)))
   )
-  
+  GUI <<- NA
   return(output)
   
-}
+}FASTIN
