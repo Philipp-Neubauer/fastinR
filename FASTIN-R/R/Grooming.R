@@ -30,7 +30,7 @@ plotvarselect <- function(prey_mat,prey.ix){
   return(sv)
 }
 
-selectvars <- function(datas){
+selectvars <- function(datas,ix=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -43,23 +43,46 @@ selectvars <- function(datas){
   prey.mat <- datas$datas.FA$preys
   
   n.fats=nrow(prey.mat)
+  prey.ix <- datas$prey.ix
   
-  sv <- plotvarselect(prey.mat,datas$prey.ix)
-  
-  six=1:n.fats
-  nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(prey.mat)[sv$ix],graphics=T,multiple=T)
+  if(is.null(ix)){
+    sv <- plotvarselect(prey.mat,prey.ix)
+    nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(prey.mat)[sv$ix],graphics=T,multiple=T)
+  } else if(is.numeric(ix)){
+    nv <- colnames(prey.mat)[ix]
+  } else {nv <- ix}
   
   #nv <- readline(prompt = "please enter number of variables for analysis \n")
   six <- match(nv,colnames(prey.mat))
   
-  n.fats =length(six)
-  list(selecta=six,n.fats=n.fats)
+  n.fats  <- length(six)
+  m.fats <- n.fats-1
   
   datas$datas.FA$preys <- clo(datas$datas.FA$preys[,six])
-  datas$datas.FA$preds <- alr(datas$datas.FA$preds.FA[,six])
+  mprey <- aggregate(datas$datas.FA$preys,list(prey.ix),gmean)[,2:(n.fats+1)]
+  datas$datas.FA$preym <- alr(mprey)
+  
+  datas$datas.FA$preds.FA <- datas$datas.FA$preds.FA[,six]
+  datas$datas.FA$preds <- alr(datas$datas.FA$preds.FA)
   datas$datas.FA$n.fats <- n.fats
-  datas$datas.FA$preym <- clo(datas$datas.FA$preym[,six])
-  datas$datas.FA$preds <- clo(datas$datas.FA$preds[,six])
+  datas$datas.FA$m.fats <- m.fats
+  
+  datas$datas.FA$mean_c <- datas$datas.FA$mean_c[,six]
+  datas$datas.FA$tau_c <- datas$datas.FA$tau_c[,six]
+  
+  n.preys <- datas$n.preys
+  R <- array(,c(m.fats,m.fats,n.preys))
+  ni<-rep(NA,n.preys)
+  for (i in 1:n.preys){
+    ni[i] <- max(n.fats+1,sum(prey.ix==unique(prey.ix)[i])-1)
+    R[,,i]=cov(alr(prey.mat[prey.ix==unique(prey.ix)[i],six]))*ni[i]
+  }
+  
+  datas$datas.FA$R <- R
+  datas$datas.FA$Rnot <- datas$datas.FA$Rnot[six[1:m.fats],six[1:m.fats]]
+  datas$datas.FA$ni <- ni
+  
+  if(GUI & dev.cur()!=1) dev.off()
   
   ifelse(GUI,guiSet('datas',datas),return(datas))
   

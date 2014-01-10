@@ -40,15 +40,14 @@ addcovs <- function(Groups='',Covariates=''){
 
 #### SI -----
 
-addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean=NULL,Frac.Coeffs.var=NULL,FC.mean=1,FC.var=1,R.diag.SI=0.2){
+addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeffs.var='',FC.mean=1,FC.var=1,R.diag.SI=0.2,datas=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
     GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) {datas <- guiGetSafe('datas')} else {datas <- NA}
+    if (GUI) datas <- guiGetSafe('datas')
   } else {
     GUI=F
-    datas <- NA
   }
   
   ## first check for potential conflicts
@@ -65,7 +64,7 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean=NULL,Frac.Coe
   preys.SI  <- preys.SI[,-1]
   
   # check that samples are in the same order
-  if(!is.na(datas)) stopifnot(preys.ix==datas$prey.ix)
+  if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
   
   preys.names  <- unique(preys.ix)
   if(GUI) guiSet('prey.names',preys.names )
@@ -129,15 +128,14 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean=NULL,Frac.Coe
 
 ####### FAs ----
 
-addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = NULL,Conv.Coeffs.mean=NULL,Conv.Coeffs.var=NULL,FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.01){
+addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.2,datas=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
     GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) {datas <- guiGetSafe('datas')} else {datas <- NA}
+    if (GUI) datas <- guiGetSafe('datas')
   } else {
     GUI=F
-    datas <- NA
   }
   
   # import predator and prey FA profiles
@@ -146,7 +144,7 @@ addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = NULL,Conv.Coeffs.m
   n.preds <- dim(predators)[1]
   preys.ix <- as.character(preys[,1])
   
-  if(!is.na(datas)) stopifnot(preys.ix==datas$prey.ix)
+  if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
   
   preys.names <- as.character(unique(preys.ix))
   
@@ -179,7 +177,13 @@ addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = NULL,Conv.Coeffs.m
   # deal with fat content
   if(nchar(fat.conts)==0) 
   {
-    fc.mean <- FC.mean; fc.var <- FC.var
+    if(length(FC.mean) == n.preys & length(FC.var) == n.preys)
+    {
+      fc.mean <- FC.mean; fc.var <- FC.var
+    } else if(length(FC.mean) == 1 & length(FC.var) == 1){
+      fc.mean <- rep(FC.mean,n.preys); fc.var <- rep(FC.var,n.preys)
+    } else {stop('Fat content mean and variance need to be either a single number, or supplied as a vector of length equal to the number of prey items - use R c() notation in that case. In the latter case, or for individual sample fat content please supply a file')}
+    
   } else
   {
     fat.cont <- read.csv(fat.conts,header=F)
@@ -192,6 +196,8 @@ addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = NULL,Conv.Coeffs.m
       }
     } else if (any(fat.cont>1)){
       fat.cont <- fat.cont/100
+      fc.mean <- tapply(fat.cont,preys.ix,mean)
+      fc.var <- tapply(fat.cont,preys.ix,var)
     }
   }
   

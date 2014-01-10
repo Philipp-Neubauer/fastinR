@@ -45,7 +45,7 @@ delist <- function(datas,Covs=NULL){
   
 }
 
-run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.1,plott=T){
+run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=5,plott=T){
   # have three types here: FA, SI and combined, then methods dispatch based on type of arg
   
   if(missing(datas)) {datas = guiGetSafe('datas');GUI = T} else {GUI = F}
@@ -65,10 +65,15 @@ run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data
     }
     
     # check for covariates
-    if(GUI==T & Analysis.Type == 'Analysis.with.Covariates') Covs = guiGetSafe('Covs')
+    if(GUI==T & Analysis.Type == 'Analysis.with.Covariates') {
+      Covs = guiGetSafe('Covs')
+      if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates')
+      {
+        stop('analysis with covariates selected, but no covariates entered.')
+      }
+    }
     
-    if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates'){stop('analysis with covariates selected, but no covariates entered.')}
-    
+    datas$even <- even
     jagsdata <- delist(datas)
     
     save(jagsdata,file='jagsdata.Rdata')
@@ -79,11 +84,14 @@ run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data
                       Analysis.with.Covariates = .AnalysiswithCov(datas)
     )
     
-    res <- spawn(sysfile,nBurnin,nIter,nThin)
+    res <- spawn(sysfile,nChains,nBurnin,nIter,nThin)
     
     if (plott){
       plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
-      if (plotta==1) plot(res,ask=T)}
+      if (plotta==1) {
+        try(plot(res,ask=T))
+        }
+      }
     
     class(res) <- switch(Analysis.Type,
                       Population.proportions = 'pop_props',
@@ -91,7 +99,7 @@ run_MCMC <- function(datas=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data
                       Analysis.with.Covariates = 'cov_props'
     )
     
-    ifelse(GUI==F,return(outputs),guiSet('MCMCout',outputs))
+    ifelse(GUI==F,return(res),guiSet('MCMCout',res))
   }
 }
 
@@ -104,15 +112,21 @@ jagger <- function(sysfile,nBurnin,nIter,nThin,i){
   cat('\n','proceeding to burn-in phase','\n')
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameter distributions','\n')
-  res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
-  
+  if(length(grep('Ind',sysfile))>0){
+    res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
+  } else if(length(grep('Cov',sysfile))>0) {
+    res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)    
+  } else {
+    res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
+  }
   return(res)
   
 }
 
 #spawn slave processes to run separate chains - ultimately this should integrate with runjags0
-spawn <- function(sysfile,nBurnin,nIter,nThin){
+spawn <- function(sysfile,nChains,nBurnin,nIter,nThin){
   
+  orgtime <- Sys.time()
   options(useFancyQuotes=F)
   # spawn seperate R slave processes for each chain and run jagger in them
   for (i in 1:nChains){
@@ -125,10 +139,15 @@ spawn <- function(sysfile,nBurnin,nIter,nThin){
       system(cmd,wait=F)
     }
     else {
-      system(cmd,wait=T)
+      system(cmd,wait=F)
     }
     
   }
+  
+  grep('MCout',dir())
+  while(!any(grep('MCout',dir()))){Sys.sleep(3);cat('+')}
+  while(length(grep('MCout',dir()))<nChains | any(file.info(dir()[grep('MCout',dir())])$mtime <  orgtime)) {Sys.sleep(3);cat('+')}
+  
   
   res <- eval(parse(text=eval(load('MCout1.Rdata'))))
   
@@ -139,4 +158,53 @@ spawn <- function(sysfile,nBurnin,nIter,nThin){
   
   return(res)
   
+}
+
+diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
+  
+  # do RL diag
+ 
+  cat('\n','\n')
+  
+  cat('#################################','\n')
+ 
+  cat('Raftery-Lewis diagnostics','\n')
+ 
+  cat('#################################','\n','\n')
+
+  class(MCMCout) <- 'mcmc.list'
+  
+  rd <- raftery.diag(MCMCout, q=quant, r=accuracy, s=proba)
+  
+  print(rd)
+  
+  if(rd[[1]]$resmatrix[1]=='Error'){
+    
+    cat('\n','Based on these diagnostics you should repeat the pilot MCMC with at least ',rd[[1]]$resmatrix[2],' \n','iterations to calculate diagnostics',' \n',' \n')
+    
+  } else{
+    rit <- max(unlist(lapply(rd,function(x){x$resmatrix[,2]})))
+ 
+    thin <- max(unlist(lapply(rd,function(x){x$resmatrix[,4]})))
+    
+    cat('\n','Based on these diagnostics you should repeat the MCMC with ',rit,' iterations','\n','and a thinning interval of ',round(thin),' ,if these values are higher than the values','\n','used to produce these diagnostics','\n','\n')
+  }
+  
+  # do GR diag
+  
+  if(length(rd)>1){
+    
+    cat('\n','\n')
+    
+    cat('#################################','\n')
+   
+    cat('Gelman-Rubin diagnostics','\n')
+   
+    cat('#################################','\n','\n')
+ 
+    print(gelman.diag(MCMCout,transform=T))
+   
+    cat('\n','Both univariate upper C.I. and multivariate psrf','\n','should be close to 1 if the chains converged','\n','\n','\n')
+  
+  }
 }
