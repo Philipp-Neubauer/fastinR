@@ -2,7 +2,7 @@ context('Variable selection test')
 
 test_that('Variable selection works',{
   
-  data('SimEx')
+  data('SimEx',package = 'FASTIN',envir = environment())
   
   dats <- selectvars(datas,ix=1:3)
   expect_is(dats,'list')

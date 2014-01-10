@@ -2,7 +2,7 @@ context('MCMC pop.prop testing')
 
 test_that('Pop Props with FA give sensible answers',{
   
-  data('Sim')
+  data('Sim',envir = environment())
   
   dats <- selectvars(datas,ix=c(2,7,3,6,8))
   
@@ -18,7 +18,7 @@ test_that('Pop Props with FA give sensible answers',{
 
 test_that('Pop Props with SI give sensible answers',{
   
-  data('Sim')
+  data('Sim',envir = environment())
   
   dat <- run_MCMC(datas,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',even=0.1,plott=F)
   
@@ -32,7 +32,7 @@ test_that('Pop Props with SI give sensible answers',{
 
 test_that('Pop Props with combined give sensible answers',{
   
-  data('Sim')
+  data('Sim',envir = environment())
   
   dats <- selectvars(datas,ix=c(2,7,3,6,8))
   
@@ -45,4 +45,3 @@ test_that('Pop Props with combined give sensible answers',{
   expect_false(sum(abs(colMeans(props)-colMeans(do.call('rbind',dat))))>0.2)
   
 })
-
