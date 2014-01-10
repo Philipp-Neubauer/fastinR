@@ -3,21 +3,6 @@ simulation <- function(){
   
   ######### sim functions
 #  require(fgui)
-    clo <- function(x){
-        if (is.null(dim(x))){xc <- x/sum(x)} else {xc <- t(apply(x,1,function(y){y/sum(y)}))}
-        return(xc)
-    }
-
-    alr <- function(x){
-        x<-clo(x)
-        if (is.null(dim(x))){xc <- log(x[1:(length(x)-1)]/x[length(x)])} else { t(apply(x,1,function(y){log(y[1:(length(y)-1)]/y[length(y)])}))}
-    }
-
-    clr <- function(x){
-        x<-clo(x)
-        if (is.null(dim(x))){xc <- log(x)-mean(log(x))} else { t(apply(x,1,function(y){log(y)-mean(log(y))}))}
-    }
-    
   
   simulator <- function(n.preys=3,n.preds=10,nsamples=30,simProps=NULL,simGroups=NULL,simCovs=NULL,FAsim.data=NULL,SIsim.data=NULL,simplot=NULL,simwrite=NULL){
     
@@ -315,10 +300,10 @@ simulation <- function(){
     fc_sd <- matrix(0.5,n.preys,1)
     
     # draw mean conversion coeffs - cvar is the variance of mean conversion coeffs around 1; 0.2 seems reasonable  (c.f., Rosen & Tollit histogram)
-    mean_css=matrix(rlnorm(n.fats*n.preys,0,cvar),n.preys,n.fats) # rtnorm is a truncated normal, with lower truncation set to 0
+    mean_css=data.frame(matrix(rlnorm(n.fats*n.preys,0,cvar),n.preys,n.fats))
     rownames(mean_css) <- unique(preys.ix)
     
-    sd_css=matrix(0.05,n.preys,n.fats)
+    sd_css=data.frame(matrix(0.05,n.preys,n.fats))
     rownames(sd_css) <- unique(preys.ix)
     
     mprey <-  clo(t(apply(preys,c(3),function(x){exp(colMeans(log(x)))})))
@@ -369,10 +354,10 @@ simulation <- function(){
       preya.SI<- rbind(preya.SI,preys.SI[,,i])
     }
     
-    mean_cs = matrix(rnorm(isos*n.preys,c(3,1,rnorm(isos-2))),n.preys,isos,byrow=T)
+    mean_cs = data.frame(matrix(rnorm(isos*n.preys,c(3,1,rnorm(isos-2))),n.preys,isos,byrow=T))
     rownames(mean_cs) <- unique(preys.ix)
     
-    sd_cs =matrix(rep(0.2,isos),n.preys,isos,byrow=T) # 1.61
+    sd_cs = data.frame(matrix(rep(0.2,isos),n.preys,isos,byrow=T)) # 1.61
     rownames(sd_cs) <- unique(preys.ix)
     
     # the mixture in matrix algebra (just a matrix product)
@@ -415,21 +400,21 @@ simulation <- function(){
       write.table(cbind(preys.ix,preys),file=paste(filename,'_FA_preys.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
       write.table(preds,file=paste(filename,'_FA_preds.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
       write.table(cbind(fc_mean,fc_sd),file=paste(filename,'_fat_cont.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
-      write.table(mean_c,file=paste(filename,'_FA_cc_means.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
-      write.table(sd_c,file=paste(filename,'_FA_cc_sd.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
+      write.table(mean_c,file=paste(filename,'_FA_cc_means.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
+      write.table(sd_c,file=paste(filename,'_FA_cc_sd.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
     }
     if(all(!is.na(preys.SI))){
       write.table(cbind(preys.ix,preys.SI),file=paste(filename,'_SI_preys.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
       write.table(preds.SI,file=paste(filename,'_SI_preds.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
-      write.table(mean_cs,file=paste(filename,'_SI_fc_means.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
-      write.table(sd_cs,file=paste(filename,'_SI_fc_sd.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
+      write.table(mean_cs,file=paste(filename,'_SI_fc_means.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
+      write.table(sd_cs,file=paste(filename,'_SI_fc_sd.csv',sep=''),sep=',',quote=F,col.names=T,row.names=T)
     }
     if(switchin == 'Covas' | switchin == 'combined'){
       write.table(Covs,file=paste(filename,'_Covariates.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
-      write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)}
+      write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)}
      if(switchin == 'groups' | switchin == 'combined'){
       write.table(Grps,file=paste(filename,'_Groups.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
-      write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=F,row.names=F)
+      write.table(beta,file=paste(filename,'_Cov_n_Grp_effects.csv',sep=''),sep=',',quote=F,col.names=T,row.names=F)
     }
           
     write.table(props,file=paste(filename,'_props.csv',sep=''),sep=',',quote=F,col.names=F,row.names=T)
@@ -446,29 +431,19 @@ simulation <- function(){
     preds   <- guiGetSafe("preds")
     preys.SI   <- guiGetSafe("preys.SI")
     preds.SI   <- guiGetSafe("preds.SI")
+    mean_cs   <- guiGetSafe("mean_cs")
     preys.ix <- guiGetSafe("preys.ix")
     
     plott <-F
     if(all(!is.na(preys))){preya=cbind(preya,clr(preys));preda=cbind(preda,clr(preds));plott <-T}
-    if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,preds.SI);plott <-T}
+    if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,preds.SI-colMeans(mean_cs));plott <-T}
     
     if(plott==T){
-      x11()
-      
-      adist <- function(mat){
-
-        dims <- dim(mat)
-        dists <- matrix(,dims[1],dims[1])
-        for (i in 1:(dims[1]-1)){
-            for (j in (i+1):dims[1]){
-                dists[j,i] <- robCompositions::aDist(mat[i,],mat[j,])
-            }}
-        dista <- as.dist(dists)
-              return(dista)
-    }
-
+           
       dista <- dist(rbind(preya,preda))
       mds <- metaMDS(dista)
+      
+      X11(file.path(path, "tests"))
       pl <- plot(mds,type='n')
       points(pl,'sites',pch=cbind(as.numeric(as.factor(preys.ix)),rep(16,n.preds)),col=cbind(1+as.numeric(as.factor(preys.ix)),rep(1,n.preds)))
       legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))
