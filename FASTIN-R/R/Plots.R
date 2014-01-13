@@ -856,6 +856,21 @@ MCMCplot <- function(x){
   y  <- vector("list", x$nChains)
   for (i in 1:x$nChains) y[[i]] <- x[[i]]
   class(y) <- 'mcmc.list'
+  if (!is.function(options()$device)){
+    if (names(dev.cur())=="RStudioGD"){
+      # try to open a new platform-appropriate plot window
+      if (.Platform$OS.type=='windows'){
+        windows()
+      } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+      { 
+        quartz(width=5,height=5)
+      } else {  # must be unix
+        x11()
+      }
+      externalDevice<-TRUE
+    }
+  }
+  
   plot(y)
   
 }

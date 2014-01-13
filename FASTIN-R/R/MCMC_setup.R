@@ -81,8 +81,22 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     if (plott==T){
       plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
       if (plotta==1) {
-        try(plot(res,ask=T))
+        if (!is.function(options()$device)){
+          if (names(dev.cur())=="RStudioGD"){
+            # try to open a new platform-appropriate plot window
+            if (.Platform$OS.type=='windows'){
+              windows()
+            } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+            { 
+              quartz(width=5,height=5)
+            } else {  # must be unix
+              x11()
+            }
+          }
         }
+        
+        try(plot(res,ask=T))
+      }
       }
     
     res <- c(res,nChains = nChains)
