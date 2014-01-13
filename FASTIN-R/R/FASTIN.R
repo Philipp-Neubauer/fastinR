@@ -8,4 +8,5 @@
 #' @import vegan fgui tcltk rjags lattice MASS ggplot2 grid
 #' @docType package
 #' @name FASTIN-package
+#' @aliases FASTIN
 NULL

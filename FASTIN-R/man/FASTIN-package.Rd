@@ -1,5 +1,6 @@
 \docType{package}
 \name{FASTIN-package}
+\alias{FASTIN}
 \alias{FASTIN-package}
 \title{Fatty Acids and Stable Isotopes in R}
 \description{

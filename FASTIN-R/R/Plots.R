@@ -19,7 +19,7 @@ plot.pop_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
-  preya.names <- unique(x$prey.ix)
+  preya.names <- x$prey.names
   
   outs={}
   for (k in 1:x$nChains){
@@ -29,101 +29,119 @@ plot.pop_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   colnames(outs) <- preya.names
   outs <- as.data.frame(outs)
   
-  if (sava==1) pdf(paste(save,"correlations.pdf",sep=''))
-  plot(outs,main='Correlation of proportion estimates')
+  if (sava==1) {
+    pdf(paste(save,"correlations.pdf",sep=''))
+  } else {externalDevice<-FALSE
+          if (!is.function(options()$device)){
+            if (names(dev.cur())=="RStudioGD"){
+              # try to open a new platform-appropriate plot window
+              if (.Platform$OS.type=='windows'){
+                windows()
+              } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+              { 
+                quartz(width=5,height=5)
+              } else {  # must be unix
+                x11()
+              }
+              externalDevice<-TRUE
+            }
+          }
+  }
+plot(outs,main='Correlation of proportion estimates')
+if (sava==1) dev.off()
+
+
+if(density==F){
+  mp=reshape::melt.data.frame(outs)
+  if (sava==1){pdf(paste(save,"pop_proportions.pdf",sep=''))}else{par(ask=T)}
+  rpp = bwplot(variable~value,data=mp,xlim=c(0,1),xlab=list(label=expression("Posterior distribution of diet proportions"),cex=1)
+               ,panel = function(x, y) { 
+                 grid::grid.segments(1,0,0,0)
+                 xlist <- split(x, factor(y))
+                 for (i in seq(along=xlist))
+                   denstrip::panel.denstrip(x=xlist[[i]], at=i,colmax=(1),ticks=quantile(xlist[[i]],c(0.025,0.975)),mticks=quantile(xlist[[i]],0.5),tlen=1.2,mlen=1.2,nwd=1.5)
+               },par.settings = list(axis.line = list(col=NA)),scales=list(col=1,cex=1,x=list(col=1,at=seq(0,1,0.2)),y=list(draw=T,labels=preya.names)))
+  print(rpp)
+  par(ask=F)
+  trellis.focus("panel", 1, 1,highlight=F)
+  panel.abline(h=seq(1.5,ncol(outs),1),col=1,lty=2)
+  trellis.unfocus()
   if (sava==1) dev.off()
+} else {
   
+  xx<-reshape::melt.data.frame(outs)
   
-  if(density==F){
-    mp=reshape::melt.data.frame(outs)
-    if (sava==1){pdf(paste(save,"pop_proportions.pdf",sep=''))}else{par(ask=T)}
-    rpp = bwplot(variable~value,data=mp,xlim=c(0,1),xlab=list(label=expression("Posterior distribution of diet proportions"),cex=1)
-                 ,panel = function(x, y) { 
-                   grid::grid.segments(1,0,0,0)
-                   xlist <- split(x, factor(y))
-                   for (i in seq(along=xlist))
-                     denstrip::panel.denstrip(x=xlist[[i]], at=i,colmax=(1),ticks=quantile(xlist[[i]],c(0.025,0.975)),mticks=quantile(xlist[[i]],0.5),tlen=1.2,mlen=1.2,nwd=1.5)
-                 },par.settings = list(axis.line = list(col=NA)),scales=list(col=1,cex=1,x=list(col=1,at=seq(0,1,0.2)),y=list(draw=T,labels=preya.names)))
-    print(rpp)
-    par(ask=F)
-    trellis.focus("panel", 1, 1,highlight=F)
-    panel.abline(h=seq(1.5,ncol(outs),1),col=1,lty=2)
-    trellis.unfocus()
-    if (sava==1) dev.off()
-  } else {
+  multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     
-    xx<-reshape::melt.data.frame(outs)
     
-    multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-      
-      
-      # Make a list from the ... arguments and plotlist
-      plots <- c(list(...), plotlist)
-      
-      numPlots = length(plots)
-      
-      # If layout is NULL, then use 'cols' to determine layout
-      if (is.null(layout)) {
-        # Make the panel
-        # ncol: Number of columns of plots
-        # nrow: Number of rows needed, calculated from # of cols
-        layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                         ncol = cols, nrow = ceiling(numPlots/cols))
-      }
-      
-      if (numPlots==1) {
-        print(plots[[1]])
-        
-      } else {
-        # Set up the page
-        grid.newpage()
-        pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-        
-        # Make each plot, in the correct location
-        for (i in 1:numPlots) {
-          # Get the i,j matrix positions of the regions that contain this subplot
-          matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-          
-          print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                          layout.pos.col = matchidx$col))
-        }
-      }
-    }
-    ggs_density <- function(D, pos=0,title) {
-      # Manage subsetting a family of parameters
-      
-      dims = dim(D)
-      D<-as.data.frame(D)
-      
-      f <- ggplot(aes(x=value, fill=as.factor(variable), col=as.factor(variable)),data=D)
-      
-      f <- f + geom_density(alpha=0.3,adjust=3,data=D) + 
-        geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
-        geom_vline(aes(xintercept=0),colour=1)+
-        geom_hline(aes(yintercept=0),colour=1)+
-        scale_x_continuous(limits=c(0,1))+
-        xlab('Proportion')+
-        ylab('Posterior Density')+
-        ggtitle(title)+    
-        theme(panel.grid.major=element_line(colour = NA),
-              panel.grid.minor=element_line(colour = NA),
-              panel.background=element_rect(fill=NA),
-              #legend.position = "none",
-              legend.title=element_blank(),
-              axis.ticks = element_line(colour=1),
-              axis.text = element_text(colour=1,size = rel(0.8)),
-              axis.title = element_text(size = rel(1)))+
-        geom_rug(alpha=0.1)
-      
-      f
+    # Make a list from the ... arguments and plotlist
+    plots <- c(list(...), plotlist)
+    
+    numPlots = length(plots)
+    
+    # If layout is NULL, then use 'cols' to determine layout
+    if (is.null(layout)) {
+      # Make the panel
+      # ncol: Number of columns of plots
+      # nrow: Number of rows needed, calculated from # of cols
+      layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                       ncol = cols, nrow = ceiling(numPlots/cols))
     }
     
-    if(sava==1) {pdf(paste(save,'_densities.pdf',sep=''))}else{par(ask=T)}
+    if (numPlots==1) {
+      print(plots[[1]])
+      
+    } else {
+      # Set up the page
+      grid.newpage()
+      pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+      
+      # Make each plot, in the correct location
+      for (i in 1:numPlots) {
+        # Get the i,j matrix positions of the regions that contain this subplot
+        matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+        
+        print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                        layout.pos.col = matchidx$col))
+      }
+    }
+  }
+  ggs_density <- function(D, pos=0,title) {
+    # Manage subsetting a family of parameters
+    
+    dims = dim(D)
+    D<-as.data.frame(D)
+    
+    f <- ggplot(aes(x=value, fill=as.factor(variable), col=as.factor(variable)),data=D)
+    
+    f <- f + geom_density(alpha=0.3,adjust=1.2,data=D) + 
+      geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
+      geom_vline(aes(xintercept=0),colour=1)+
+      geom_hline(aes(yintercept=0),colour=1)+
+      scale_x_continuous(limits=c(0,1))+
+      xlab('Proportion')+
+      ylab('Posterior Density')+
+      ggtitle(title)+    
+      theme(panel.grid.major=element_line(colour = NA),
+            panel.grid.minor=element_line(colour = NA),
+            panel.background=element_rect(fill=NA),
+            #legend.position = "none",
+            legend.title=element_blank(),
+            axis.ticks = element_line(colour=1),
+            axis.text = element_text(colour=1,size = rel(0.8)),
+            axis.title = element_text(size = rel(1)))+
+      geom_rug(alpha=0.1)
+    
+    f
+  }
+  
+  if(sava==1) {pdf(paste(save,'_densities.pdf',sep=''))}else{par(ask=T)}
     multiplot(ggs_density(xx,title=''))
     
     if(sava==1) dev.off()
     
   }
+# turn off external device if using one
 }
 
 #' @method plot ind_props
@@ -132,7 +150,7 @@ plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
-  preya.names <- unique(x$prey.ix)
+  preya.names <- x$prey.names
   
   outs={}
   for (k in 1:x$nChains){
@@ -144,7 +162,24 @@ plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   colnames(outs) <- colnames(x[[1]])
   popix <- grep('pop',colnames(outs))
   
-  if (sava==1)  pdf(paste(save,"correlations.pdf",sep=''))
+  if (sava==1)  {
+    pdf(paste(save,"correlations.pdf",sep=''))
+  } else {externalDevice<-FALSE
+          if (!is.function(options()$device)){
+            if (names(dev.cur())=="RStudioGD"){
+              # try to open a new platform-appropriate plot window
+              if (.Platform$OS.type=='windows'){
+                windows()
+              } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+              { 
+                quartz(width=5,height=5)
+              } else {  # must be unix
+                x11()
+              }
+              externalDevice<-TRUE
+            }
+          }
+  }
   plot(outs[,popix],main='Correlation of proportion estimates')
   if (sava==1) dev.off()
   
@@ -215,7 +250,7 @@ plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
       
       f <- ggplot(aes(x=value,fill=as.factor(variable), col=as.factor(variable)),data=D)
       
-      f <- f + geom_density(alpha=0.3,adjust=3,data=D) + 
+      f <- f + geom_density(alpha=0.3,adjust=1.2,data=D) + 
         geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
         geom_vline(aes(xintercept=0),colour=1)+
         geom_hline(aes(yintercept=0),colour=1)+
@@ -304,7 +339,7 @@ plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
       
       f <- ggplot(aes(x=value,fill=as.factor(variable), col=as.factor(variable)),data=D)
       
-      f <- f + geom_density(alpha=0.3,adjust=3,data=D,trim=F)+ 
+      f <- f + geom_density(alpha=0.3,adjust=1.2,data=D,trim=F)+ 
         geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
         geom_vline(aes(xintercept=0),colour=1)+
         geom_hline(aes(yintercept=0),colour=1)+
@@ -372,7 +407,7 @@ plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
     
-  preya.names <- unique(x$prey.ix)
+  preya.names <- x$prey.names
   Covs <- x$Covs
   
   outs={}
@@ -396,7 +431,24 @@ plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   
   this.eff <- outs[,popix[1:(nGr*datas$n.preys)]]
   k=1
-  if (sava==1)  pdf(paste(save,"correlations.pdf",sep=''))
+  if (sava==1)  {
+    pdf(paste(save,"correlations.pdf",sep=''))
+  } else {externalDevice<-FALSE
+          if (!is.function(options()$device)){
+            if (names(dev.cur())=="RStudioGD"){
+              # try to open a new platform-appropriate plot window
+              if (.Platform$OS.type=='windows'){
+                windows()
+              } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+              { 
+                quartz(width=5,height=5)
+              } else {  # must be unix
+                x11()
+              }
+              externalDevice<-TRUE
+            }
+          }
+  }
   for (n in 1:nGr) {colnames(this.eff)[k:(k+datas$n.preys-1)] <- sprintf(paste('Group',n,'/ %s'),preya.names); k=k+datas$n.preys}
   plot( this.eff,main='Correlation of proportion estimates')
   if (sava==1) dev.off()
@@ -467,7 +519,7 @@ plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
       
       f <- ggplot(aes(x=value,fill=as.factor(variable), col=as.factor(variable)),data=D)
       
-      f <- f + geom_density(alpha=0.3,adjust=3,data=D) + 
+      f <- f + geom_density(alpha=0.3,adjust=1.2,data=D) + 
         geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
         geom_vline(aes(xintercept=0),colour=1)+
         geom_hline(aes(yintercept=0),colour=1)+
@@ -559,7 +611,7 @@ plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
       
       f <- ggplot(aes(x=value,fill=as.factor(variable), col=as.factor(variable)),data=D)
       
-      f <- f + geom_density(alpha=0.3,adjust=3,data=D,trim=F)+ 
+      f <- f + geom_density(alpha=0.3,adjust=1.2,data=D,trim=F)+ 
         geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
         geom_vline(aes(xintercept=0),colour=1)+
         geom_hline(aes(yintercept=0),colour=1)+
@@ -637,6 +689,24 @@ multiplot <- function(MCMCouts,density=T){
   
   sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
   
+  if (sava==0) {
+    externalDevice<-FALSE
+    if (!is.function(options()$device)){
+      if (names(dev.cur())=="RStudioGD"){
+        # try to open a new platform-appropriate plot window
+        if (.Platform$OS.type=='windows'){
+          windows()
+        } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+        { 
+          quartz(width=5,height=5)
+        } else {  # must be unix
+          x11()
+        }
+        externalDevice<-TRUE
+      }
+    }
+  }
+  
   preya.names <- unique(MCMCouts[[i]]$prey.ix)
     
   if(density==F){
@@ -713,7 +783,7 @@ multiplot <- function(MCMCouts,density=T){
       
       f <- ggplot(aes(x=value, fill=as.factor(V1), col=as.factor(V1)),data=D)
       
-      f <- f + geom_density(alpha=0.3,adjust=3,data=D) + 
+      f <- f + geom_density(alpha=0.3,adjust=1.2,data=D) + 
         geom_vline(aes(xintercept=pos),linetype=1:length(pos),data=as.data.frame(pos),colour=1)+
         geom_vline(aes(xintercept=0),colour=1)+
         geom_hline(aes(yintercept=0),colour=1)+
@@ -783,7 +853,9 @@ multiplot <- function(MCMCouts,density=T){
 #' @export
 MCMCplot <- function(x){
   
-  class(x) <- 'mcmc.list'
-  plot(x)
+  y  <- vector("list", x$nChains)
+  for (i in 1:x$nChains) y[[i]] <- x[[i]]
+  class(y) <- 'mcmc.list'
+  plot(y)
   
 }

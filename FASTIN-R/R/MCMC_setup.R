@@ -10,13 +10,29 @@
 #' @param Analysis.Type The type of analysis to perform: one of'Population.proportions' for estimation of population level proportions only, 'Individual.proportions' to estimate individual diet proportions, or 'Analysis.with.Covariates' for individual proportions and estiamtes of group contrasts and/or covariate effects.
 #' @param even The prior eveness of diet proportions, smaller values place a lower prior on even proportions, if set too low can severly impact convergence of MCMC.
 #' @param plott If FALSE, user is not asked if MCMC runs should be displayed using plots from the coda package. By default, the user is prompted (for compatibility with the gui).
+#' @param spawn Logical - should separate slave R processes be spawned to run individual chains? This can provide significant speed-up for long runs using multiple chains on multi-core processors. A suggested use is to set \code{spawn=F} for short exploratory MCMC runs and once a satisfactory set of parameters has been found, set \code{spawn=T} and run multiple chains for longer.
 #' @return An object containing the MCMC runs, where the class corresponds to the analysis type to enable methods dispatch for plots and summaries.
 #' @details This analysis can be run from the gui or from this standalone R function. In the latter case it is recommended to set plott = F to avoid plotting errors to prevent a return of the fucntion (thereby loosing potential long runs). Markov Chains can always be plotted post-hoc with ,\code{\link{MCMCplot}}.
-#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{diags}},\code{\link{addCovs}} ,\code{\link{DietProportionPlot}}, \code{\link{addCovs}}
+#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{diags}},\code{\link{addCovs}} ,\code{\link{DietProportionPlot}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @examples \dontrun{
+#' data('Sim')
+#' # a short analysis...
+#' MCMCout <- run_MCMC(datas=datas,nIter=100,nBurnin=100,nChains=1,nThin=1,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.5,plott=F,spawn=F)
+#' 
+#' # summaries
+#' summary(MCMCout)
+#' 
+#' # diagnostics
+#' diags(MCMCout)
+#' 
+#' # plot chains
+#' MCMCplot(MCMCout)
+#' plot(MCMCout,save=F)
+#' }
 #' @export
-run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.5,plott=T){
+run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.5,plott=T,spawn=F){
   # have three types here: FA, SI and combined, then methods dispatch based on type of arg
   
   if(missing(datas)) {datas = guiGetSafe('datas');GUI = T} else {GUI = F}
@@ -45,7 +61,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     }
     
     datas$even <- even
-    jagsdata <- .delist(datas)
+    jagsdata <- FASTIN:::.delist(datas)
     
     save(jagsdata,file='jagsdata.Rdata')
     
@@ -55,24 +71,30 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
                       Analysis.with.Covariates = .AnalysiswithCov(datas)
     )
     
-    res <- .spawn(sysfile,nChains,nBurnin,nIter,nThin)
+    if(spawn==T | spawn == 1) {
+    res <- FASTIN:::.spawn(sysfile,nChains,nBurnin,nIter,nThin)
+    } else {
+      res <- FASTIN:::.localrun(jagsdata,sysfile,nChains,nBurnin,nIter,nThin)
+    }
     
-    if (plott){
+    
+    if (plott==T){
       plotta <- menu(title='plot MCMC chains?',choices = c('yes','no'),graphics=T)
       if (plotta==1) {
         try(plot(res,ask=T))
         }
       }
     
+    res <- c(res,nChains = nChains)
+    res <- c(res,prey.names = list(unique(datas$prey.ix)))
+    if (Analysis.Type == 'Analysis.with.Covariates') res <- c(res,Covs=list(Covs))
+    
     class(res) <- switch(Analysis.Type,
-                      Population.proportions = 'pop_props',
-                      Individual.proportions = 'ind_props',
-                      Analysis.with.Covariates = 'cov_props'
+                         Population.proportions = 'pop_props',
+                         Individual.proportions = 'ind_props',
+                         Analysis.with.Covariates = 'cov_props'
     )
     
-    res <- c(res,nChains = nChains)
-    res <- c(res,prey.names = unique(prey.ix))
-    if (class(res) == 'cov_props') res <- c(res,Covs=Covs)
     ifelse(GUI==F,return(res),guiSet('MCMCout',res))
   }
 }
@@ -99,6 +121,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 
 #spawn slave processes to run separate chains - ultimately this should integrate with runjags
 .spawn <- function(sysfile,nChains,nBurnin,nIter,nThin){
+  require(coda)
   
   orgtime <- Sys.time()
   options(useFancyQuotes=F)
@@ -106,7 +129,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   for (i in 1:nChains){
     outfile <- paste('MCout',i,'.Rdata',sep='')
     
-    cmd <- paste("Rscript -e 'library(FASTIN,quietly=T,verbose=F);options(warn=-1);res",i,"<- FASTIN::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save.image(file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
+    cmd <- paste("Rscript -e 'library(FASTIN,quietly=T,verbose=F);options(warn=-1);res",i,"<- FASTIN:::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save.image(file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
     
     if(i<nChains)
     {
@@ -134,6 +157,23 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   
 }
 
+# run MCMC locally
+.localrun <- function(jagsdata,sysfile,nChains,nBurnin,nIter,nThin){
+  require(coda)
+  JM <- jags.model(file=sysfile,data=jagsdata,n.chain=nChains)
+  cat('\n','proceeding to burn-in phase','\n')
+  update(JM,n.iter=nBurnin)
+  cat('\n','sampling from parameter distributions','\n')
+  if(length(grep('Ind',sysfile))>0){
+    res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
+  } else if(length(grep('Cov',sysfile))>0) {
+    res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)    
+  } else {
+    res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
+  }
+  return(res)
+}
+
 #' @title Raftery-Lewis and Gelman-Rubin diagnostics for MCMC chains from \code{\link{run_MCMC}}. Multiple chains are needed for the latter type of diagnostic.
 #' 
 #' @param MCMCout An object produced by \code{\link{run_MCMC}}
@@ -146,6 +186,11 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @export
 diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
+  
+  # revert to mcmc.list compatible format
+  y  <- vector("list", MCMCout$nChains)
+  for (i in 1:MCMCout$nChains) y[[i]] <- MCMCout[[i]]
+  MCMCout <- y
   
   # do RL diag
  
@@ -165,7 +210,7 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
   
   if(rd[[1]]$resmatrix[1]=='Error'){
     
-    cat('\n','Based on these diagnostics you should repeat the pilot MCMC with at least ',rd[[1]]$resmatrix[2],' \n','iterations to calculate diagnostics',' \n',' \n')
+    cat('\n','Based on these diagnostics you should repeat the pilot MCMC with at least',rd[[1]]$resmatrix[2],'iterations to calculate diagnostics',' \n',' \n')
     
   } else{
     rit <- max(unlist(lapply(rd,function(x){x$resmatrix[,2]})))

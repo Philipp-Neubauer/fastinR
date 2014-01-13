@@ -8,6 +8,14 @@
 #' @return Two plots with 1) relative contributions of Fatty Acids to source separation and 2) matrix condition number.
 #' @author Philipp Neubauer
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
+#' #' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @examples  \dontrun{
+#' # load simulated example
+#' data('Sim')
+#' preys <- datas$datas.FA$preys
+#' prey.ix <- datas$prey.ix
+#' plotvarselect(preys,prey.ix)
+#' }
 #' @export
 plotvarselect <- function(prey_mat,prey.ix){
   
@@ -49,6 +57,14 @@ plotvarselect <- function(prey_mat,prey.ix){
 #' @return a data structure of the same form as datas, with Fatty Acids selected by ix.
 #' @author Philipp Neubauer
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
+#' #' @seealso \code{\link{addFA}},\code{\link{addCovs}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @examples \dontrun{
+#' # load simulated example
+#' data('Sim')
+#' selectvars(datas,4:1)
+#' # or select visualy
+#' selectvars(datas)
+#' }
 #' @export
 selectvars <- function(datas,ix=NULL){
   

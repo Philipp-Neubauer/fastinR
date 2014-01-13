@@ -7,7 +7,7 @@
 #' @section Warning: The Tcl/Tk gui interface is very unpredictable, leading to odd errors like internal functions not being found when calling FASTIN functions from the console after having used the GUI. Problems seem to be related to environments. It's usually best to completely restart R when this happens.
 #' @seealso \code{\link{simulation}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
 #' @examples
-#'\dontrun{fastin()}
+#' \dontrun{fastin()}
 #' @export
 fastin <- function(){
   #require(tcltk)   # this is needed - but leads to crashes...
@@ -17,8 +17,6 @@ fastin <- function(){
   # gui helper functions
   
   .fastin <- function(FA.data=NULL,SI.data=NULL,add.covs,varselect,plotdatas,Load.Data=NULL,Save.Data=NULL,MCMC,disp.diags=NULL,Plot.Outputs=NULL,Display.Summaries=NULL,Save.Outputs=NULL){}
-  
-  pnorm_even <- function(even=0.1){p=2*(1-pnorm(log(95)/2,0,sqrt(1/even)));return(p)}
   
   dispsummaries <- function(Display.Summary=NULL){output <- guiGetSafe('MCMCout') ; 
                                                   if(class(output)=='pop_props'|class(output)=='ind_props'|class(output)=='cov_props')
@@ -38,9 +36,9 @@ fastin <- function(){
                            {plot(output)}
   }
   
-  saveoutputs <- function(Path="MCMCout.Rdata"){output <- guiGetSafe('MCMCout');save(output,file=Path)}
+  saveoutputs <- function(Path="MCMCout.RData"){output <- guiGetSafe('MCMCout');save(output,file=Path)}
   
-  SaveData <- function(Path="datas.Rdata"){datas <- guiGetSafe('datas');stopifnot(length(datas)>1);save(datas,file=Path)}
+  SaveData <- function(Path="datas.RData"){datas <- guiGetSafe('datas');stopifnot(length(datas)>1);save(datas,file=Path)}
   LoadData <- function(Path=NULL){ load(Path); guiSet('datas',datas)}
   
   guiSet( "LIST_WIDTH", 50)
@@ -55,7 +53,7 @@ fastin <- function(){
                                                     exec='Add'),
                                 Save.Outputs=guiNestedF(saveoutputs,"Save.Outputs",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
                                 Save.Data=guiNestedF(SaveData,"Save.Data",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
-                                Load.Data=guiNestedF(LoadData,"Load.Data",argFilter=list(Path= "{{} {.Rdata}}"),cancelButton=F,exec='load'),
+                                Load.Data=guiNestedF(LoadData,"Load.Data",argFilter=list(Path= "{{} {.RData}}"),cancelButton=F,exec='load'),
                                 Display.Summaries=dispsummaries,
                                 plotdatas = dataplot,
                                 varselect = selectvars,
@@ -95,7 +93,7 @@ fastin <- function(){
                                                   exec = "Run MCMC", closeOnExec = TRUE,
                                                   output = NULL,
                                                   
-                                                  argOption = list(Data.Type = c('Fatty.Acid.Profiles','Stable.Isotopes','Combined.Analysis'), defaultChoice=1,Analysis.Type = c('Population.proportions','Individual.proportions','Analysis.with.Covariates'), defaultChoice=1),    
+                                                  argOption = list(Data.Type = c('Fatty.Acid.Profiles','Stable.Isotopes','Combined.Analysis'), defaultChoice=1,spawn=c(FALSE,TRUE),defaultChoice=1,Analysis.Type = c('Population.proportions','Individual.proportions','Analysis.with.Covariates'), defaultChoice=1),    
                                                   argType=list(datas='i',plott='i',Covs='i'),
                                                   argText=list(nIter = 'Number of MCMC iterations',
                                                                nBurnin = 'Number of MCMC iterations to discard (burn-in)',

@@ -344,9 +344,25 @@ dataplot <- function(datas=NULL){
   dista <- dist(rbind(preya,preda))
   mds <- metaMDS(dista)
   
-  X11()
+  externalDevice<-FALSE
+  if (!is.function(options()$device)){
+    if (names(dev.cur())=="RStudioGD"){
+      # try to open a new platform-appropriate plot window
+      if (.Platform$OS.type=='windows'){
+        windows()
+      } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+      { 
+        quartz(width=5,height=5)
+      } else {  # must be unix
+        x11()
+      }
+      externalDevice<-TRUE
+    }
+  }
+  
   pl <- plot(mds,type='n')
   points(pl,'sites',pch=cbind(as.numeric(as.factor(datas$prey.ix)),rep(16,datas$n.preds)),col=cbind(1+as.numeric(as.factor(datas$prey.ix)),rep(1,datas$n.preds)))
   legend('bottomright',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
   
+  # turn off external device if using one
 }

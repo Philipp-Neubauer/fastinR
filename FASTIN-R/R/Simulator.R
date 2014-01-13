@@ -480,7 +480,20 @@ simulation <- function(){
       dista <- dist(rbind(preya,preda))
       mds <- metaMDS(dista)
       
-      X11()
+      if (!is.function(options()$device)){
+        if (names(dev.cur())=="RStudioGD"){
+          # try to open a new platform-appropriate plot window
+          if (.Platform$OS.type=='windows'){
+            windows()
+          } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+          { 
+            quartz(width=5,height=5)
+          } else {  # must be unix
+            x11()
+          }
+          externalDevice<-TRUE
+        }
+      }
       pl <- plot(mds,type='n')
       points(pl,'sites',pch=cbind(as.numeric(as.factor(preys.ix)),rep(16,n.preds)),col=cbind(1+as.numeric(as.factor(preys.ix)),rep(1,n.preds)))
       legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))
