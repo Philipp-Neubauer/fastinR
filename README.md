@@ -8,7 +8,12 @@ Install
 
 Requirements: Some R package requirements, these should install automatically. On MAC, Xquarz is needed (I think...) to support the gui and plotting from the gui. Not needed iif plotting is manually turned off for all functions.
 
-Please install development versions of the package directly from github using ```install_github("philipp-neubauer/FASTIN-R/FASTIN-R")```
+To install directly from github you'll also need git (get it here: http://git-scm.com/) and the devtools package for R.
+
+Please install development versions of the package directly from github using 
+```R
+install_github("philipp-neubauer/FASTIN-R/FASTIN-R")
+```
 
 Running
 ===========
