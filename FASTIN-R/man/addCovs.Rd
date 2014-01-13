@@ -16,7 +16,12 @@ Files must be in .csv format
 }
 \details{
 Use \code{\link{simulation}} to simulate and write these
-files to inpect the file structure.
+files to inspect the file structure.
+}
+\examples{
+Cov_path <- system.file("extdata", "Simdata_Covariates.csv", package="FASTIN")
+Group_path<- system.file("extdata", "Simdata_Groups.csv", package="FASTIN")
+addCovs(Groups=Group_path,Covariates=Cov_path)
 }
 \author{
 Philipp Neubauer

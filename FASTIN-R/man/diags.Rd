@@ -5,7 +5,7 @@
 diags(MCMCout = NULL, accuracy = 0.01, proba = 0.95, quant = 0.025)
 }
 \arguments{
-  \item{MCMCouts}{An object produced by
+  \item{MCMCout}{An object produced by
   \code{\link{run_MCMC}}}
 
   \item{accuracy}{Accuracy with which parameters are to be
@@ -24,7 +24,7 @@ the latter type of diagnostic.
 }
 \details{
 The function allows to diagnose if a given MCMC run was
-liekly long enough to have produced reliable estiamtes. The
+likely long enough to have produced reliable estiamtes. The
 number of iterations and a thinning interval are suggested
 - if these are significantly larger than the parameters
 used to produce MCMCout, then the chains should be re-run

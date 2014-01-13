@@ -4,9 +4,11 @@
 #' @details Please consult the help individual functions to obtain help on a particular topic
 #' @references  Neubauer.P. and Jensen, O.P. (in prep)
 #' @author Philipp Neubauer
-#' @section Warning the Tcl/Tk gui interface is very unpredictable, leading to odd errors like internal functions not being found when calling FASTIN functions from the console after having used the GUI. Problems seem to be related to environments. It's usually best to completely restart R when this happens.
-#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}},\code{\link{diags}}
-
+#' @section Warning: The Tcl/Tk gui interface is very unpredictable, leading to odd errors like internal functions not being found when calling FASTIN functions from the console after having used the GUI. Problems seem to be related to environments. It's usually best to completely restart R when this happens.
+#' @seealso \code{\link{simulation}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
+#' @examples
+#'\dontrun{fastin()}
+#' @export
 fastin <- function(){
   #require(tcltk)   # this is needed - but leads to crashes...
   #require(fgui)
@@ -46,8 +48,11 @@ fastin <- function(){
   
   #Gui - tried some meaningful indentation here, but still not quite right...
   output <- gui(.fastin, title = 'FASTIN main menu',
-                argCommand=list(add.covs=guiNestedF(addCovs,"add.covs",  argFilter=list(Groups="{{} {.csv}}",Covariates="{{} {.csv}}"),
-                                                    argText=c(Covariates = "Add Covariates (optional)",Groups = "Add Groups (optional)"),cancelButton=F,exec='Add'),
+                argCommand=list(add.covs=guiNestedF(addCovs,"add.covs",  
+                                                    argFilter=list(Groups="{{} {.csv}}",Covariates="{{} {.csv}}"),
+                                                    argText=c(Covariates = "Add Covariates (optional)",Groups = "Add Groups (optional)"),
+                                                    cancelButton=F,
+                                                    exec='Add'),
                                 Save.Outputs=guiNestedF(saveoutputs,"Save.Outputs",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
                                 Save.Data=guiNestedF(SaveData,"Save.Data",argText = list(Path='Choose filename'),cancelButton=F,exec='save'),
                                 Load.Data=guiNestedF(LoadData,"Load.Data",argFilter=list(Path= "{{} {.Rdata}}"),cancelButton=F,exec='load'),

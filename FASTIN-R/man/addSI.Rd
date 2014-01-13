@@ -20,15 +20,50 @@ addSI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
   column) and an n x P matrix for n preys and P Stable
   Isotopes}
 
-  \item{FracCoeffs.var}{Prey specific Fractionation
+  \item{Frac.Coeffs.var}{Prey specific Fractionation
   coefficient variances, dimensions as for the means}
+
+  \item{FC.mean}{optional - if no prey specific
+  fractionation coefficiants are supplied via
+  Frac.Coeffs.mean, FC mean can provide either a global
+  (single) mean coefficient or fatty acid specific mean
+  coefficients using R's c(FA_1,FA_2,...) notation for ALL
+  fatty acids.}
+
+  \item{FC.var}{optional - if no prey specific
+  fractionation coefficiants are supplied via
+  Frac.Coeffs.mean, FC var can provide either a global
+  (single) coefficient variance or fatty acid specific
+  coefficient variances using R's c(FA_1,FA_2,...) notation
+  for ALL fatty acids.}
+
+  \item{datas}{a data structure as produced by
+  \code{\link{addSI}}, needed if fatty acids and stable
+  isotopes are added sequentially.}
+
+  \item{R.diag.SI}{diagnoal of the prior for the predator
+  covariance matrix. Note that this parameter can
+  significantly influence convergence, especially if there
+  are few predator signatures to estiamte the covariance
+  from - handle with care! If too small, the sampler will
+  get stuck in local modes and extreme values, if too high
+  it can produce nonsenseical estiamtes where all
+  proportions are equal (posterior mean at
+  \code{1/n.preys})}
 }
 \description{
 Files must be in .csv format.
 }
 \details{
 Use \code{\link{simulation}} to simulate and write these
-files to inpect the file structure.
+files to inspect the file structure.
+}
+\examples{
+SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="FASTIN")
+SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="FASTIN")
+Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="FASTIN")
+Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="FASTIN")
+dats <- addSI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
 }
 \author{
 Philipp Neubauer

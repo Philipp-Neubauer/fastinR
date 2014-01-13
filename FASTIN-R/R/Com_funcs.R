@@ -1,6 +1,7 @@
 #' Condition number of the source matrix as a function of a variable index
 #' 
 #' @param mat a compositional vector or dataframe of row-wise compositions
+#' @param vars A vector of indices specifying the order in which to add columns (fatty acids)
 #' @return A \code{l=length(vars)} vector with condition numbers of \code{mat[vars[1:i]]} for \code{i=1:l}
 #' @export
 kappas <- function(mat,vars){

@@ -9,14 +9,26 @@
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @export
+#' @examples 
+#' Cov_path <- system.file("extdata", "Simdata_Covariates.csv", package="FASTIN")
+#' Group_path<- system.file("extdata", "Simdata_Groups.csv", package="FASTIN")
+#' addCovs(Groups=Group_path,Covariates=Cov_path)
+
 addCovs <- function(Groups='',Covariates=''){
+  
+  # check if GUI is being used
+  if(exists('GUI',envir=.GlobalEnv)){
+    GUI <- get('GUI',envir=.GlobalEnv)
+    } else {
+    GUI=F
+  }
   
   if (nchar(Covariates)>0 & nchar(Groups)==0)
   {
     Covs <- read.csv(Covariates,header=T)
     Covs <- cbind(rep(1,nrow(Covs)),Covs)
     n.covs <- ncol(Covs)
-    guiSet('Covs',Covs)
+    if(GUI) guiSet('Covs',Covs)
   } else if (nchar(Covariates)==0 & nchar(Groups)>0) 
   {
     Grps <- read.csv(Groups,header=T)
@@ -29,7 +41,7 @@ addCovs <- function(Groups='',Covariates=''){
     
     Covs <- model.matrix(attr(model.frame(1:nrow(Grps)~.,data=Grps),'terms'),data=Grps)[,]
     colnames(Covs) <- Grp.names[length(Grp.names):1]
-    guiSet('Covs',Covs)
+    if(GUI) guiSet('Covs',Covs)
     
   } else if (nchar(Covariates)>0 & nchar(Groups)>0) 
   {
@@ -45,8 +57,9 @@ addCovs <- function(Groups='',Covariates=''){
     
     Covs <- cbind(model.matrix(attr(model.frame(1:nrow(Grps)~.,data=Grps),'terms'),data=Grps)[,],Covs)
     colnames(Covs) <- c(Grp.names[length(Grp.names):1],Covnames)
-    guiSet('Covs',Covs)
+    if(GUI) guiSet('Covs',Covs)
   }
+  if(!GUI) return(Covs)
 }
 
 #' Add Stable Isotope data for predators and prey items
@@ -56,11 +69,21 @@ addCovs <- function(Groups='',Covariates=''){
 #' @param SI.predators Predator index/names (first column) and Stable Isotopes (1 row pey predator), with Stable Isotope named across the first row 
 #' @param SI.preys Prey names/sample id (first column) and fatty acid profiles (1 row pey prey item), ith Stable Isotope named across the first row 
 #' @param Frac.Coeffs.mean Prey specific additive fractionation coefficient means: Prey names (first column) and an n x P matrix for n preys and P Stable Isotopes
-#' @param FracCoeffs.var Prey specific Fractionation coefficient variances, dimensions as for the means
+#' @param Frac.Coeffs.var Prey specific Fractionation coefficient variances, dimensions as for the means
+#' @param FC.mean optional - if no prey specific fractionation coefficiants are supplied via Frac.Coeffs.mean, FC mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
+#' @param FC.var optional - if no prey specific fractionation coefficiants are supplied via Frac.Coeffs.mean, FC var can provide either a global (single) coefficient variance or fatty acid specific coefficient variances using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
+#' @param datas a data structure as produced by \code{\link{addSI}}, needed if fatty acids and stable isotopes are added sequentially.
+#' @param R.diag.SI diagnoal of the prior for the predator covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
 #' @seealso \code{\link{addFA}},\code{\link{addCovs}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @examples 
+#' SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="FASTIN")
+#' SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="FASTIN")
+#' Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="FASTIN")
+#' Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="FASTIN")
+#' dats <- addSI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
 #' @export
 addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeffs.var='',FC.mean=1,FC.var=1,R.diag.SI=0.2,datas=NULL){
   
@@ -157,10 +180,23 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeff
 #' @param fat.conts Prey fat contents, as (columnwise) mean and variance per prey species or specified for each prey sample for the main analysis, in that case the first column is the prey sample id id and the second column is the individual sample's fat content
 #' @param Conv.Coeffs.mean Prey specific conversion coefficient means: Prey names (first column) and an n x P matrix for n preys and P fatty acids
 #' @param Conv.Coeffs.var Prey specific conversion coefficient variances, dimensions as for the means
+#' @param FC.mean optional - if no prey or sample specific fat content means are supplied in a fat.conts file, prey specific coefficients can be entered here using R's c(FC_1,FC_2,...) notation.
+#' @param FC.var optional - if no prey or sample specific fat content variances are supplied in a fat.conts file, prey specific coefficients can be entered here using R's c(FC_1,FC_2,...) notation.
+#' @param CC.mean optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
+#' @param CC.var optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.var can provide either a global (single) coefficient variance or fatty acid specific coefficient variances using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
+#' @param datas a data structure as produced by \code{\link{addSI}}, needed if fatty acids and stable isotopes are added sequentially.
+#' @param R.diag diagnoal of the prior for the predator covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
 #' @seealso \code{\link{addSI}},\code{\link{addCovs}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @examples 
+#' FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="FASTIN")
+#' FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
+#' Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
+#' Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="FASTIN")
+#' fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
+#' dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
 #' @export
 addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.2,datas=NULL){
   

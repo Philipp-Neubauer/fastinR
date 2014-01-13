@@ -7,6 +7,9 @@ kappas(mat, vars)
 \arguments{
   \item{mat}{a compositional vector or dataframe of
   row-wise compositions}
+
+  \item{vars}{A vector of indices specifying the order in
+  which to add columns (fatty acids)}
 }
 \value{
 A \code{l=length(vars)} vector with condition numbers of

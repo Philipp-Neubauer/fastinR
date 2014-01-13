@@ -15,8 +15,16 @@ options mainly) are not available through the gui.
 Please consult the help individual functions to obtain help
 on a particular topic
 }
-\section{Warning the Tcl/Tk gui interface is very unpredictable, leading to odd errors like internal functions not being found when calling FASTIN functions from the console after having used the GUI. Problems seem to be related to environments. It's usually best to completely restart R when this happens.}{
-
+\section{Warning}{
+  The Tcl/Tk gui interface is very unpredictable, leading
+  to odd errors like internal functions not being found
+  when calling FASTIN functions from the console after
+  having used the GUI. Problems seem to be related to
+  environments. It's usually best to completely restart R
+  when this happens.
+}
+\examples{
+\dontrun{fastin()}
 }
 \author{
 Philipp Neubauer
@@ -25,6 +33,6 @@ Philipp Neubauer
 Neubauer.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}},\code{\link{diags}}
+\code{\link{simulation}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
 }
 

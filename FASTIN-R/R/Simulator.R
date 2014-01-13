@@ -30,14 +30,18 @@
 #'             \item{*_Cov_n_Grp_effects.csv}{an n*p matrix of group and covariate                                   influences on diet proportions for n preys and p (groups+covariates)}
 #'             \item{*_Groups.csv}{Group membership for each predator}
 #'             \item{*_Covariates.csv}{Covariate values for each predator}
+#' @seealso \code{\link{fastin}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
 #'             
 #' @references  Neubauer.P. and Jensen, O.P. (in prep)
 #' @author Philipp Neubauer
+#' @examples
+#'\dontrun{simulation()}
 #' @export                 
 simulation <- function(){
   
   ######### sim functions
 #  require(fgui)
+  options(warn = -2)
   
   simulator <- function(n.preys=3,n.preds=10,nsamples=30,simProps=NULL,simGroups=NULL,simCovs=NULL,FAsim.data=NULL,SIsim.data=NULL,simplot=NULL,simwrite=NULL){
     
@@ -59,8 +63,6 @@ simulation <- function(){
       switcheroo <- guiGetSafe("gswitch")
       
       if (!is.na(switcheroo)){
-        
-        tkmessageBox( message="simulating new diet proportions", title="New diet proportions" )
         
         if (switcheroo == 'gprops')
         {
@@ -306,7 +308,7 @@ simulation <- function(){
     
     if (any(is.na(props)))
     {
-      stop("Please simualte proportions first to initialize parameters")
+      stop("Please simulate proportions first to initialize parameters")
     }
     
     n.preys <- guiGetSafe("n.preys")
@@ -342,7 +344,7 @@ simulation <- function(){
     rownames(sd_css) <- unique(preys.ix)
     
     mprey <-  clo(t(apply(preys,c(3),function(x){exp(colMeans(log(x)))})))
-    preds <-  clo(props%*%(as.vector(fc_mean)*mprey*mean_css))
+    preds <-  clo(props%*%as.matrix(as.vector(fc_mean)*mprey*mean_css))
     
     
     guiSet("preds",preds)
@@ -397,7 +399,7 @@ simulation <- function(){
     
     # the mixture in matrix algebra (just a matrix product)
     preym.SI <-  t(apply(preys.SI,3,colMeans))
-    preds.SI <-  props %*% (preym.SI+mean_cs)
+    preds.SI <-  props %*% as.matrix(preym.SI+mean_cs)
     
     
     guiSet("preds.SI",preds.SI)
@@ -478,7 +480,7 @@ simulation <- function(){
       dista <- dist(rbind(preya,preda))
       mds <- metaMDS(dista)
       
-      X11(file.path(path, "tests"))
+      X11()
       pl <- plot(mds,type='n')
       points(pl,'sites',pch=cbind(as.numeric(as.factor(preys.ix)),rep(16,n.preds)),col=cbind(1+as.numeric(as.factor(preys.ix)),rep(1,n.preds)))
       legend('bottomright',c('Predators',unique(preys.ix)),xpd=T,pch=c(16,1:n.preys),col=c(1,2:(n.preys+1)))

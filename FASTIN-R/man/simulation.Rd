@@ -70,10 +70,16 @@ simulating data. Variuous configurations can be written to
 file to allow for exploration of the model with
 \code{fastin()}.
 }
+\examples{
+\dontrun{simulation()}
+}
 \author{
 Philipp Neubauer
 }
 \references{
 Neubauer.P. and Jensen, O.P. (in prep)
+}
+\seealso{
+\code{\link{fastin}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
 }
 
