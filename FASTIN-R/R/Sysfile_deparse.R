@@ -1,7 +1,9 @@
 ##### Pop props -----
 
+#' @export
 .Poppropanalysis <- function(datas) UseMethod(".Poppropanalysis", datas)
 
+#' @S3method .Poppropanalysis FA
 .Poppropanalysis.FA <- function(datas)
 {
   
@@ -10,6 +12,7 @@
   
 }
 
+#' @S3method .Poppropanalysis SI
 .Poppropanalysis.SI <- function(datas)
 {
   
@@ -18,6 +21,7 @@
   return(sysfile)
 }
 
+#' @S3method .Poppropanalysis combined
 .Poppropanalysis.combined <- function(datas)
 {
     
@@ -28,9 +32,10 @@
 }
 
 #### Pop and Ind props ------
-
+#' @export
 .PopandIndprops <- function(datas) UseMethod(".PopandIndprops", datas)
 
+#' @S3method .PopandIndprops FA
 .PopandIndprops.FA <- function(datas)
 {
   
@@ -39,6 +44,7 @@
   
 }
 
+#' @S3method .PopandIndprops SI
 .PopandIndprops.SI <- function(datas)
 {
   
@@ -46,6 +52,7 @@
   return(sysfile)
 }
 
+#' @S3method .PopandIndprops combined
 .PopandIndprops.combined <- function(datas)
 {
   
@@ -55,9 +62,10 @@
 }
 
 ####### Analysis with Cov -------------
-
+#' @export
 .AnalysiswithCov <- function(datas) UseMethod(".AnalysiswithCov",datas)
 
+#' @S3method .AnalysiswithCov FA 
 .AnalysiswithCov.FA <- function(datas)
 {
   sysfile <- paste(system.file("exec",package = "FASTIN"),"/Analysis.with.Cov.FA.bugs",sep='')
@@ -65,12 +73,14 @@
   
 }
 
+#' @S3method .AnalysiswithCov SI
 .AnalysiswithCov.SI <- function(datas)
 {
   sysfile <- paste(system.file("exec",package = "FASTIN"),"/Analysis.with.Cov.SI.bugs",sep='')
   return(sysfile)
 }
 
+#' @S3method .AnalysiswithCov combined
 .AnalysiswithCov.combined <- function(datas)
 {
   

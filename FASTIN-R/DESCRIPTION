@@ -1,20 +1,23 @@
 Package: FASTIN
 Type: Package
-Depends: vegan,fgui,tcltk,rjags,lattice,MASS,ggplot2,grid
-Imports: robCompositions,MCMCpack,denstrip,reshape
-Suggests: testthat
+Depends:
+    vegan,fgui,tcltk,rjags,lattice,MASS,ggplot2,grid
+Imports:
+    robCompositions,MCMCpack,reshape
+Suggests:
+    denstrip
 Title: Fatty Acids and Stable Isotopes in R
 Version: 0.2
 Date: 2013-09-26
 Author: Philipp Neubauer
 Maintainer: Philipp Neubauer <neubauer.phil@gmail.com>
-Description: This packages provides gui facilities to perfom Bayesian estiamtion 
-             of diet proportions based on fatty acid profiles, stable isotopes and 
-             their combination. Bayesian estiamtion is currently performed using 
-             the R package rjags to call JAGS from R. The package can handle 
-             covariates and grouped (e.g., regional) data as predictors of diet 
-             proportions, and will estiamte both individual and popualtion level diet 
-             protportions. Facilities for simulating, plotting and extracting/writing 
-             summary statistics to file are provided as well.
+Description: This packages provides gui facilities to perfom Bayesian estiamtion
+    of diet proportions based on fatty acid profiles, stable isotopes and
+    their combination. Bayesian estiamtion is currently performed using
+    the R package rjags to call JAGS from R. The package can handle
+    covariates and grouped (e.g., regional) data as predictors of diet
+    proportions, and will estiamte both individual and popualtion level diet
+    protportions. Facilities for simulating, plotting and extracting/writing
+    summary statistics to file are provided as well.
 License: GPL (>= 2)
 URL: https://github.com/Philipp-Neubauer/FASTIN-R

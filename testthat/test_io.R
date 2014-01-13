@@ -39,7 +39,7 @@ test_that('FA import works correctly with all files',{
   FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
   Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
   Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_sd.csv", package="FASTIN")
-  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
+  fat.conts <- system.file("extdata", "Simdata_fat.cont.csv", package="FASTIN")
   
   dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
   expect_is(dats,'list')
@@ -55,7 +55,7 @@ test_that('FA import works correctly CC not from file',{
   FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
   Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
   Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_sd.csv", package="FASTIN")
-  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
+  fat.conts <- system.file("extdata", "Simdata_fat.cont.csv", package="FASTIN")
   
   dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,CC.mean=1,CC.var=2)
   expect_is(dats,'list')
@@ -74,7 +74,7 @@ test_that('FA import works correctly CC and FC not from file',{
   FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
   Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
   Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_sd.csv", package="FASTIN")
-  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
+  fat.conts <- system.file("extdata", "Simdata_fat.cont.csv", package="FASTIN")
   
   dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,CC.mean=1,CC.var=2,FC.mean=2,FC.var=2)
   expect_is(dats,'list')

@@ -1,4 +1,15 @@
-addcovs <- function(Groups='',Covariates=''){
+#' Add Covariates and Group indices for predators
+#'     
+#' Files must be in .csv format
+#'             
+#' @param Groups Index of group membership for each predator, one (named) column per grouping variable
+#' @param Covariates Covariate values for each predator, one (named) column per covariate
+#' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
+#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @author Philipp Neubauer
+#' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @export
+addCovs <- function(Groups='',Covariates=''){
   
   if (nchar(Covariates)>0 & nchar(Groups)==0)
   {
@@ -38,8 +49,19 @@ addcovs <- function(Groups='',Covariates=''){
   }
 }
 
-#### SI -----
-
+#' Add Stable Isotope data for predators and prey items
+#'     
+#' Files must be in .csv format.
+#'             
+#' @param SI.predators Predator index/names (first column) and Stable Isotopes (1 row pey predator), with Stable Isotope named across the first row 
+#' @param SI.preys Prey names/sample id (first column) and fatty acid profiles (1 row pey prey item), ith Stable Isotope named across the first row 
+#' @param Frac.Coeffs.mean Prey specific additive fractionation coefficient means: Prey names (first column) and an n x P matrix for n preys and P Stable Isotopes
+#' @param FracCoeffs.var Prey specific Fractionation coefficient variances, dimensions as for the means
+#' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
+#' @seealso \code{\link{addFA}},\code{\link{addCovs}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @author Philipp Neubauer
+#' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @export
 addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeffs.var='',FC.mean=1,FC.var=1,R.diag.SI=0.2,datas=NULL){
   
   # check if GUI is being used
@@ -126,8 +148,20 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeff
   ifelse(GUI,guiSet('datas',datas),return(datas))
 }
 
-####### FAs ----
-
+#' Add Fatty Acid profile data for predators and prey items
+#'     
+#' Files must be in .csv format.
+#'             
+#' @param FA.predators Predator index/names (first column) and fatty acid profiles (1 row pey predator), with fatty acids named across the first row 
+#' @param FA.preys Prey names/sample id (first column) and fatty acid profiles (1 row pey prey item), with fatty acids names across the first row
+#' @param fat.conts Prey fat contents, as (columnwise) mean and variance per prey species or specified for each prey sample for the main analysis, in that case the first column is the prey sample id id and the second column is the individual sample's fat content
+#' @param Conv.Coeffs.mean Prey specific conversion coefficient means: Prey names (first column) and an n x P matrix for n preys and P fatty acids
+#' @param Conv.Coeffs.var Prey specific conversion coefficient variances, dimensions as for the means
+#' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
+#' @seealso \code{\link{addSI}},\code{\link{addCovs}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @author Philipp Neubauer
+#' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @export
 addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.2,datas=NULL){
   
   # check if GUI is being used
@@ -240,8 +274,14 @@ addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mea
   ifelse(GUI,guiSet('datas',datas),return(datas))
 }
 
-### dataplot ---
-
+#' Plot Non-metric multidimensional scaling (NMDS) or (clr transformed) diet data
+#' 
+#' Diet data produced by \code{\link{addFA}} and/or \code{\link{addFA}} is projected onto 2 dimesions using NMDS, where Fatty Acid data is first clr transformed and then concatenated with SI data to produce the plot.
+#' @param datas Diet data produced by \code{\link{addFA}} and/or \code{\link{addSI}}
+#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{selectvars}},\code{\link{plotvarselect}},\code{\link{run_MCMC}}
+#' @author Philipp Neubauer
+#' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @export
 dataplot <- function(datas=NULL){
   
   # check if GUI is being used

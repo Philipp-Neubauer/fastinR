@@ -1,0 +1,25 @@
+\name{MCMCplot}
+\alias{MCMCplot}
+\title{Revert MCMC output class to coda's mcmc.list and use plot.mcmc to display chains. To be run with output from \code{\link{run_MCMC}}}
+\usage{
+MCMCplot(x)
+}
+\arguments{
+  \item{x}{MCMC output from \code{\link{run_MCMC}},
+  containing diet proportion MCMC chains}
+}
+\description{
+Revert MCMC output class to coda's mcmc.list and use
+plot.mcmc to display chains. To be run with output from
+\code{\link{run_MCMC}}
+}
+\author{
+Philipp Neubauer
+}
+\references{
+Neubauer.P. and Jensen, O.P. (in prep)
+}
+\seealso{
+\code{\link{run_MCMC}},\code{\link{diags}}
+}
+

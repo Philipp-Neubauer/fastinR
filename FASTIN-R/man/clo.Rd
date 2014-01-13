@@ -1,0 +1,19 @@
+\name{clo}
+\alias{clo}
+\title{Closure function for compositions}
+\usage{
+clo(x)
+}
+\arguments{
+  \item{x}{a compositional vector or dataframe of row-wise
+  compositions}
+}
+\value{
+A vector who's elements sum to one, or dataframe with rows
+summing to one
+}
+\description{
+Implements the sum-to-unit closure for vectors and
+dataframes (by row).
+}
+

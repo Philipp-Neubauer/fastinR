@@ -1,3 +1,14 @@
+#' Plot cosine distance and matrix condition number for variable selection
+#' 
+#' Cosine distance and matrix condition number are graphed as a function of Fatty Acids, where fatty acids are ordered by their relative contribution to Canonical axes in a CAP (Canonical Analysis of Principal Coordinates).
+#' 
+#' @param prey_mat (row-wise) dataframe of prey compositions
+#' @param prey.ix Indexes rows of \code{prey_mat}
+#' 
+#' @return Two plots with 1) relative contributions of Fatty Acids to source separation and 2) matrix condition number.
+#' @author Philipp Neubauer
+#' @references Neubauer.P. and Jensen, O.P. (in prep)
+#' @export
 plotvarselect <- function(prey_mat,prey.ix){
   
   n.fats=ncol(prey_mat)
@@ -30,6 +41,15 @@ plotvarselect <- function(prey_mat,prey.ix){
   return(sv)
 }
 
+#' Select Fatty Acids from imported data (should really be a method for subset...)
+#' 
+#' @param datas A data structure produced by \code{\link{addSI}} and \code{\link{addFA}}
+#' @param ix Index of variables to retain, if not supplied, \code{\link{plotvarselect}} is called to itneractively select variables based on cosine distance and prey matrix condition.
+#' 
+#' @return a data structure of the same form as datas, with Fatty Acids selected by ix.
+#' @author Philipp Neubauer
+#' @references Neubauer.P. and Jensen, O.P. (in prep)
+#' @export
 selectvars <- function(datas,ix=NULL){
   
   # check if GUI is being used

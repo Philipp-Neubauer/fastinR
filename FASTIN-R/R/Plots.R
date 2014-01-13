@@ -1,19 +1,28 @@
-plot.pop_props <- function(x,datas=NULL,save="FASTIN_MCMC_",density=T,...){
+#' @name DietProportionPlot
+#' @title Plot density or denstrip plots of posterior diet proportions
+#' @description A pairwise plot to inspect correlations between prey items in the MCMC estiamtion, and a density/denstrip plot of diet proportion posterior distributions. To be run with output from \code{\link{run_MCMC}}
+#' @S3method plot pop_props
+#' @S3method plot cov_props
+#' @S3method plot cov_props
+#' @param x MCMC output from \code{\link{run_MCMC}}, containing diet proportion MCMC chains
+#' @param save Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file.
+#' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead.
+#' @details If plots are saved they are not drawn at the same time. That may change in the future...
+#' @references Neubauer.P. and Jensen, O.P. (in prep)
+#' @author Philipp Neubauer
+#' @seealso \code{\link{run_MCMC}},\code{\link{diags}}
+NULL
+
+#' @method plot pop_props
+#' @export
+plot.pop_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) datas <- guiGetSafe('datas')
-  } else {
-    GUI=F
-    if(is.null(datas)) stop('please supply original data when not using the GUI')
-  }
   
-  preya.names <- unique(datas$prey.ix)
+  preya.names <- unique(x$prey.ix)
   
   outs={}
-  for (k in 1:length(x)){
+  for (k in 1:x$nChains){
     outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
     outs <- rbind(outs,outp)
   }
@@ -117,24 +126,16 @@ plot.pop_props <- function(x,datas=NULL,save="FASTIN_MCMC_",density=T,...){
   }
 }
 
-plot.ind_props <- function(x,datas=NULL,save="FASTIN_MCMC_",density=T,...){
+#' @method plot ind_props
+#' @export
+plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) datas <- guiGetSafe('datas')
-  } else {
-    GUI=F
-    if(is.null(datas)) stop('please supply original data when not using the GUI')
-  }
-  
-  preya.names <- unique(datas$prey.ix)
-  
+  preya.names <- unique(x$prey.ix)
   
   outs={}
-  for (k in 1:length(x)){
+  for (k in 1:x$nChains){
     outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
     outs <- rbind(outs,outp)
   }
@@ -365,24 +366,17 @@ plot.ind_props <- function(x,datas=NULL,save="FASTIN_MCMC_",density=T,...){
   }
 }
 
-plot.cov_props <- function(x,datas=NULL,Covs=NULL,save="FASTIN_MCMC_",density=T,...){
+#' @method plot cov_props
+#' @export
+plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
-  
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) datas <- guiGetSafe('datas');Covs <- guiGetSafe('Covs') 
-  } else {
-    GUI=F
-    if(is.null(datas) | is.null(Covs)) stop('please supply original data and covariates when not using the GUI')
-  }
-  
-  preya.names <- unique(datas$prey.ix)
-  
+    
+  preya.names <- unique(x$prey.ix)
+  Covs <- x$Covs
   
   outs={}
-  for (k in 1:length(x)){
+  for (k in 1:x$nChains){
     outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
     outs <- rbind(outs,outp)
   }
@@ -629,20 +623,21 @@ plot.cov_props <- function(x,datas=NULL,Covs=NULL,save="FASTIN_MCMC_",density=T,
   }        
 }
 
-multiplot <- function(MCMCouts,datas=NULL,density=T){
+#' @name multiplot
+#' @title Plot density or denstrip plots from multiple MCMC runs
+#' @description A density/denstrip plot produced for multiple MCMC runs from \code{\link{run_MCMC}}. Useful to compare across runs with different data subsets or data types. The analyses needs to be of the same type, for now only Analysis.Type = Population.Proportions in \code{\link{run_MCMC}} works.
+#' @param MCMCouts A (named) list of objects produced by  \code{\link{run_MCMC}}
+#' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead.  
+#' @details If plots are saved they are not drawn at the same time.
+#' @references Neubauer.P. and Jensen, O.P. (in prep) 
+#' @author Philipp Neubauer
+#' @seealso \code{\link{run_MCMC}},\code{\link{diags}}
+#' @export
+multiplot <- function(MCMCouts,density=T){
   
   sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)
   
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) datas <- guiGetSafe('datas')
-  } else {
-    GUI=F
-    if(is.null(datas)) stop('please supply original data when not using the GUI')
-  }
-  
-  preya.names <- unique(datas$prey.ix)
+  preya.names <- unique(MCMCouts[[i]]$prey.ix)
     
   if(density==F){
     
@@ -651,7 +646,7 @@ multiplot <- function(MCMCouts,datas=NULL,density=T){
       
       x <- MCMCouts[[i]]
       outa={}
-      for (k in 1:length(x)){
+      for (k in 1:x$nChains){
         outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
         outa <- rbind(outa,outp)
       }
@@ -691,7 +686,7 @@ multiplot <- function(MCMCouts,datas=NULL,density=T){
       
       x <- MCMCouts[[i]]
       outa={}
-      for (k in 1:length(x)){
+      for (k in 1:x$nChains){
         outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
         outa <- rbind(outa,outp)
       }
@@ -780,9 +775,15 @@ multiplot <- function(MCMCouts,datas=NULL,density=T){
     if(sava==T) dev.off()
   }}
 
-MCMCplot <- function(res){
+#' Revert MCMC output class to coda's mcmc.list and use plot.mcmc to display chains. To be run with output from \code{\link{run_MCMC}}
+#' @param x MCMC output from \code{\link{run_MCMC}}, containing diet proportion MCMC chains
+#' @references Neubauer.P. and Jensen, O.P. (in prep) 
+#' @author Philipp Neubauer
+#' @seealso \code{\link{run_MCMC}},\code{\link{diags}}
+#' @export
+MCMCplot <- function(x){
   
-  class(res) <- 'mcmc.list'
-  plot(res)
+  class(x) <- 'mcmc.list'
+  plot(x)
   
 }

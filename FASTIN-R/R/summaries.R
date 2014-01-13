@@ -1,17 +1,9 @@
-summary.pop_props <- function(object,datas=NULL,...){
+#' @S3method summary pop_props
+summary.pop_props <- function(object,...){
+    
+  prey.names <- unique(object$prey.ix)
   
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) datas <- guiGetSafe('datas')
-  } else {
-    GUI=F
-    if(!is.null(datas)) stop('please supply original data when not using the GUI')
-  }
-  
-  prey.names <- unique(datas$prey.ix)
-  
-  for (l in 1:length(object)){
+  for (l in 1:object$nChains){
     
     cat('\n','\n',"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",'\n')
     cat("Printing results for MCMC chain",l)
@@ -25,20 +17,12 @@ summary.pop_props <- function(object,datas=NULL,...){
     print(res)
   }
 }
-summary.ind_props <- function(object,datas=NULL,...){
+#' @S3method summary ind_props
+summary.ind_props <- function(object,...){
+    
+  prey.names <- unique(object$prey.ix)
   
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) datas <- guiGetSafe('datas')
-  } else {
-    GUI=F
-    if(!is.null(datas)) stop('please supply original data when not using the GUI')
-  }
-  
-  prey.names <- unique(datas$prey.ix)
-  
-  for (l in 1:length(object)){
+  for (l in 1:object$nChains){
     cat('\n','\n',"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",'\n')
     cat("Printing results for MCMC chain",l)
     cat('\n',"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",'\n')
@@ -53,7 +37,9 @@ summary.ind_props <- function(object,datas=NULL,...){
     print(res)
     
     nms <- colnames(res)
+    #number of preys
     n.p=length(nms)
+    #number of predators
     np <- (ncol(MCMCout)-n.p)/n.p
     # print ind proportions
     indix <- 1:ncol(MCMCout) 
@@ -70,20 +56,15 @@ summary.ind_props <- function(object,datas=NULL,...){
     }   
   }
 }
-summary.cov_props <- function(object,datas=NULL,Covs=NULL, ...){
+#' @S3method summary cov_props
+summary.cov_props <- function(object,...){
   
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if (GUI) datas <- guiGetSafe('datas');Covs <- guiGetSafe('Covs') 
-  } else {
-    GUI=F
-    if(!is.null(datas) | !is.null(Covs)) stop('please supply original data and covariates when not using the GUI')
-  }
+  prey.names <- unique(object$prey.ix)
+  n.preys <- length(prey.names)
+  Covs <- object$Covs
   
-  prey.names <- unique(datas$prey.ix)
   
-  for (l in 1:length(object)){
+  for (l in 1:object$nChains){
     cat('\n','\n',"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",'\n')
     cat("Printing results for MCMC chain",l)
     cat('\n',"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",'\n')
@@ -105,16 +86,16 @@ summary.cov_props <- function(object,datas=NULL,Covs=NULL, ...){
     
     # if there's covariates -> show effects (beta)
     if(nCs>0){
-      eff <- apply(MCMCout[,betaix[(1:(nCs*(datas$n.preys-1))+nGr*(datas$n.preys-1))]],2,function(x){quantile(x,c(0.025,0.5,0.975))})
+      eff <- apply(MCMCout[,betaix[(1:(nCs*(n.preys-1))+nGr*(n.preys-1))]],2,function(x){quantile(x,c(0.025,0.5,0.975))})
       k=0
       for (i in 1:nCs){
         
         cat('\n','\n',"Posterior percentiles for",'\n',"effect of ",covnames[i]," on odds ratios", '\n','\n')            
-        this.eff <- eff[,(k+1):(k+datas$n.preys-1)]
-        for (n in 1:ncol(this.eff)) colnames(this.eff)[n] <- paste(prey.names[n],'/',prey.names[datas$n.preys])
+        this.eff <- eff[,(k+1):(k+n.preys-1)]
+        for (n in 1:ncol(this.eff)) colnames(this.eff)[n] <- paste(prey.names[n],'/',prey.names[n.preys])
         print(this.eff)
         
-        k=k+(datas$n.preys-1)
+        k=k+(n.preys-1)
         
       }
     }
@@ -122,16 +103,16 @@ summary.cov_props <- function(object,datas=NULL,Covs=NULL, ...){
     # idem for Groups
     
     if(nGr>0){
-      eff <- apply(MCMCout[,betaix[(1:(nGr*(datas$n.preys-1)))]],2,function(x){quantile(x,c(0.025,0.5,0.975))})
-      k=(datas$n.preys-1)
+      eff <- apply(MCMCout[,betaix[(1:(nGr*(n.preys-1)))]],2,function(x){quantile(x,c(0.025,0.5,0.975))})
+      k=(n.preys-1)
       for (i in 2:nGr){
         
         cat('\n','\n',"Posterior percentiles for odds ratios",'\n',"of group (anova) contrast",grnames[i],' / ',grnames[1],'\n','\n')            
-        this.eff <- eff[,(k+1):(k+datas$n.preys-1)]
-        for (n in 1:ncol(this.eff)) colnames(this.eff)[n] <- paste(prey.names[n],'/',prey.names[datas$n.preys])
+        this.eff <- eff[,(k+1):(k+n.preys-1)]
+        for (n in 1:ncol(this.eff)) colnames(this.eff)[n] <- paste(prey.names[n],'/',prey.names[n.preys])
         print(this.eff)
         
-        k=k+(datas$n.preys-1)
+        k=k+(n.preys-1)
       }
       
       # do again to give group proportions
@@ -140,23 +121,24 @@ summary.cov_props <- function(object,datas=NULL,Covs=NULL, ...){
       res <- apply(MCMCout[,popix],2,function(x){quantile(x,c(0.025,0.5,0.975))})
       for (i in 1:nGr){          
         
-        this.eff <- res[,(k+1):(k+datas$n.preys)]
+        this.eff <- res[,(k+1):(k+n.preys)]
         for (n in 1:ncol(this.eff)) colnames(this.eff)[n] <- paste(prey.names[n])
         
         cat('\n','\n','\n',"Posterior percentiles for",'\n',"diet proportions of group ",i,'\n',
             '(at mean values of continuous co-variates)','\n','\n')
         print(this.eff)
-        k=k+(datas$n.preys)
+        k=k+(n.preys)
       }
     }
     
     
     # print ind proportions
     indix <- (max(popix)+1):ncol(MCMCout)
+    n.preds <- length(indix)/n.preys
     
-    for (k in 1:datas$n.preds){
+    for (k in 1:n.preds){
       
-      res <- apply(MCMCout[,indix[seq(k,(datas$n.preys-1)*datas$n.preds+k,datas$n.preds)]],2,function(x){quantile(x,c(0.025,0.5,0.975))})
+      res <- apply(MCMCout[,indix[seq(k,(n.preys-1)*n.preds+k,n.preds)]],2,function(x){quantile(x,c(0.025,0.5,0.975))})
       
       colnames(res) <- prey.names
       cat('\n','\n',"Posterior percentiles for",'\n',"diet proportions of predator ",paste(k),'\n','\n')

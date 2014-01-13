@@ -16,7 +16,7 @@ Version: \tab 1.0\cr
 Date: \tab 2013-03-19\cr
 License: \tab GPL (>= 2)\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
+
 }
 \author{
 Philipp Neubauer
@@ -30,7 +30,7 @@ Neubauer.P. and Jensen, O.P. (in prep)
 
 \keyword{ package }
 \seealso{
-\code{\link{fastin}},\code{\link{simulation}},\code{\link{FASTIN}}
+\code{\link{simulation}},\code{\link{FASTIN}}
 }
 \examples{
 
