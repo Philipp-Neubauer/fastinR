@@ -1,14 +1,12 @@
 .Rproj.user
 *.Rproj
 .Rhistory
-.RData
 *.Rcheck
 *#
 *~*
 *.png
 .pdf
 *.pdf
-*.Rdata
 *.tar.gz
 *#*
 FASTIN-R.Rproj
