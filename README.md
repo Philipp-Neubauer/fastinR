@@ -12,7 +12,7 @@ To install directly from github you'll also need git (get it here: http://git-sc
 
 Please install development versions of the package directly from github using 
 ```R
-install_github("philipp-neubauer/FASTIN-R/FASTIN-R")
+install_github("philipp-neubauer/fastinR/fastinR")
 ```
 
 Running

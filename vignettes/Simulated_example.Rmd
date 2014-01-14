@@ -8,11 +8,13 @@ Estimating diet proportions form Fatty Acids and Stable Isotopes
 
 DISCLAIMER: This is an evolving package and vignette, please read instructions [here](https://github.com/Philipp-Neubauer/fastinR/blob/master/README.md) for installation and to see what dependencies are required. If you find a bug or want so suggest improvements, please [submit an issue on github](https://github.com/Philipp-Neubauer/fastinR/issues?state=open), collaborations and contributions are very welcome!
 
+DISCLAIMER 2: This tutorial is by no means a real analysis, which should proceed more carefully, and with longer MCMC runs. The example is designed to run through in a few minutes, and is therefore only an illustration of how an analysis of real data could proceed.
+
 We start with a very simple simulated example. The easiest way to simulate relevant data is through the built in simulation GUI, which is called from the command line once fastinR has been loaded:
 
 ```{r echo=FALSE}
 library(knitr)
-options(markdown.HTML.header = system.file('misc', 'vignette.css', package='knitr'))
+options(markdown.HTML.header = 'vignette.css')
 options(warn=-1)
 ```
 ```{r}
@@ -109,7 +111,7 @@ For a combined analysis of stable isotopes and fatty acids, it is often useful t
 Lets start with an analysis of the stable isotopes, estimating only global (population) level diets. We will use the default prior on the predator covariance matrix, and will adjust this prior subsequently. *WARNING* This might take a while depending on your resources, the size of the dataset and the parameters used for the MCMC.
 
 ```{r}
-Pop.SI <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot.SI=1,plott=F,spawn=F)
+Pop.SI <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=1,plott=F,spawn=F)
 ```
 
 Plotting the MCMC is the easiest way to ensure that the sampler is mixing - meaning that the chain explores the posterior distribution of each parameter efficiently.
@@ -139,7 +141,7 @@ The credible intervals are very large for Prey items 1 and 2, and the correlatio
 Increasing the default prior on the predator covariance matrix sometimes leads to better mixing. We'll also run more iterations and set `spawn=T` for this.
 
 ```{r}
-Pop.SI2 <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot.SI=5,plott=F,spawn=T)
+Pop.SI2 <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=5,plott=F,spawn=T)
 ```
 
 ```{r fig.width=7, fig.height=6}
@@ -206,7 +208,7 @@ There is still substantial uncertainty about the diet proportions: it looks as t
 #### Combining fatty acids and stable isotopes
 
 ```{r}
-Pop.Combined <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',Rnot = 1,Rnot.SI=1,plott=F,spawn=T)
+Pop.Combined <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',Rnot = 1,Rnot_SI=1,plott=F,spawn=T)
 ```
 
 ```{r fig.width=7, fig.height=6}
@@ -267,7 +269,7 @@ diags(Ind.FA)
 
 summary(Ind.FA)
 ```
-```{r fig.width=7, fig.height=6}
+```{r}
 plot(Ind.FA,save=F)
 ```
 
@@ -276,7 +278,7 @@ Despite this MCMC run being an order of magnitude too short, we can see that the
 #### Combined analysis
 
 ```{r}
-Ind.Combined <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Combined.Analysis',Analysis.Type='Individual.proportions',Rnot=1,Rnot.SI=1,even=2,plott=F,spawn=T)
+Ind.Combined <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Combined.Analysis',Analysis.Type='Individual.proportions',Rnot=1,Rnot_SI=1,even=2,plott=F,spawn=T)
 ```
 Again skipping diagnostics output:
 
@@ -287,7 +289,7 @@ diags(Ind.Combined)
 
 summary(Ind.Combined)
 ```
-```{r fig.width=7, fig.height=6}
+```{r}
 plot(Ind.Combined,save=F)
 ```
 
@@ -304,7 +306,7 @@ group.path <- system.file("extdata", "Simdata_groups.csv", package="fastinR")
 Covs <- add_Covs(Groups=group.path)
 
 
-Cov.Combined <- run_MCMC(datas=dats.subset,Covs=Covs,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Combined.Analysis',Analysis.Type='Analysis.with.Covariates',Rnot=1,Rnot.SI=1,even=2,plott=F,spawn=T)
+Cov.Combined <- run_MCMC(datas=dats.subset,Covs=Covs,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Combined.Analysis',Analysis.Type='Analysis.with.Covariates',Rnot=1,Rnot_SI=1,even=2,plott=F,spawn=T)
 ```
 
 ```
@@ -314,7 +316,7 @@ diags(Cov.Combined)
 
 summary(Cov.Combined)
 ```
-```{r fig.width=7, fig.height=6}
+```{r}
 plot(Cov.Combined,save=F)
 ```
 

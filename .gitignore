@@ -9,4 +9,5 @@
 *.pdf
 *.tar.gz
 *#*
+*.Rdata
 FASTIN-R.Rproj
