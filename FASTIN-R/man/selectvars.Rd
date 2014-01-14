@@ -21,10 +21,22 @@ Acids selected by ix.
 Select Fatty Acids from imported data (should really be a
 method for subset...)
 }
+\examples{
+\dontrun{
+# load simulated example
+data('Sim')
+selectvars(datas,4:1)
+# or select visualy
+selectvars(datas)
+}
+}
 \author{
 Philipp Neubauer
 }
 \references{
 Neubauer.P. and Jensen, O.P. (in prep)
+}
+\seealso{
+\code{\link{addFA}},\code{\link{plotvarselect}},\code{\link{run_MCMC}},\code{\link{simulation}}
 }
 

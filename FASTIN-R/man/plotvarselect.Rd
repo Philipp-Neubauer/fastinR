@@ -20,10 +20,22 @@ a function of Fatty Acids, where fatty acids are ordered by
 their relative contribution to Canonical axes in a CAP
 (Canonical Analysis of Principal Coordinates).
 }
+\examples{
+\dontrun{
+# load simulated example
+data('Sim')
+preys <- datas$datas.FA$preys
+prey.ix <- datas$prey.ix
+plotvarselect(preys,prey.ix)
+}
+}
 \author{
 Philipp Neubauer
 }
 \references{
-Neubauer.P. and Jensen, O.P. (in prep)
+Neubauer.P. and Jensen, O.P. (in prep) #'
+}
+\seealso{
+\code{\link{addFA}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 }
 
