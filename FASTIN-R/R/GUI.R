@@ -1,15 +1,15 @@
-#' @name fastin
-#' @title Gui for the FASTIN analysis
-#' @description Provides a gui to input data to be analysed with the \code{\link{run_MCMC}} function. The gui rolls the functionality of most of the functions contained within FASTIN into a single interface, but some options (plottin options mainly) are not available through the gui.
+#' @name fastinR_GUI
+#' @title GUI for the fastinR set of functions
+#' @description Provides a gui to input data to be analysed with the \code{\link{run_MCMC}} function. The gui rolls the functionality of most of the functions contained within fastinR into a single interface, but some options (plottin options mainly) are not available through the gui.
 #' @details Please consult the help individual functions to obtain help on a particular topic
 #' @references  Neubauer.P. and Jensen, O.P. (in prep)
 #' @author Philipp Neubauer
 #' @section Warning: The Tcl/Tk gui interface is very unpredictable, leading to odd errors like internal functions not being found when calling FASTIN functions from the console after having used the GUI. Problems seem to be related to environments. It's usually best to completely restart R when this happens.
-#' @seealso \code{\link{simulation}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
+#' @seealso \code{\link{simulation}},\code{\link{add_FA}},\code{\link{add_SI}},\code{\link{run_MCMC}}
 #' @examples
-#' \dontrun{fastin()}
+#' \dontrun{fastin_GUI()}
 #' @export
-fastin <- function(){
+fastinR_GUI <- function(){
   #require(tcltk)   # this is needed - but leads to crashes...
   #require(fgui)
   GUI <<- TRUE
@@ -56,9 +56,9 @@ fastin <- function(){
                                 Load.Data=guiNestedF(LoadData,"Load.Data",argFilter=list(Path= "{{} {.RData}}"),cancelButton=F,exec='load'),
                                 Display.Summaries=dispsummaries,
                                 plotdatas = dataplot,
-                                varselect = selectvars,
+                                varselect = select_vars,
                                 Plot.Outputs=plotoutputs,
-                                SI.data = guiNestedF(addSI,"SI.data",
+                                SI.data = guiNestedF(add_SI,"SI.data",
                                                      argFilter=list(SI.predators= "{{} {.csv}}",SI.preys= "{{} {.csv}}",Frac.Coeffs.mean="{{} {.csv}}",Frac.Coeffs.var="{{} {.csv}}"), 
                                                      title = 'Stable Isotope data entry form',
                                                      exec = "Add Stable Isotope data", closeOnExec = TRUE,
@@ -72,7 +72,7 @@ fastin <- function(){
                                                                FC.var="Variance of fractionation coefficients (use R's c() notation for multiple isoptopes)",
                                                                R.diag.SI = "Diagonal of the prior for predator (co)-variance matrix (>0, smaller value is less informative)"),
                                                      cancelButton=F), 
-                                FA.data = guiNestedF(addFA,"FA.data",
+                                FA.data = guiNestedF(add_FA,"FA.data",
                                                      argFilter=list(FA.predators= "{{} {.csv}}",FA.preys= "{{} {.csv}}",fat.conts = "{{} {.csv}}",Conv.Coeffs.mean="{{} {.csv}}",Conv.Coeffs.var="{{} {.csv}}"), 
                                                      argType=list(datas='i'),
                                                      #argEdit = list(CC.mean=NULL,CC.var=NULL,R.diag=NULL),

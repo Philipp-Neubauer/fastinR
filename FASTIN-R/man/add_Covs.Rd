@@ -1,8 +1,8 @@
-\name{addCovs}
-\alias{addCovs}
+\name{add_Covs}
+\alias{add_Covs}
 \title{Add Covariates and Group indices for predators}
 \usage{
-addCovs(Groups = "", Covariates = "")
+add_Covs(Groups = "", Covariates = "")
 }
 \arguments{
   \item{Groups}{Index of group membership for each
@@ -19,9 +19,9 @@ Use \code{\link{simulation}} to simulate and write these
 files to inspect the file structure.
 }
 \examples{
-Cov_path <- system.file("extdata", "Simdata_Covariates.csv", package="FASTIN")
-Group_path<- system.file("extdata", "Simdata_Groups.csv", package="FASTIN")
-addCovs(Groups=Group_path,Covariates=Cov_path)
+Cov_path <- system.file("extdata", "Simdata_Covariates.csv", package="fastinR")
+Group_path<- system.file("extdata", "Simdata_Groups.csv", package="fastinR")
+add_Covs(Groups=Group_path,Covariates=Cov_path)
 }
 \author{
 Philipp Neubauer
@@ -30,6 +30,6 @@ Philipp Neubauer
 Neubauer,.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}},\code{\link{simulation}}
+\code{\link{add_FA}},\code{\link{add_SI}},\code{\link{run_MCMC}},\code{\link{simulation}}
 }
 

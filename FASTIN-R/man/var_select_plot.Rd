@@ -1,14 +1,14 @@
-\name{plotvarselect}
-\alias{plotvarselect}
+\name{var_select_plot}
+\alias{var_select_plot}
 \title{Plot cosine distance and matrix condition number for variable selection}
 \usage{
-plotvarselect(prey_mat, prey.ix)
+var_select_plot(prey_mat, prey_ix)
 }
 \arguments{
   \item{prey_mat}{(row-wise) dataframe of prey
   compositions}
 
-  \item{prey.ix}{Indexes rows of \code{prey_mat}}
+  \item{prey_ix}{Indexes rows of \code{prey_mat}}
 }
 \value{
 Two plots with 1) relative contributions of Fatty Acids to
@@ -25,8 +25,8 @@ their relative contribution to Canonical axes in a CAP
 # load simulated example
 data('Sim')
 preys <- datas$datas.FA$preys
-prey.ix <- datas$prey.ix
-plotvarselect(preys,prey.ix)
+prey_ix <- datas$prey.ix
+var_select_plot(preys,prey_ix)
 }
 }
 \author{
@@ -36,6 +36,6 @@ Philipp Neubauer
 Neubauer.P. and Jensen, O.P. (in prep) #'
 }
 \seealso{
-\code{\link{addFA}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
+\code{\link{add_FA}},\code{\link{select_vars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 }
 

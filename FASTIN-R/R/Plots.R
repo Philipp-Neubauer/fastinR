@@ -1,8 +1,8 @@
 #' Plot Non-metric multidimensional scaling (NMDS) or (clr transformed) diet data
 #' 
-#' Diet data produced by \code{\link{addFA}} and/or \code{\link{addFA}} is projected onto 2 dimesions using NMDS, where Fatty Acid data is first clr transformed and then concatenated with SI data to produce the plot.
-#' @param datas Diet data produced by \code{\link{addFA}} and/or \code{\link{addSI}}
-#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{selectvars}},\code{\link{plotvarselect}},\code{\link{run_MCMC}}
+#' Diet data produced by \code{\link{add_FA}} and/or \code{\link{add_FA}} is projected onto 2 dimesions using NMDS, where Fatty Acid data is first clr transformed and then concatenated with SI data to produce the plot.
+#' @param datas Diet data produced by \code{\link{add_FA}} and/or \code{\link{add_SI}}
+#' @seealso \code{\link{add_FA}},\code{\link{add_SI}},\code{\link{select_vars}},\code{\link{var_select_plot}},\code{\link{run_MCMC}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @export
@@ -54,7 +54,7 @@ dataplot <- function(datas=NULL){
   
 }
 
-#' @name DietProportionPlot
+#' @name plot
 #' @title Plot density or denstrip plots of posterior diet proportions
 #' @description A pairwise plot to inspect correlations between prey items in the MCMC estiamtion, and a density/denstrip plot of diet proportion posterior distributions. To be run with output from \code{\link{run_MCMC}}
 #' @S3method plot pop_props
@@ -71,7 +71,7 @@ NULL
 
 #' @method plot pop_props
 #' @export
-plot.pop_props <- function(x,save="FASTIN_MCMC_",density=T,...){
+plot.pop_props <- function(x,save="fastinR_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -209,7 +209,7 @@ if(density==F){
 
 #' @method plot ind_props
 #' @export
-plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
+plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -476,7 +476,7 @@ plot.ind_props <- function(x,save="FASTIN_MCMC_",density=T,...){
 
 #' @method plot cov_props
 #' @export
-plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
+plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
    
@@ -761,13 +761,14 @@ plot.cov_props <- function(x,save="FASTIN_MCMC_",density=T,...){
 #' @title Plot density or denstrip plots from multiple MCMC runs
 #' @description A density/denstrip plot produced for multiple MCMC runs from \code{\link{run_MCMC}}. Useful to compare across runs with different data subsets or data types. The analyses needs to be of the same type, for now only Analysis.Type = Population.Proportions in \code{\link{run_MCMC}} works.
 #' @param MCMCouts A (named) list of objects produced by  \code{\link{run_MCMC}}
-#' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead.  
+#' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead. 
+#' @param save Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file. 
 #' @details If plots are saved they are not drawn at the same time.
 #' @references Neubauer.P. and Jensen, O.P. (in prep) 
 #' @author Philipp Neubauer
 #' @seealso \code{\link{run_MCMC}},\code{\link{diags}}
 #' @export
-multiplot <- function(MCMCouts,save="FASTIN_Multiplot",density=T){
+multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   

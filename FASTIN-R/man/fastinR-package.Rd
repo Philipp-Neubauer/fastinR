@@ -1,7 +1,7 @@
 \docType{package}
-\name{FASTIN-package}
-\alias{FASTIN}
-\alias{FASTIN-package}
+\name{fastinR-package}
+\alias{fastinR}
+\alias{fastinR-package}
 \title{Fatty Acids and Stable Isotopes in R}
 \description{
 This packages provides standalone functions and gui

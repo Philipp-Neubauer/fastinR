@@ -5,17 +5,17 @@
 run_MCMC(datas = NULL, Covs = NULL, nIter = 10000, nBurnin = 1000,
   nChains = 1, nThin = 10, Data.Type = "Fatty.Acid.Profiles",
   Analysis.Type = "Population.proportions", even = 0.5, Rnot = 0.2,
-  Rnot.SI = 1, plott = T, spawn = F)
+  Rnot_SI = 1, plott = T, spawn = F)
 }
 \arguments{
   \item{datas}{A data object as produced by
-  \code{\link{addFA}} and/or \code{\link{addSI}}. While it
-  is possible to construct the data objects (see examples
-  on github), it is advisable to use the above mentioned
-  functions for convenience.}
+  \code{\link{add_FA}} and/or \code{\link{add_SI}}. While
+  it is possible to construct the data objects (see
+  examples on github), it is advisable to use the above
+  mentioned functions for convenience.}
 
   \item{Covs}{Covariates to use in a lienar mixed setup, as
-  produced by \code{\link{addCovs}}}
+  produced by \code{\link{add_Covs}}}
 
   \item{nIter}{number of MCMC iterations post- burn-in}
 
@@ -58,7 +58,7 @@ run_MCMC(datas = NULL, Covs = NULL, nIter = 10000, nBurnin = 1000,
   proportions are equal (posterior mean at
   \code{1/n.preys})}
 
-  \item{Rnot.SI}{diagnoal of the prior for the predator
+  \item{Rnot_SI}{diagnoal of the prior for the predator
   fatty acid covariance matrix. Note that this parameter
   can significantly influence convergence, especially if
   there are few predator signatures to estiamte the
@@ -122,7 +122,7 @@ Philipp Neubauer
 Neubauer,.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{addFA}},\code{\link{addSI}},\code{\link{diags}},\code{\link{addCovs}}
-,\code{\link{DietProportionPlot}}
+\code{\link{add_FA}},\code{\link{add_SI}},\code{\link{diags}},\code{\link{add_Covs}}
+,\code{\link{plot}}
 }
 

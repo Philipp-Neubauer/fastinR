@@ -5,16 +5,16 @@
 #' @param Groups Index of group membership for each predator, one (named) column per grouping variable
 #' @param Covariates Covariate values for each predator, one (named) column per covariate
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
-#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @seealso \code{\link{add_FA}},\code{\link{add_SI}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @export
 #' @examples 
-#' Cov_path <- system.file("extdata", "Simdata_Covariates.csv", package="FASTIN")
-#' Group_path<- system.file("extdata", "Simdata_Groups.csv", package="FASTIN")
-#' addCovs(Groups=Group_path,Covariates=Cov_path)
+#' Cov_path <- system.file("extdata", "Simdata_Covariates.csv", package="fastinR")
+#' Group_path<- system.file("extdata", "Simdata_Groups.csv", package="fastinR")
+#' add_Covs(Groups=Group_path,Covariates=Cov_path)
 
-addCovs <- function(Groups='',Covariates=''){
+add_Covs <- function(Groups='',Covariates=''){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -72,19 +72,19 @@ addCovs <- function(Groups='',Covariates=''){
 #' @param Frac.Coeffs.var Prey specific Fractionation coefficient variances, dimensions as for the means
 #' @param FC.mean optional - if no prey specific fractionation coefficiants are supplied via Frac.Coeffs.mean, FC mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param FC.var optional - if no prey specific fractionation coefficiants are supplied via Frac.Coeffs.mean, FC var can provide either a global (single) coefficient variance or fatty acid specific coefficient variances using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
-#' @param datas a data structure as produced by \code{\link{addSI}}, needed if fatty acids and stable isotopes are added sequentially.
+#' @param datas a data structure as produced by \code{\link{add_SI}}, needed if fatty acids and stable isotopes are added sequentially.
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
-#' @seealso \code{\link{addFA}},\code{\link{addCovs}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @seealso \code{\link{add_FA}},\code{\link{add_Covs}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @examples 
-#' SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="FASTIN")
-#' SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="FASTIN")
-#' Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="FASTIN")
-#' Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="FASTIN")
-#' dats <- addSI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
+#' SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="fastinR")
+#' SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="fastinR")
+#' Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="fastinR")
+#' Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="fastinR")
+#' dats <- add_SI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
 #' @export
-addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeffs.var='',FC.mean=1,FC.var=1,datas=NULL){
+add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeffs.var='',FC.mean=1,FC.var=1,datas=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -180,20 +180,20 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeff
 #' @param FC.var optional - if no prey or sample specific fat content variances are supplied in a fat.conts file, prey specific coefficients can be entered here using R's c(FC_1,FC_2,...) notation.
 #' @param CC.mean optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param CC.var optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.var can provide either a global (single) coefficient variance or fatty acid specific coefficient variances using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
-#' @param datas a data structure as produced by \code{\link{addSI}}, needed if fatty acids and stable isotopes are added sequentially.
+#' @param datas a data structure as produced by \code{\link{add_SI}}, needed if fatty acids and stable isotopes are added sequentially.
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
-#' @seealso \code{\link{addSI}},\code{\link{addCovs}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @seealso \code{\link{add_SI}},\code{\link{add_Covs}},\code{\link{select_vars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @examples 
-#' FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="FASTIN")
-#' FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
-#' Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
-#' Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="FASTIN")
-#' fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
-#' dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
+#' FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+#' FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+#' Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+#' Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+#' fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
+#' dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
 #' @export
-addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,datas=NULL){
+add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,datas=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){

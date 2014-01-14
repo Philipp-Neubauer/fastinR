@@ -1,8 +1,8 @@
-\name{addFA}
-\alias{addFA}
+\name{add_FA}
+\alias{add_FA}
 \title{Add Fatty Acid profile data for predators and prey items}
 \usage{
-addFA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
+add_FA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
   Conv.Coeffs.mean = "", Conv.Coeffs.var = "", FC.mean = 1, FC.var = 1,
   CC.mean = 1, CC.var = 1, datas = NULL)
 }
@@ -53,7 +53,7 @@ addFA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
   for ALL fatty acids.}
 
   \item{datas}{a data structure as produced by
-  \code{\link{addSI}}, needed if fatty acids and stable
+  \code{\link{add_SI}}, needed if fatty acids and stable
   isotopes are added sequentially.}
 }
 \description{
@@ -64,12 +64,12 @@ Use \code{\link{simulation}} to simulate and write these
 files to inspect the file structure.
 }
 \examples{
-FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="FASTIN")
-FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
-Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
-Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="FASTIN")
-fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
-dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
+FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
+dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
 }
 \author{
 Philipp Neubauer
@@ -78,6 +78,6 @@ Philipp Neubauer
 Neubauer,.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{addSI}},\code{\link{addCovs}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
+\code{\link{add_SI}},\code{\link{add_Covs}},\code{\link{select_vars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 }
 

@@ -1,0 +1,17 @@
+\name{gmean}
+\alias{gmean}
+\title{Geometric mean of a vector or columns of a dataframe}
+\usage{
+gmean(x)
+}
+\arguments{
+  \item{x}{A vector or dataframe of row-wise compositions}
+}
+\value{
+The geometric mean of a vector or columnwise geometric
+means for a dataframe
+}
+\description{
+Geometric mean of a vector or columns of a dataframe
+}
+

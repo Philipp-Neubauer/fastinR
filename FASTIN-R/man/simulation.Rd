@@ -6,7 +6,7 @@ simulation()
 }
 \value{
 \code{Write simulations to files} will produce a series of
-files that can be used as inputs to the FASTIN gui or
+files that can be used as inputs to the fastinR gui or
 individual functions. The prefix of the files is entered by
 the user, the remainder of the filename suggests the
 contents: \item{*_props}{Simualted diet proportions}
@@ -68,7 +68,7 @@ multidimensional scaling) plot to show the simulated data.
 The gui will remain open to allow for many tries at
 simulating data. Variuous configurations can be written to
 file to allow for exploration of the model with
-\code{fastin()}.
+\code{fastinR_GUI()}.
 }
 \examples{
 \dontrun{simulation()}
@@ -80,6 +80,6 @@ Philipp Neubauer
 Neubauer.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{fastin}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
+\code{\link{fastinR_GUI}},\code{\link{add_FA}},\code{\link{add_SI}},\code{\link{run_MCMC}}
 }
 

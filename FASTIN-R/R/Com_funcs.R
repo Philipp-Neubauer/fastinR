@@ -66,4 +66,9 @@ adist <- function(mat){
   return(dista)
 }
 
+#' Geometric mean of a vector or columns of a dataframe
+#' 
+#' @param x A vector or dataframe of row-wise compositions
+#' @return The geometric mean of a vector or columnwise geometric means for a dataframe
+#' @export
 gmean <- function(x) if (is.null(dim(x))) {exp(mean(log(x)))} else { t(apply(x,1,function(y){exp(mean(log(x)))}))}

@@ -9,8 +9,8 @@
 #' 
 #' \code{Plot current simulation} will draw a NMDS (non-metric multidimensional scaling) plot to show the simulated data.
 #' 
-#' The gui will remain open to allow for many tries at simulating data. Variuous configurations can be written to file to allow for exploration of the model with \code{fastin()}.
-#' @return \code{Write simulations to files} will produce a series of files that can be used as inputs to the FASTIN gui or individual functions. The prefix of the files is entered by the user, the remainder of the filename suggests the contents:
+#' The gui will remain open to allow for many tries at simulating data. Variuous configurations can be written to file to allow for exploration of the model with \code{fastinR_GUI()}.
+#' @return \code{Write simulations to files} will produce a series of files that can be used as inputs to the fastinR gui or individual functions. The prefix of the files is entered by the user, the remainder of the filename suggests the contents:
 #' \item{*_props}{Simualted diet proportions}
 #' 
 #'     For Fatty Acids:
@@ -30,7 +30,7 @@
 #'             \item{*_Cov_n_Grp_effects.csv}{an n*p matrix of group and covariate                                   influences on diet proportions for n preys and p (groups+covariates)}
 #'             \item{*_Groups.csv}{Group membership for each predator}
 #'             \item{*_Covariates.csv}{Covariate values for each predator}
-#' @seealso \code{\link{fastin}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
+#' @seealso \code{\link{fastinR_GUI}},\code{\link{add_FA}},\code{\link{add_SI}},\code{\link{run_MCMC}}
 #'             
 #' @references  Neubauer.P. and Jensen, O.P. (in prep)
 #' @author Philipp Neubauer

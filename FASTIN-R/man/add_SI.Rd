@@ -1,8 +1,8 @@
-\name{addSI}
-\alias{addSI}
+\name{add_SI}
+\alias{add_SI}
 \title{Add Stable Isotope data for predators and prey items}
 \usage{
-addSI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
+add_SI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
   Frac.Coeffs.var = "", FC.mean = 1, FC.var = 1, datas = NULL)
 }
 \arguments{
@@ -37,7 +37,7 @@ addSI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
   for ALL fatty acids.}
 
   \item{datas}{a data structure as produced by
-  \code{\link{addSI}}, needed if fatty acids and stable
+  \code{\link{add_SI}}, needed if fatty acids and stable
   isotopes are added sequentially.}
 }
 \description{
@@ -48,11 +48,11 @@ Use \code{\link{simulation}} to simulate and write these
 files to inspect the file structure.
 }
 \examples{
-SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="FASTIN")
-SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="FASTIN")
-Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="FASTIN")
-Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="FASTIN")
-dats <- addSI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
+SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="fastinR")
+SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="fastinR")
+Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="fastinR")
+Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="fastinR")
+dats <- add_SI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
 }
 \author{
 Philipp Neubauer
@@ -61,6 +61,6 @@ Philipp Neubauer
 Neubauer,.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{addFA}},\code{\link{addCovs}},\code{\link{run_MCMC}},\code{\link{simulation}}
+\code{\link{add_FA}},\code{\link{add_Covs}},\code{\link{run_MCMC}},\code{\link{simulation}}
 }
 

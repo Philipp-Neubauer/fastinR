@@ -1,7 +1,7 @@
 #' MCMC for diet proportions from FAtty acid and/or Stable Isotope data
 #' 
-#' @param datas A data object as produced by \code{\link{addFA}} and/or \code{\link{addSI}}. While it is possible to construct the data objects (see examples on github), it is advisable to use the above mentioned functions for convenience.
-#' @param Covs Covariates to use in a lienar mixed setup, as produced by \code{\link{addCovs}}
+#' @param datas A data object as produced by \code{\link{add_FA}} and/or \code{\link{add_SI}}. While it is possible to construct the data objects (see examples on github), it is advisable to use the above mentioned functions for convenience.
+#' @param Covs Covariates to use in a lienar mixed setup, as produced by \code{\link{add_Covs}}
 #' @param nIter number of MCMC iterations post- burn-in
 #' @param nBurnin number of iterations to discard as burn-in of the Markov Chain
 #' @param nChains The number of MCMC chains to run simultaniously.
@@ -10,12 +10,12 @@
 #' @param Analysis.Type The type of analysis to perform: one of'Population.proportions' for estimation of population level proportions only, 'Individual.proportions' to estimate individual diet proportions, or 'Analysis.with.Covariates' for individual proportions and estiamtes of group contrasts and/or covariate effects.
 #' @param even The prior eveness of diet proportions, smaller values place a lower prior on even proportions, if set too low can severly impact convergence of MCMC. Too high a value will set a strong prior on equal proportions. Only needed for individual proportions or an analysis with covariates, else a vague prior is used and proportions are drawn from a Dirichlet conditional posterior.
 #' @param Rnot diagnoal of the prior for the predator stable isotope covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
-#' @param Rnot.SI diagnoal of the prior for the predator fatty acid covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
+#' @param Rnot_SI diagnoal of the prior for the predator fatty acid covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
 #' @param plott If FALSE, user is not asked if MCMC runs should be displayed using plots from the coda package. By default, the user is prompted (for compatibility with the gui).
 #' @param spawn Logical - should separate slave R processes be spawned to run individual chains? This can provide significant speed-up for long runs using multiple chains on multi-core processors. A suggested use is to set \code{spawn=F} for short exploratory MCMC runs and once a satisfactory set of parameters has been found, set \code{spawn=T} and run multiple chains for longer.
 #' @return An object containing the MCMC runs, where the class corresponds to the analysis type to enable methods dispatch for plots and summaries.
 #' @details This analysis can be run from the gui or from this standalone R function. In the latter case it is recommended to set plott = F to avoid plotting errors to prevent a return of the fucntion (thereby loosing potential long runs). Markov Chains can always be plotted post-hoc with ,\code{\link{MCMCplot}}.
-#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{diags}},\code{\link{addCovs}} ,\code{\link{DietProportionPlot}}
+#' @seealso \code{\link{add_FA}},\code{\link{add_SI}},\code{\link{diags}},\code{\link{add_Covs}} ,\code{\link{plot}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @examples \dontrun{
@@ -34,7 +34,7 @@
 #' plot(MCMCout,save=F)
 #' }
 #' @export
-run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.5,Rnot=0.2,Rnot.SI=1,plott=T,spawn=F){
+run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.5,Rnot=0.2,Rnot_SI=1,plott=T,spawn=F){
   # have three types here: FA, SI and combined, then methods dispatch based on type of arg
   
   if(missing(datas)) {datas = guiGetSafe('datas');GUI = T} else {GUI = F}
@@ -46,7 +46,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     # Assign data type
     if (Data.Type == 'Combined.Analysis')
     {
-      datas$datas.SI$Rnot.SI <- diag(Rnot.SI,datas$datas.SI$isos)
+      datas$datas.SI$Rnot.SI <- diag(Rnot_SI,datas$datas.SI$isos)
       datas$datas.FA$Rnot <- diag(Rnot,datas$datas.FA$m.fats)
       class(datas) <- 'combined'
     } else if (Data.Type=='Fatty.Acid.Profiles')
@@ -55,7 +55,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
       class(datas) <- 'FA'
     } else if (Data.Type=='Stable.Isotopes')
     {
-      datas$datas.SI$Rnot.SI <- diag(Rnot.SI,datas$datas.SI$isos)
+      datas$datas.SI$Rnot.SI <- diag(Rnot_SI,datas$datas.SI$isos)
       class(datas) <- 'SI'
     }
     
@@ -65,10 +65,10 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
       if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates') {
         stop('analysis with covariates selected, but no covariates entered.')
       } else {
-        jagsdata <- FASTIN:::.delist(datas,Covs)
+        jagsdata <- fastinR:::.delist(datas,Covs)
       }
     } else {
-      jagsdata <- FASTIN:::.delist(datas)
+      jagsdata <- fastinR:::.delist(datas)
     }   
     
     save(jagsdata,file='jagsdata.Rdata')
@@ -80,9 +80,9 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     )
     
     if(spawn==T | spawn == 1) {
-    res <- FASTIN:::.spawn(sysfile,nChains,nBurnin,nIter,nThin)
+    res <- fastinR:::.spawn(sysfile,nChains,nBurnin,nIter,nThin)
     } else {
-      res <- FASTIN:::.localrun(jagsdata,sysfile,nChains,nBurnin,nIter,nThin)
+      res <- fastinR:::.localrun(jagsdata,sysfile,nChains,nBurnin,nIter,nThin)
     }
     
     
@@ -150,7 +150,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   for (i in 1:nChains){
     outfile <- paste('MCout',i,'.Rdata',sep='')
     
-    cmd <- paste("Rscript -e 'library(FASTIN,quietly=T,verbose=F);options(warn=-1);res",i,"<- FASTIN:::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save.image(file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
+    cmd <- paste("Rscript -e 'library(fastinR,quietly=T,verbose=F);options(warn=-1);res",i,"<- fastinR:::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save.image(file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
     
    system(cmd,wait=F)
           

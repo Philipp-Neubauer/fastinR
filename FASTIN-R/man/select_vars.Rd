@@ -1,15 +1,15 @@
-\name{selectvars}
-\alias{selectvars}
+\name{select_vars}
+\alias{select_vars}
 \title{Select Fatty Acids from imported data (should really be a method for subset...)}
 \usage{
-selectvars(datas, ix = NULL)
+select_vars(datas, ix = NULL)
 }
 \arguments{
   \item{datas}{A data structure produced by
-  \code{\link{addSI}} and \code{\link{addFA}}}
+  \code{\link{add_SI}} and \code{\link{add_FA}}}
 
   \item{ix}{Index of variables to retain, if not supplied,
-  \code{\link{plotvarselect}} is called to itneractively
+  \code{\link{var_select_plot}} is called to itneractively
   select variables based on cosine distance and prey matrix
   condition.}
 }
@@ -25,9 +25,9 @@ method for subset...)
 \dontrun{
 # load simulated example
 data('Sim')
-selectvars(datas,4:1)
+select_vars(datas,4:1)
 # or select visualy
-selectvars(datas)
+select_vars(datas)
 }
 }
 \author{
@@ -37,6 +37,6 @@ Philipp Neubauer
 Neubauer.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{addFA}},\code{\link{plotvarselect}},\code{\link{run_MCMC}},\code{\link{simulation}}
+\code{\link{add_FA}},\code{\link{var_select_plot}},\code{\link{run_MCMC}},\code{\link{simulation}}
 }
 

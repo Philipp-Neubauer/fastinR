@@ -1,5 +1,5 @@
-\name{DietProportionPlot}
-\alias{DietProportionPlot}
+\name{plot}
+\alias{plot}
 \title{Plot density or denstrip plots of posterior diet proportions}
 \arguments{
   \item{x}{MCMC output from \code{\link{run_MCMC}},

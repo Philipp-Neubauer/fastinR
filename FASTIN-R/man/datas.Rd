@@ -3,7 +3,9 @@
 \alias{datas}
 \title{Simulated Fatty Acid and Stable Isotope example}
 \description{
-Simulated dataset for examples in help files
+Simulated dataset for examples in help files, the
+simulation included covariates and grouped predator diets
+for illustration.
 }
 \keyword{datasets}
 

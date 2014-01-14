@@ -1,4 +1,4 @@
-Package: FASTIN
+Package: fastinR
 Type: Package
 Depends:
     rjags

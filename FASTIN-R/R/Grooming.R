@@ -3,25 +3,25 @@
 #' Cosine distance and matrix condition number are graphed as a function of Fatty Acids, where fatty acids are ordered by their relative contribution to Canonical axes in a CAP (Canonical Analysis of Principal Coordinates).
 #' 
 #' @param prey_mat (row-wise) dataframe of prey compositions
-#' @param prey.ix Indexes rows of \code{prey_mat}
+#' @param prey_ix Indexes rows of \code{prey_mat}
 #' 
 #' @return Two plots with 1) relative contributions of Fatty Acids to source separation and 2) matrix condition number.
 #' @author Philipp Neubauer
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
-#' #' @seealso \code{\link{addFA}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' #' @seealso \code{\link{add_FA}},\code{\link{select_vars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @examples  \dontrun{
 #' # load simulated example
 #' data('Sim')
 #' preys <- datas$datas.FA$preys
-#' prey.ix <- datas$prey.ix
-#' plotvarselect(preys,prey.ix)
+#' prey_ix <- datas$prey.ix
+#' var_select_plot(preys,prey_ix)
 #' }
 #' @export
-plotvarselect <- function(prey_mat,prey.ix){
+var_select_plot <- function(prey_mat,prey_ix){
   
   n.fats=ncol(prey_mat)
   distan <- adist(t(prey_mat))
-  PR.RDA <- vegan::capscale(as.dist(distan)~as.factor(prey.ix),comm=(prey_mat))
+  PR.RDA <- vegan::capscale(as.dist(distan)~as.factor(prey_ix),comm=(prey_mat))
   X11()
   par(mfcol=c(2,1))
   sv = sort(clo(rowSums(sqrt((t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)))),decreasing =T,index.return=T)
@@ -51,22 +51,22 @@ plotvarselect <- function(prey_mat,prey.ix){
 
 #' Select Fatty Acids from imported data (should really be a method for subset...)
 #' 
-#' @param datas A data structure produced by \code{\link{addSI}} and \code{\link{addFA}}
-#' @param ix Index of variables to retain, if not supplied, \code{\link{plotvarselect}} is called to itneractively select variables based on cosine distance and prey matrix condition.
+#' @param datas A data structure produced by \code{\link{add_SI}} and \code{\link{add_FA}}
+#' @param ix Index of variables to retain, if not supplied, \code{\link{var_select_plot}} is called to itneractively select variables based on cosine distance and prey matrix condition.
 #' 
 #' @return a data structure of the same form as datas, with Fatty Acids selected by ix.
 #' @author Philipp Neubauer
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
-#' @seealso \code{\link{addFA}},\code{\link{plotvarselect}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @seealso \code{\link{add_FA}},\code{\link{var_select_plot}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @examples \dontrun{
 #' # load simulated example
 #' data('Sim')
-#' selectvars(datas,4:1)
+#' select_vars(datas,4:1)
 #' # or select visualy
-#' selectvars(datas)
+#' select_vars(datas)
 #' }
 #' @export
-selectvars <- function(datas,ix=NULL){
+select_vars <- function(datas,ix=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -82,7 +82,7 @@ selectvars <- function(datas,ix=NULL){
   prey.ix <- datas$prey.ix
   
   if(is.null(ix)){
-    sv <- plotvarselect(prey.mat,prey.ix)
+    sv <- var_select_plot(prey.mat,prey.ix)
     nv <- select.list(title='please choose the fatty acids to use (at least 3)',choices = colnames(prey.mat)[sv$ix],graphics=T,multiple=T)
   } else if(is.numeric(ix)){
     nv <- colnames(prey.mat)[ix]

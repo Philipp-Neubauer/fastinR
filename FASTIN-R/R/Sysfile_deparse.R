@@ -7,7 +7,7 @@
 .Poppropanalysis.FA <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.FA.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.prop.analysis.FA.bugs",sep='')
   return(sysfile)
   
 }
@@ -16,7 +16,7 @@
 .Poppropanalysis.SI <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.SI.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.prop.analysis.SI.bugs",sep='')
   
   return(sysfile)
 }
@@ -25,7 +25,7 @@
 .Poppropanalysis.combined <- function(datas)
 {
     
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.prop.analysis.combined.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.prop.analysis.combined.bugs",sep='')
   
   return(sysfile)
   
@@ -39,7 +39,7 @@
 .PopandIndprops.FA <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.and.Ind.props.FA.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.and.Ind.props.FA.bugs",sep='')
   return(sysfile)
   
 }
@@ -48,7 +48,7 @@
 .PopandIndprops.SI <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.and.Ind.props.SI.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.and.Ind.props.SI.bugs",sep='')
   return(sysfile)
 }
 
@@ -56,7 +56,7 @@
 .PopandIndprops.combined <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Pop.and.Ind.props.combined.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.and.Ind.props.combined.bugs",sep='')
   return(sysfile)
   
 }
@@ -68,7 +68,7 @@
 #' @S3method .AnalysiswithCov FA 
 .AnalysiswithCov.FA <- function(datas)
 {
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Analysis.with.Cov.FA.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Analysis.with.Cov.FA.bugs",sep='')
   return(sysfile)
   
 }
@@ -76,7 +76,7 @@
 #' @S3method .AnalysiswithCov SI
 .AnalysiswithCov.SI <- function(datas)
 {
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Analysis.with.Cov.SI.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Analysis.with.Cov.SI.bugs",sep='')
   return(sysfile)
 }
 
@@ -84,7 +84,7 @@
 .AnalysiswithCov.combined <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "FASTIN"),"/Analysis.with.Cov.combined.bugs",sep='')
+  sysfile <- paste(system.file("exec",package = "fastinR"),"/Analysis.with.Cov.combined.bugs",sep='')
   return(sysfile)
   
 }

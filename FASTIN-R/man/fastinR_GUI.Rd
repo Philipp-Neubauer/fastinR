@@ -1,14 +1,14 @@
-\name{fastin}
-\alias{fastin}
-\title{Gui for the FASTIN analysis}
+\name{fastinR_GUI}
+\alias{fastinR_GUI}
+\title{GUI for the fastinR set of functions}
 \usage{
-fastin()
+fastinR_GUI()
 }
 \description{
 Provides a gui to input data to be analysed with the
 \code{\link{run_MCMC}} function. The gui rolls the
 functionality of most of the functions contained within
-FASTIN into a single interface, but some options (plottin
+fastinR into a single interface, but some options (plottin
 options mainly) are not available through the gui.
 }
 \details{
@@ -24,7 +24,7 @@ on a particular topic
   when this happens.
 }
 \examples{
-\dontrun{fastin()}
+\dontrun{fastin_GUI()}
 }
 \author{
 Philipp Neubauer
@@ -33,6 +33,6 @@ Philipp Neubauer
 Neubauer.P. and Jensen, O.P. (in prep)
 }
 \seealso{
-\code{\link{simulation}},\code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}}
+\code{\link{simulation}},\code{\link{add_FA}},\code{\link{add_SI}},\code{\link{run_MCMC}}
 }
 
