@@ -8,6 +8,8 @@ Estimating diet proportions form Fatty Acids and Stable Isotopes
 
 DISCLAIMER: This is an evolving package and vignette, please read instructions [here](https://github.com/Philipp-Neubauer/fastinR/blob/master/README.md) for installation and to see what dependencies are required. If you find a bug or want so suggest improvements, please [submit an issue on github](https://github.com/Philipp-Neubauer/fastinR/issues?state=open), collaborations and contributions are very welcome!
 
+DISCLAIMER 2: This tutorial is by no means a real analysis, which should proceed more carefully, and with longer MCMC runs. The example is designed to run through in a few minutes, and is therefore only an illustration of how an analysis of real data could proceed.
+
 We start with a very simple simulated example. The easiest way to simulate relevant data is through the built in simulation GUI, which is called from the command line once fastinR has been loaded:
 
 
@@ -61,9 +63,8 @@ dataplot(dats)
 
 ```
 ## Run 0 stress 0 
-## Run 1 stress 0.4121 
-## Run 2 stress 8.945e-05 
-## ... procrustes: rmse 8.395e-05  max resid 0.0004449 
+## Run 1 stress 8.82e-05 
+## ... procrustes: rmse 8.448e-05  max resid 0.0004543 
 ## *** Solution reached
 ```
 
@@ -98,7 +99,7 @@ dataplot(dats)
 ```
 ## Run 0 stress 0.06002 
 ## Run 1 stress 0.06002 
-## ... procrustes: rmse 3.045e-05  max resid 0.0002547 
+## ... procrustes: rmse 1.484e-05  max resid 0.0001367 
 ## *** Solution reached
 ```
 
@@ -137,8 +138,12 @@ dataplot(dats.subset)
 
 ```
 ## Run 0 stress 0.02032 
-## Run 1 stress 0.02032 
-## ... procrustes: rmse 0.001026  max resid 0.009586 
+## Run 1 stress 0.04947 
+## Run 2 stress 0.02033 
+## ... procrustes: rmse 0.001282  max resid 0.01197 
+## Run 3 stress 0.02032 
+## ... New best solution
+## ... procrustes: rmse 0.0003335  max resid 0.002865 
 ## *** Solution reached
 ```
 
@@ -216,7 +221,7 @@ diags(Pop.SI)
 ##          (M)      (N)   (Nmin)       factor (I)
 ##  prop[1] 30       10530 937          11.2      
 ##  prop[2] 30       10530 937          11.2      
-##  prop[3] 20       9690  937          10.3      
+##  prop[3] 30       10530 937          11.2      
 ## 
 ## 
 ## [[2]]
@@ -227,9 +232,9 @@ diags(Pop.SI)
 ##                                                
 ##          Burn-in  Total Lower bound  Dependence
 ##          (M)      (N)   (Nmin)       factor (I)
-##  prop[1] 30       10530 937          11.2      
-##  prop[2] 30       10530 937          11.2      
-##  prop[3] 30       11430 937          12.2      
+##  prop[1] 50       14730 937          15.7      
+##  prop[2] 30       11430 937          12.2      
+##  prop[3] 30       10530 937          11.2      
 ## 
 ## 
 ## [[3]]
@@ -240,14 +245,14 @@ diags(Pop.SI)
 ##                                                
 ##          Burn-in  Total Lower bound  Dependence
 ##          (M)      (N)   (Nmin)       factor (I)
-##  prop[1] 30       11430 937          12.2      
-##  prop[2] 30       11430 937          12.2      
-##  prop[3] 40       11610 937          12.4      
+##  prop[1] 30       10960 937          11.7      
+##  prop[2] 20       9690  937          10.3      
+##  prop[3] 30       11430 937          12.2      
 ## 
 ## 
 ## 
-##  Based on these diagnostics you should repeat the MCMC with  11610  iterations 
-##  and a thinning interval of  12  ,if these values are higher than the values 
+##  Based on these diagnostics you should repeat the MCMC with  14730  iterations 
+##  and a thinning interval of  16  ,if these values are higher than the values 
 ##  used to produce these diagnostics 
 ##  
 ## 
@@ -259,13 +264,13 @@ diags(Pop.SI)
 ## Potential scale reduction factors:
 ## 
 ##         Point est. Upper C.I.
-## prop[1]          1       1.00
+## prop[1]          1       1.01
 ## prop[2]          1       1.01
-## prop[3]          1       1.02
+## prop[3]          1       1.00
 ## 
 ## Multivariate psrf
 ## 
-## 1.01
+## 1
 ## 
 ##  Both univariate upper C.I. and multivariate psrf 
 ##  should be close to 1 if the chains converged 
@@ -293,10 +298,10 @@ summary(Pop.SI)
 ##  population diet proportions 
 ##  
 ##  
-##        Prey_1  Prey_2   Prey_3
-## 2.5%  0.02529 0.01992 0.009298
-## 50%   0.44921 0.40645 0.118759
-## 97.5% 0.93022 0.86187 0.385118
+##        Prey_1  Prey_2 Prey_3
+## 2.5%  0.01771 0.02163 0.0119
+## 50%   0.41682 0.42423 0.1265
+## 97.5% 0.91747 0.87815 0.4177
 ## 
 ##  
 ##  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
@@ -309,9 +314,9 @@ summary(Pop.SI)
 ##  
 ##  
 ##        Prey_1  Prey_2  Prey_3
-## 2.5%  0.02319 0.02022 0.01166
-## 50%   0.43297 0.41608 0.11863
-## 97.5% 0.91325 0.84226 0.40128
+## 2.5%  0.01729 0.02027 0.01046
+## 50%   0.43420 0.40385 0.12398
+## 97.5% 0.91527 0.89728 0.39037
 ## 
 ##  
 ##  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
@@ -323,10 +328,10 @@ summary(Pop.SI)
 ##  population diet proportions 
 ##  
 ##  
-##       Prey_1  Prey_2  Prey_3
-## 2.5%  0.0241 0.01951 0.01127
-## 50%   0.4443 0.40226 0.13686
-## 97.5% 0.9269 0.82588 0.41910
+##       Prey_1  Prey_2   Prey_3
+## 2.5%  0.0240 0.01784 0.009595
+## 50%   0.4775 0.37822 0.124872
+## 97.5% 0.9273 0.84752 0.387040
 ```
 
 
@@ -665,7 +670,7 @@ Pop.FA3 <- run_MCMC(datas = dats.subset, nIter = 30000, nBurnin = 1000, nChains 
 ```
 
 ```
-## ++++++++++++++++++++
+## +++++++++++++++++++
 ```
 
 
@@ -1152,7 +1157,7 @@ Cov.Combined <- run_MCMC(datas = dats.subset, Covs = Covs, nIter = 10000, nBurni
 ```
 
 ```
-## ++++++++++
+## +++++++++
 ```
 
 
