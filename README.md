@@ -1,4 +1,4 @@
-FASTIN-R
+fastinR
 ========
 
 Fatty Acids and Stable Isotopes in R
@@ -18,4 +18,4 @@ install_github("philipp-neubauer/FASTIN-R/FASTIN-R")
 Running
 ===========
 
-Calling ```fastin()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastin()``` gui. Standalone functions are available for all options and are documented, vignette to come.
+Calling ```fastinR_GUI()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastinR_GUI()```. Standalone functions are available for all options and are documented, vignette to come.
