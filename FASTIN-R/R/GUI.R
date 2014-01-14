@@ -99,7 +99,9 @@ fastin <- function(){
                                                                nBurnin = 'Number of MCMC iterations to discard (burn-in)',
                                                                nChains = 'Number of Markov Chains',
                                                                nThin = 'Thinning interval of MCMC chains',
-                                                               even= 'Prior eveness of proportions'
+                                                               even= 'Prior eveness of proportions',
+                                                               Rnot= 'Prior diagonal predator FA covariance matrix',
+                                                               Rnot.SI= 'Prior diagonal predator SI covariance matrix'
                                                   ),cancelButton=F),
                                 disp.diags = guiNestedF(dispdiags,"disp.diags",
                                                         title = 'Show Convergence Diagnositcs', 

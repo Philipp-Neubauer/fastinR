@@ -5,7 +5,8 @@
 #' @references  Neubauer.P. and Jensen, O.P. (in prep)
 #' @importFrom MCMCpack rdirichlet
 #' @importFrom reshape melt.data.frame
-#' @import vegan fgui tcltk rjags lattice MASS ggplot2 grid
+#' @importFrom coda mcmc
+#' @import vegan fgui tcltk lattice MASS ggplot2 grid
 #' @docType package
 #' @name FASTIN-package
 #' @aliases FASTIN

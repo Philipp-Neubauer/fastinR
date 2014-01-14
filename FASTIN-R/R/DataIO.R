@@ -73,7 +73,6 @@ addCovs <- function(Groups='',Covariates=''){
 #' @param FC.mean optional - if no prey specific fractionation coefficiants are supplied via Frac.Coeffs.mean, FC mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param FC.var optional - if no prey specific fractionation coefficiants are supplied via Frac.Coeffs.mean, FC var can provide either a global (single) coefficient variance or fatty acid specific coefficient variances using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param datas a data structure as produced by \code{\link{addSI}}, needed if fatty acids and stable isotopes are added sequentially.
-#' @param R.diag.SI diagnoal of the prior for the predator covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
 #' @seealso \code{\link{addFA}},\code{\link{addCovs}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
@@ -85,7 +84,7 @@ addCovs <- function(Groups='',Covariates=''){
 #' Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="FASTIN")
 #' dats <- addSI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
 #' @export
-addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeffs.var='',FC.mean=1,FC.var=1,R.diag.SI=0.2,datas=NULL){
+addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeffs.var='',FC.mean=1,FC.var=1,datas=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -118,9 +117,6 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeff
   isos=ncol(predators.SI)
   #number of preys species/groups
   n.preys <- length(preys.names)
-  
-  # improt prior predator variance
-  Rnot_SI = diag(R.diag.SI,isos)
   
   # deal with fractionation coeffs
   if ((nchar(Frac.Coeffs.mean)>0 & nchar(Frac.Coeffs.var)==0) | (nchar(Frac.Coeffs.mean)==0 & nchar(Frac.Coeffs.var)>0))
@@ -157,7 +153,7 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeff
     R.SI[,,i]=cov(preys.SI[preys.ix==unique(preys.ix)[i],])*ni.SI[i]
   }
   
-  datas.SI <- list(isos=isos,R.SI=R.SI,Rnot.SI=Rnot_SI,preys.SI=preys.SI,preym.SI=preym.SI,preds.SI=predators.SI,ni.SI=ni.SI,mean_cs=mean_cs,tau_cs=1/var_cs)
+  datas.SI <- list(isos=isos,R.SI=R.SI,Rnot.SI=NULL,preys.SI=preys.SI,preym.SI=preym.SI,preds.SI=predators.SI,ni.SI=ni.SI,mean_cs=mean_cs,tau_cs=1/var_cs)
   
   if(length(datas)<=1){
     datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix=preys.ix,datas.FA=NULL,datas.SI=datas.SI,even=NULL)
@@ -185,7 +181,6 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeff
 #' @param CC.mean optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param CC.var optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.var can provide either a global (single) coefficient variance or fatty acid specific coefficient variances using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param datas a data structure as produced by \code{\link{addSI}}, needed if fatty acids and stable isotopes are added sequentially.
-#' @param R.diag diagnoal of the prior for the predator covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
 #' @seealso \code{\link{addSI}},\code{\link{addCovs}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
@@ -198,7 +193,7 @@ addSI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coeff
 #' fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
 #' dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
 #' @export
-addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,R.diag=0.2,datas=NULL){
+addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,datas=NULL){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -293,11 +288,7 @@ addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mea
   
   ## first some data and inits ----
   
-  # set uninformative prior SS matrix for wishart prior alr transformed predator data
-  
-  Rnot =diag(R.diag,m.fats)
-  
-  datas.FA <- list(fc_mean=fc.mean,fc_tau=1/fc.var,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=Rnot,preys=preys,preds.FA=predators,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=1/var_c)
+ datas.FA <- list(fc_mean=fc.mean,fc_tau=1/fc.var,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=NULL,preys=preys,preds.FA=predators,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=1/var_c)
   
   if(length(datas)<=1){
     datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix=preys.ix,datas.FA=datas.FA,datas.SI=NULL,even=NULL)
@@ -308,61 +299,4 @@ addFA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mea
     datas$prey.ix=preys.ix
   }
   ifelse(GUI,guiSet('datas',datas),return(datas))
-}
-
-#' Plot Non-metric multidimensional scaling (NMDS) or (clr transformed) diet data
-#' 
-#' Diet data produced by \code{\link{addFA}} and/or \code{\link{addFA}} is projected onto 2 dimesions using NMDS, where Fatty Acid data is first clr transformed and then concatenated with SI data to produce the plot.
-#' @param datas Diet data produced by \code{\link{addFA}} and/or \code{\link{addSI}}
-#' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{selectvars}},\code{\link{plotvarselect}},\code{\link{run_MCMC}}
-#' @author Philipp Neubauer
-#' @references Neubauer,.P. and Jensen, O.P. (in prep)
-#' @export
-dataplot <- function(datas=NULL){
-  
-  # check if GUI is being used
-  if(exists('GUI',envir=.GlobalEnv)){
-    GUI <- get('GUI',envir=.GlobalEnv)
-    if(GUI) datas <- guiGetSafe('datas')
-  } else {
-    GUI=F
-  }
-  
-  preya <- {}
-  preda <- {}
-  if(all(!is.na(datas$datas.FA$preys)) & !is.null(datas$datas.FA$preys)) {
-      preya=cbind(preya,clr(datas$datas.FA$preys))
-      preda=cbind(preda,clr(datas$datas.FA$preds.FA))     
-  }
-  if(all(!is.na(datas$datas.SI$preys.SI)) & !is.null(datas$datas.SI$preys.SI)) {
-      preya=cbind(preya,as.matrix(datas$datas.SI$preys.SI))
-      preda=cbind(preda,as.matrix(t(t(datas$datas.SI$preds.SI)-colMeans(datas$datas.SI$mean_cs))))
-  }
-  
-  names(preya)  <- names(preda)
-  
-  dista <- dist(rbind(preya,preda))
-  mds <- metaMDS(dista)
-  
-  externalDevice<-FALSE
-  if (!is.function(options()$device)){
-    if (names(dev.cur())=="RStudioGD"){
-      # try to open a new platform-appropriate plot window
-      if (.Platform$OS.type=='windows'){
-        windows()
-      } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
-      { 
-        quartz(width=5,height=5)
-      } else {  # must be unix
-        x11()
-      }
-      externalDevice<-TRUE
-    }
-  }
-  
-  pl <- plot(mds,type='n')
-  points(pl,'sites',pch=cbind(as.numeric(as.factor(datas$prey.ix)),rep(16,datas$n.preds)),col=cbind(1+as.numeric(as.factor(datas$prey.ix)),rep(1,datas$n.preds)))
-  legend('bottomright',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
-  
-  # turn off external device if using one
 }

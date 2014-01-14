@@ -8,7 +8,7 @@
 #' @return Two plots with 1) relative contributions of Fatty Acids to source separation and 2) matrix condition number.
 #' @author Philipp Neubauer
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
-#' #' @seealso \code{\link{addFA}},\code{\link{addSI}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' #' @seealso \code{\link{addFA}},\code{\link{selectvars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @examples  \dontrun{
 #' # load simulated example
 #' data('Sim')
@@ -57,7 +57,7 @@ plotvarselect <- function(prey_mat,prey.ix){
 #' @return a data structure of the same form as datas, with Fatty Acids selected by ix.
 #' @author Philipp Neubauer
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
-#' #' @seealso \code{\link{addFA}},\code{\link{addCovs}},\code{\link{run_MCMC}},\code{\link{simulation}}
+#' @seealso \code{\link{addFA}},\code{\link{plotvarselect}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @examples \dontrun{
 #' # load simulated example
 #' data('Sim')
@@ -115,7 +115,6 @@ selectvars <- function(datas,ix=NULL){
   }
   
   datas$datas.FA$R <- R
-  datas$datas.FA$Rnot <- datas$datas.FA$Rnot[six[1:m.fats],six[1:m.fats]]
   datas$datas.FA$ni <- ni
   
   if(GUI & dev.cur()!=1) dev.off()

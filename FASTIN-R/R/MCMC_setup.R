@@ -8,7 +8,9 @@
 #' @param nThin Thinning interval of the Markov Chain
 #' @param Data.Type The data to be analysed: one of 'Fatty.Acid.Profiles', 'Stable.Isotopes' or 'Combined.Analysis' for estimation of diet proportions from a joint model.
 #' @param Analysis.Type The type of analysis to perform: one of'Population.proportions' for estimation of population level proportions only, 'Individual.proportions' to estimate individual diet proportions, or 'Analysis.with.Covariates' for individual proportions and estiamtes of group contrasts and/or covariate effects.
-#' @param even The prior eveness of diet proportions, smaller values place a lower prior on even proportions, if set too low can severly impact convergence of MCMC.
+#' @param even The prior eveness of diet proportions, smaller values place a lower prior on even proportions, if set too low can severly impact convergence of MCMC. Too high a value will set a strong prior on equal proportions. Only needed for individual proportions or an analysis with covariates, else a vague prior is used and proportions are drawn from a Dirichlet conditional posterior.
+#' @param Rnot diagnoal of the prior for the predator stable isotope covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
+#' @param Rnot.SI diagnoal of the prior for the predator fatty acid covariance matrix. Note that this parameter can significantly influence convergence, especially if there are few predator signatures to estiamte the covariance from - handle with care! If too small, the sampler will get stuck in local modes and extreme values, if too high it can produce nonsenseical estiamtes where all proportions are equal (posterior mean at \code{1/n.preys})
 #' @param plott If FALSE, user is not asked if MCMC runs should be displayed using plots from the coda package. By default, the user is prompted (for compatibility with the gui).
 #' @param spawn Logical - should separate slave R processes be spawned to run individual chains? This can provide significant speed-up for long runs using multiple chains on multi-core processors. A suggested use is to set \code{spawn=F} for short exploratory MCMC runs and once a satisfactory set of parameters has been found, set \code{spawn=T} and run multiple chains for longer.
 #' @return An object containing the MCMC runs, where the class corresponds to the analysis type to enable methods dispatch for plots and summaries.
@@ -32,36 +34,42 @@
 #' plot(MCMCout,save=F)
 #' }
 #' @export
-run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.5,plott=T,spawn=F){
+run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',even=0.5,Rnot=0.2,Rnot.SI=1,plott=T,spawn=F){
   # have three types here: FA, SI and combined, then methods dispatch based on type of arg
   
   if(missing(datas)) {datas = guiGetSafe('datas');GUI = T} else {GUI = F}
     
   if(length(datas)<=1){warning('No data processed yet')} else {   
     
+    datas$even <- even
+    
     # Assign data type
     if (Data.Type == 'Combined.Analysis')
     {
+      datas$datas.SI$Rnot.SI <- diag(Rnot.SI,datas$datas.SI$isos)
+      datas$datas.FA$Rnot <- diag(Rnot,datas$datas.FA$m.fats)
       class(datas) <- 'combined'
     } else if (Data.Type=='Fatty.Acid.Profiles')
     {
+      datas$datas.FA$Rnot <- diag(Rnot,datas$datas.FA$m.fats)
       class(datas) <- 'FA'
     } else if (Data.Type=='Stable.Isotopes')
     {
+      datas$datas.SI$Rnot.SI <- diag(Rnot.SI,datas$datas.SI$isos)
       class(datas) <- 'SI'
     }
     
-    # check for covariates
-    if(GUI==T & Analysis.Type == 'Analysis.with.Covariates') {
-      Covs = guiGetSafe('Covs')
-      if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates')
-      {
+    # check for covariates and delist data
+    if(Analysis.Type == 'Analysis.with.Covariates') {
+      if(GUI ==T) Covs = guiGetSafe('Covs')
+      if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates') {
         stop('analysis with covariates selected, but no covariates entered.')
+      } else {
+        jagsdata <- FASTIN:::.delist(datas,Covs)
       }
-    }
-    
-    datas$even <- even
-    jagsdata <- FASTIN:::.delist(datas)
+    } else {
+      jagsdata <- FASTIN:::.delist(datas)
+    }   
     
     save(jagsdata,file='jagsdata.Rdata')
     
@@ -135,8 +143,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 
 #spawn slave processes to run separate chains - ultimately this should integrate with runjags
 .spawn <- function(sysfile,nChains,nBurnin,nIter,nThin){
-  require(coda)
-  
+    
   orgtime <- Sys.time()
   options(useFancyQuotes=F)
   # spawn seperate R slave processes for each chain and run jagger in them
@@ -145,19 +152,12 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     
     cmd <- paste("Rscript -e 'library(FASTIN,quietly=T,verbose=F);options(warn=-1);res",i,"<- FASTIN:::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save.image(file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
     
-    if(i<nChains)
-    {
-      system(cmd,wait=F)
-    }
-    else {
-      system(cmd,wait=F)
-    }
-    
+   system(cmd,wait=F)
+          
   }
-  
-  grep('MCout',dir())
+    
   while(!any(grep('MCout',dir()))){Sys.sleep(3);cat('+')}
-  while(length(grep('MCout',dir()))<nChains | any(file.info(dir()[grep('MCout',dir())])$mtime <  orgtime)) {Sys.sleep(3);cat('+')}
+  while(length(grep('MCout',dir()))<nChains | sum(file.info(dir()[grep('MCout',dir())])$mtime >  orgtime)<nChains) {Sys.sleep(3);cat('+')}
   
   
   res <- eval(parse(text=eval(load('MCout1.Rdata'))))
@@ -172,8 +172,9 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 }
 
 # run MCMC locally
+#' @export
 .localrun <- function(jagsdata,sysfile,nChains,nBurnin,nIter,nThin){
-  require(coda)
+  
   JM <- jags.model(file=sysfile,data=jagsdata,n.chain=nChains)
   cat('\n','proceeding to burn-in phase','\n')
   update(JM,n.iter=nBurnin)
@@ -292,8 +293,8 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     S = diag(eveness,m.preys),
     SS = diag(1,m.preys),
     zeros = rep(0,m.preys),
-    Covs = ifelse(!is.null(Covs),Covs,NA),
-    ind = ifelse(!is.null(Covs),ind,NA)
+    Covs = if(!is.null(Covs)) Covs,
+    ind = if(!is.null(Covs)) ind
   )
   
   return(jagsdata)

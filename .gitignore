@@ -5,6 +5,7 @@
 *.Rcheck
 *#
 *~*
+*.png
 .pdf
 *.pdf
 *.Rdata

@@ -2,7 +2,7 @@ model{
   for (j in 1:n.preys){
     
     prop[j] <- ps[j]/sum(ps[1:n.preys] )
-    ps[j] ~ dgamma(0.1,1)I(0.01,)
+    ps[j] ~ dgamma(1/n.preys,1)I(0.01,)
     
     # draw fat content from prior
     fc[j] ~ dnorm(fc_mean[j],fc_tau[j])I(0,)    

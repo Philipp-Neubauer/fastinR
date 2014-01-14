@@ -3,8 +3,7 @@
 \title{Add Stable Isotope data for predators and prey items}
 \usage{
 addSI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
-  Frac.Coeffs.var = "", FC.mean = 1, FC.var = 1, R.diag.SI = 0.2,
-  datas = NULL)
+  Frac.Coeffs.var = "", FC.mean = 1, FC.var = 1, datas = NULL)
 }
 \arguments{
   \item{SI.predators}{Predator index/names (first column)
@@ -40,16 +39,6 @@ addSI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
   \item{datas}{a data structure as produced by
   \code{\link{addSI}}, needed if fatty acids and stable
   isotopes are added sequentially.}
-
-  \item{R.diag.SI}{diagnoal of the prior for the predator
-  covariance matrix. Note that this parameter can
-  significantly influence convergence, especially if there
-  are few predator signatures to estiamte the covariance
-  from - handle with care! If too small, the sampler will
-  get stuck in local modes and extreme values, if too high
-  it can produce nonsenseical estiamtes where all
-  proportions are equal (posterior mean at
-  \code{1/n.preys})}
 }
 \description{
 Files must be in .csv format.

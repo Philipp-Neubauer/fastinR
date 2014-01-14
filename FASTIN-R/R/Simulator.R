@@ -473,7 +473,7 @@ simulation <- function(){
     
     plott <-F
     if(all(!is.na(preys))){preya=cbind(preya,clr(preys));preda=cbind(preda,clr(preds));plott <-T}
-    if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,preds.SI-colMeans(mean_cs));plott <-T}
+    if(all(!is.na(preys.SI))){preya=cbind(preya,preys.SI);preda=cbind(preda,t(t(preds.SI)-colMeans(mean_cs)));plott <-T}
     
     if(plott==T){
            

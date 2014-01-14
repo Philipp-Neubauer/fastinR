@@ -4,7 +4,7 @@
 \usage{
 addFA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
   Conv.Coeffs.mean = "", Conv.Coeffs.var = "", FC.mean = 1, FC.var = 1,
-  CC.mean = 1, CC.var = 1, R.diag = 0.2, datas = NULL)
+  CC.mean = 1, CC.var = 1, datas = NULL)
 }
 \arguments{
   \item{FA.predators}{Predator index/names (first column)
@@ -55,16 +55,6 @@ addFA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
   \item{datas}{a data structure as produced by
   \code{\link{addSI}}, needed if fatty acids and stable
   isotopes are added sequentially.}
-
-  \item{R.diag}{diagnoal of the prior for the predator
-  covariance matrix. Note that this parameter can
-  significantly influence convergence, especially if there
-  are few predator signatures to estiamte the covariance
-  from - handle with care! If too small, the sampler will
-  get stuck in local modes and extreme values, if too high
-  it can produce nonsenseical estiamtes where all
-  proportions are equal (posterior mean at
-  \code{1/n.preys})}
 }
 \description{
 Files must be in .csv format.

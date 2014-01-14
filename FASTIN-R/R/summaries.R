@@ -1,7 +1,7 @@
 #' @S3method summary pop_props
 summary.pop_props <- function(object,...){
     
-  prey.names <- unique(object$prey.ix)
+  prey.names <- object$prey.names
   
   for (l in 1:object$nChains){
     
@@ -20,7 +20,7 @@ summary.pop_props <- function(object,...){
 #' @S3method summary ind_props
 summary.ind_props <- function(object,...){
     
-  prey.names <- unique(object$prey.ix)
+  prey.names <- object$prey.names
   
   for (l in 1:object$nChains){
     cat('\n','\n',"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",'\n')
@@ -59,7 +59,7 @@ summary.ind_props <- function(object,...){
 #' @S3method summary cov_props
 summary.cov_props <- function(object,...){
   
-  prey.names <- unique(object$prey.ix)
+  prey.names <- object$prey.names
   n.preys <- length(prey.names)
   Covs <- object$Covs
   
