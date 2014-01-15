@@ -18,4 +18,6 @@ install_github("philipp-neubauer/fastinR/fastinR")
 Running
 ===========
 
-Calling ```fastinR_GUI()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastinR_GUI()```. Standalone functions are available for all options and are documented, vignette to come.
+Calling ```fastinR_GUI()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastinR_GUI()```. Standalone functions are available for all options and are documented.
+
+A tutorial using simulated data is available [here](http://figshare.com/articles/Estimating_diet_proportions_from_fatty_acids_and_stable_isotopes_the_fastinR_package/900392) 
