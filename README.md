@@ -5,16 +5,16 @@ Fatty Acids and Stable Isotopes in R
 
 Disclaimer
 ----------
-This repository is still in development and will be updated to eliminate bugs and add improvements. Please [file an issues](https://github.com/Philipp-Neubauer/fastinR/issues?milestone=1&state=open) if you find a bug or have a suggestion, that way it is visibale for others and progress on the bug/issue can be traced.
+This repository is still in development and will be updated frequently to eliminate bugs and add improvements. Please [file an issues](https://github.com/Philipp-Neubauer/fastinR/issues?milestone=1&state=open) if you find a bug or have a suggestion, that way it is visible to other users/contributors and progress on the bug/issue can be traced.
 
 Install
 -------
 
-Requirements: Some R package requirements, these should install automatically. If not, use R's ```install.packages``` to install dependencies manually.
+Requirements: Some R package requirements, these should install automatically. If not, use R's ```install.package``` to install dependencies manually.
 
 On MAC, Xquarz is needed (I think...) to support the gui and plotting from the gui. Not needed iif plotting is manually turned off for all functions (this usually involves setting save=F manually in the function arguments).
 
-To install directly from github you'll also need git (get it here: http://git-scm.com/) and the devtools package for R.
+To install directly from github you'll also need git (get it [here](http://git-scm.com/)) and the devtools package for R.
 
 Please install development versions of the package directly from github using 
 ```R
