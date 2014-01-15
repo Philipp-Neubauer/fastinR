@@ -2,12 +2,12 @@ context('IO test')
 
 test_that('SI import works correctly with files',{
   
-  SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="FASTIN")
-  SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="FASTIN")
-  Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="FASTIN")
-  Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="FASTIN")
+  SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="fastinR")
+  SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="fastinR")
+  Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="fastinR")
+  Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="fastinR")
   
-  dats <- addSI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
+  dats <- add_SI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var)
   expect_is(dats,'list')
   expect_is(dats$datas.SI,'list')
   expect_false(any(is.na(dats$datas.SI$preys.SI)))
@@ -17,12 +17,12 @@ test_that('SI import works correctly with files',{
 
 test_that('SI import works correctly FC supplied directly',{
   
-  SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="FASTIN")
-  SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="FASTIN")
-  Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="FASTIN")
-  Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="FASTIN")
+  SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="fastinR")
+  SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="fastinR")
+  Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="fastinR")
+  Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="fastinR")
   
-  dats <- addSI(SI.predators=SI.predators,SI.preys=SI.preys,FC.mean=c(1,1),FC.var=c(2,2))
+  dats <- add_SI(SI.predators=SI.predators,SI.preys=SI.preys,FC.mean=c(1,1),FC.var=c(2,2))
   expect_is(dats,'list')
   expect_is(dats$datas.SI,'list')
   expect_false(any(is.na(dats$datas.SI$preys.SI)))
@@ -35,13 +35,13 @@ test_that('SI import works correctly FC supplied directly',{
 
 test_that('FA import works correctly with all files',{
   
-  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="FASTIN")
-  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
-  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
-  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="FASTIN")
-  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
+  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
   
-  dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
+  dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
   expect_is(dats,'list')
   expect_is(dats$datas.FA,'list')
   expect_false(any(is.na(dats$datas.FA$preys)))
@@ -51,13 +51,13 @@ test_that('FA import works correctly with all files',{
 
 test_that('FA import works correctly CC not from file',{
   
-  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="FASTIN")
-  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
-  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
-  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="FASTIN")
-  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
+  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
   
-  dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,CC.mean=1,CC.var=2)
+  dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,CC.mean=1,CC.var=2)
   expect_is(dats,'list')
   expect_is(dats$datas.FA,'list')
   expect_false(any(is.na(dats$datas.FA$preys)))
@@ -70,13 +70,13 @@ test_that('FA import works correctly CC not from file',{
   
 test_that('FA import works correctly CC and FC not from file',{
   
-  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="FASTIN")
-  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="FASTIN")
-  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="FASTIN")
-  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="FASTIN")
-  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="FASTIN")
+  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
   
-  dats <- addFA(FA.predators=FA.predators,FA.preys=FA.preys,CC.mean=1,CC.var=2,FC.mean=2,FC.var=2)
+  dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,CC.mean=1,CC.var=2,FC.mean=2,FC.var=2)
   expect_is(dats,'list')
   expect_is(dats$datas.FA,'list')
   expect_false(any(is.na(dats$datas.FA$preys)))

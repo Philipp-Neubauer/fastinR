@@ -1,10 +1,10 @@
-context('Variable selection test')
+ context('Variable selection test')
 
 test_that('Variable selection works',{
   
-  data('SimEx',package = 'FASTIN',envir = environment())
+  data('SimEx',package = 'fastinR',envir = environment())
   
-  dats <- selectvars(datas,ix=1:3)
+  dats <- select_vars(datas,ix=1:3)
   expect_is(dats,'list')
   expect_is(dats$datas.FA,'list')
   expect_false(any(is.na(dats$datas.FA$preys)))  
