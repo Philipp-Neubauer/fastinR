@@ -5,7 +5,7 @@ Fatty Acids and Stable Isotopes in R
 
 Disclaimer
 ----------
-This repository is still in development and will be updated frequently to eliminate bugs and add improvements. Please [file an issues](https://github.com/Philipp-Neubauer/fastinR/issues?milestone=1&state=open) if you find a bug or have a suggestion, that way it is visible to other users/contributors and progress on the bug/issue can be traced.
+This repository is still in development and will be updated frequently to eliminate bugs and add improvements. Please [file an issue](https://github.com/Philipp-Neubauer/fastinR/issues?milestone=1&state=open) if you find a bug or have a suggestion, that way it is visible to other users/contributors and progress on the bug/issue can be traced.
 
 Install
 -------
