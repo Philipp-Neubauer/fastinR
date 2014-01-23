@@ -46,7 +46,7 @@ fastinR_GUI <- function(){
   
   #Gui - tried some meaningful indentation here, but still not quite right...
   output <- gui(.fastin, title = 'FASTIN main menu',
-                argCommand=list(add.covs=guiNestedF(addCovs,"add.covs",  
+                argCommand=list(add.covs=guiNestedF(add_Covs,"add.covs",  
                                                     argFilter=list(Groups="{{} {.csv}}",Covariates="{{} {.csv}}"),
                                                     argText=c(Covariates = "Add Covariates (optional)",Groups = "Add Groups (optional)"),
                                                     cancelButton=F,
