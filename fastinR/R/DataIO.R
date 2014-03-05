@@ -99,9 +99,16 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   stopifnot(nchar(SI.predators)>0 & nchar(SI.preys)>0)
   
   # import predator and prey data - note that the first column is names, or an index
-  predators.SI = read.csv(SI.predators,header=T,row.names=1)
-  preys.SI = read.csv(SI.preys,header=T)
-  
+  if(is.character(SI.predators)) {
+    predators.SI = read.csv(SI.predators,header=T,row.names=1)
+  } else {
+    predators.SI = SI.predators
+  }
+  if(is.character(SI.preys)) {
+    preys.SI = read.csv(SI.preys,header=T)
+  } else {
+    preys.SI = SI.preys
+  }  
   n.preds <- dim(predators.SI)[1]
   
   preys.ix  <- as.character(preys.SI[,1])
@@ -181,6 +188,7 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
 #' @param CC.mean optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param CC.var optional - if no prey specific fractionation coefficiants are supplied via Conv.Coeffs.mean, CC.var can provide either a global (single) coefficient variance or fatty acid specific coefficient variances using R's c(FA_1,FA_2,...) notation for ALL fatty acids.
 #' @param datas a data structure as produced by \code{\link{add_SI}}, needed if fatty acids and stable isotopes are added sequentially.
+#' @param LN.par - are fat content means and variances given as log-normal parameters or sample mean and variance? 
 #' @details Use \code{\link{simulation}} to simulate and write these files to inspect the file structure.
 #' @seealso \code{\link{add_SI}},\code{\link{add_Covs}},\code{\link{select_vars}},\code{\link{run_MCMC}},\code{\link{simulation}}
 #' @author Philipp Neubauer
@@ -193,7 +201,7 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
 #' fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
 #' dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
 #' @export
-add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,datas=NULL){
+add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,datas=NULL,LN.par=F){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -204,8 +212,15 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   }
   
   # import predator and prey FA profiles
-  predators = read.csv(FA.predators,header=T,row.names=1)
-  preys = read.csv(FA.preys,header=T)
+  if (is.character(FA.predators)) {
+    predators = read.csv(FA.predators,header=T,row.names=1)
+  } else {predators = FA.predators}
+  
+  if (is.character(FA.preys)){
+    preys = read.csv(FA.preys,header=T)
+  } else {
+    preys = FA.preys
+  }
   n.preds <- dim(predators)[1]
   preys.ix <- as.character(preys[,1])
   
@@ -231,9 +246,15 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
     stopifnot(dim(mean_c)[1]==n.preys & dim(mean_c)[2]==n.fats)
     stopifnot(dim(var_c)[1]==n.preys & dim(var_c)[2]==n.fats)
   } else if (nchar(Conv.Coeffs.mean)==0 & nchar(Conv.Coeffs.var)==0)
-  {
-    mean_c = matrix(CC.mean,n.preys,n.fats,byrow=T)
-    var_c =matrix(CC.var,n.preys,n.fats,byrow=T)
+  { 
+    if(length(mean_c)==n.fats){
+      mean_c = matrix(CC.mean,n.preys,n.fats,byrow=T)
+      var_c =matrix(CC.var,n.preys,n.fats,byrow=T)
+    } else {
+      mean_c = matrix(CC.mean,n.preys,n.fats)
+      var_c =matrix(CC.var,n.preys,n.fats)
+    }
+    
   } else
   {
     print('Known conversion coefficients, or a mean AND variance for conversion coefficients need to be supplied')
@@ -269,21 +290,19 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
     if (dim(fat.cont)[2]>2){
       fat.cont <- read.csv(fat.conts,header=F,row.names=1) 
       fc.mean <- fat.cont[,1];fc.var <- fat.cont[,2]
-      if (any(fc.mean>1)){
-        fc.mean <- fc.mean/100
-        fc.var <- fc.var/100
-      }
-    } else if (any(fat.cont>1)){
-      fat.cont <- fat.cont/100
+      
+    } else if (dim(fat.cont)[2]==2){
+      fc.mean <- fat.cont[,1];fc.var <- fat.cont[,2]
+    } else {
       fc.mean <- tapply(fat.cont,preys.ix,mean)
       fc.var <- tapply(fat.cont,preys.ix,var)
     }
   }
   
-  if(LN.par)
-  fc.var = log(fc.var + fc.mean^2) - 2*log(fc.mean)
-  fc.mean = log(fc.mean)-fc.var/2
-  
+  if(LN.par == F){
+    fc.var = log(fc.var + fc.mean^2) - 2*log(fc.mean)
+    fc.mean = log(fc.mean)-fc.var/2
+  }  
   # make sure everything sums to 1
   
   predators <- clo(predators)
