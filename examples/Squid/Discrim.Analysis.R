@@ -100,12 +100,12 @@ discr.var <- matrix(apply(r.samps,2,var),2,2)
 # write to file
 colnames(discr.means) <- colnames(prey.table)[2:3]
 rownames(discr.means) <- c('fish','shrimp')
-write.csv(discr.means,file='discr.means')
+write.csv(discr.means,file='discr.means.csv')
 
 # write to file
 colnames(discr.var) <- colnames(prey.table)[2:3]
 rownames(discr.var) <- c('fish','shrimp')
-write.csv(discr.var,file='discr.var')
+write.csv(discr.var,file='discr.var.csv')
 
 ####
 ### do the same for fatty acids -----

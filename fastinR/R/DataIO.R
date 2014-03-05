@@ -239,6 +239,20 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
     print('Known conversion coefficients, or a mean AND variance for conversion coefficients need to be supplied')
   }
   
+#   # make sure that cs sum to one
+#   if(any(rowSums(mean_c))!=1){
+#     mean_c <- t(apply(mean_c,1,function(x) x/sum(x)))
+#     sums = (apply(mean_c,1,function(x) sum(x)))
+#     var_c = var_c/(sums^2)
+#   }
+  
+  # covert to gamma parameters
+  rate <- mean_c/var_c
+  shape <- mean_c^2/var_c
+  
+  mean_c <- shape
+  var_c <- rate
+  
   # deal with fat content
   if(nchar(fat.conts)==0) 
   {
@@ -265,6 +279,10 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
       fc.var <- tapply(fat.cont,preys.ix,var)
     }
   }
+  
+  if(LN.par)
+  fc.var = log(fc.var + fc.mean^2) - 2*log(fc.mean)
+  fc.mean = log(fc.mean)-fc.var/2
   
   # make sure everything sums to 1
   

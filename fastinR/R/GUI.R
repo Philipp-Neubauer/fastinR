@@ -74,7 +74,7 @@ fastinR_GUI <- function(){
                                                      cancelButton=F), 
                                 FA.data = guiNestedF(add_FA,"FA.data",
                                                      argFilter=list(FA.predators= "{{} {.csv}}",FA.preys= "{{} {.csv}}",fat.conts = "{{} {.csv}}",Conv.Coeffs.mean="{{} {.csv}}",Conv.Coeffs.var="{{} {.csv}}"), 
-                                                     argType=list(datas='i'),
+                                                     argType=list(datas='i',LN.par='i'),
                                                      #argEdit = list(CC.mean=NULL,CC.var=NULL,R.diag=NULL),
                                                      title = 'Fatty Acid Profile data entry form',
                                                      argText=c(FA.predators="Load predator(s) fatty acid data (csv)",
