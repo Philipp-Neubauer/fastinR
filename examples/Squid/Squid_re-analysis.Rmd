@@ -1,0 +1,84 @@
+Analysis of Stowasser et al. 2006 data
+========================================================
+
+Here we demonstrate the validity of our methods by re-analysing the experimental dataset of Stowasser et al. The original paper investigated the evolution of stable isotope (C/N) and fatty acid signatures for squid fed either fish, crustacean or mixed diets, as well as switched diet regimes. Our specific aim here is to estiamte diet proportions of mixed diet individuals, and to show the advantage of using both markers in concert over using a single marker for diet analysis. 
+
+We initially estiamte prey specific discimination in fatty acids following Hussey et al 2014 (Ecology Letters Volume 17, Issue 2, pages 239–250, February 2014), and develop analogous methods for fatty acid signatures. Discrimination is estiamted for both types of marker from animals that were fed on diets containing a single prey type (Fish or Crustaceans).
+
+
+First, we need to calculate the moments for combined fat content of prey types, since they are given for individual species in the original paper. Since we do not have the original fat content data (could ask for it?) we simply combine them as a mixture distribution:
+
+```{r}
+Silverside <- 2.27
+Silverside.sd <- 1.02 
+
+Sailfin.Molly <- 3.97
+Sailfin.Molly.sd <- 1.25
+
+Sheepshead.Minnow <- 3.59 
+Sheepshead.Minnow.sd <- 1.45
+
+Striped.Mullet <- 1.29 
+Striped.Mullet.sd <-  0.53
+
+fish.means <- c(Silverside,Sailfin.Molly,Sheepshead.Minnow,Striped.Mullet)
+
+fish.vars <- c(Silverside.sd,Sailfin.Molly.sd,Sheepshead.Minnow.sd,Striped.Mullet.sd)^2
+
+#numbers for each species
+n.Silverside <- length(grep('Silverside',rownames(prey.table.FA)))
+n.Sailfin.Molly <- length(grep('Sailfin.Molly',rownames(prey.table.FA)))
+n.Sheepshead.Minnow <- length(grep('Sheepshead.minnow',rownames(prey.table.FA)))
+n.Striped.Mullet <- length(grep('Striped.Mullet',rownames(prey.table.FA)))
+
+#into vector
+n.fish <- c(n.Silverside,n.Sailfin.Molly,n.Sheepshead.Minnow,n.Striped.Mullet)
+
+#sum
+total.fish = n.Silverside + n.Sailfin.Molly + n.Sheepshead.Minnow + n.Striped.Mullet
+
+#weighted mean of fish
+fish.mean <- sum((n.fish/total.fish)*fish.means)
+
+## Var = \Sum w_i((\mu_i-mu)^2+SD_i^2)
+
+fish.var <- sum((n.fish/total.fish)*((fish.means-fish.mean)^2+fish.vars))
+
+# using a gamma model for fat.cont gives
+
+fish.scale = fish.var/fish.mean
+fish.shape = fish.mean/fish.scale
+# plot it
+hist(rgamma(10000,shape=fish.shape,scale=fish.scale),30)
+
+# a log normal model gives
+fish.ln.vars = log(fish.vars + fish.means^2) - 2*log(fish.means)
+fish.ln.means = log(fish.means)-fish.ln.vars/2
+
+hist(rlnorm(10000,meanlog=fish.ln.means[1],sdlog=sqrt(fish.ln.vars[1])),30)
+
+#weighted mean of fish
+fish.ln.mean <- sum((n.fish/total.fish)*fish.ln.means)
+
+## Var = \Sum w_i((\mu_i-mu)^2+SD_i^2)
+
+fish.ln.var <- sum((n.fish/total.fish)*((fish.ln.means-fish.ln.mean)^2+fish.ln.vars))
+
+hist(rlnorm(10000,meanlog=fish.ln.mean,sdlog=sqrt(fish.ln.var)),30)
+
+shrimp.mean <- 2.43
+shrimp.var <- 0.66^2
+
+shrimp.ln.var = log(shrimp.var + shrimp.mean^2) - 2*log(shrimp.mean)
+shrimp.ln.mean = log(shrimp.mean)-shrimp.ln.var/2
+
+hist(rlnorm(10000,meanlog=shrimp.ln.mean,sdlog=sqrt(shrimp.ln.var)),30)
+
+```
+
+You can also embed plots, for example:
+
+```{r fig.width=7, fig.height=6}
+plot(cars)
+```
+
