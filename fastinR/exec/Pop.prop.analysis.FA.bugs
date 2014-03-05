@@ -5,7 +5,7 @@ model{
     ps[j] ~ dgamma(1/n.preys,1)I(0.01,)
     
     # draw fat content from prior
-    fc[j] ~ dnorm(fc_mean[j],fc_tau[j])I(0,)    
+    fc[j] ~ dnorm(fc_mean[j],fc_tau[j])   
     
 for (i in 1:ni[j]){
 prey[j,i,] ~ dmnorm(prey.means[j,],prey.precs[j,,])
