@@ -10,11 +10,13 @@ This repository is still in development and will be updated frequently to elimin
 Install
 -------
 
+The package uses jags for BAyesian computations, JAGS needs to be installed manually from [here](http://sourceforge.net/projects/mcmc-jags/files/JAGS/3.x/).
+
 Requirements: Some R package requirements, these should install automatically. If not, use R's ```install.package``` to install dependencies manually.
 
-On MAC, Xquarz is needed (I think...) to support the gui and plotting from the gui. Not needed iif plotting is manually turned off for all functions (this usually involves setting save=F manually in the function arguments).
+On MAC, Xquarz is needed to support the gui and plotting from the gui. Not needed iif plotting is manually turned off for all functions (this usually involves setting save=F manually in the function arguments).
 
-To install directly from github you'll also need git (get it [here](http://git-scm.com/)) and the devtools package for R.
+To install directly from github you'll also need git (get it [here](http://git-scm.com/)) and the devtools package for R, and run ```require('devtools')``` once the devtools package is installed.
 
 Please install development versions of the package directly from github using 
 ```R
