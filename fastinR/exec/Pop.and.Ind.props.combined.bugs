@@ -2,7 +2,7 @@ model{
   for (j in 1:n.preys){
   
     # draw fat content from prior
-    fc[j] ~ dnorm(fc_mean[j],fc_tau[j])I(0.001,)    
+    fc[j] ~ dlnorm(fc_mean[j],fc_tau[j])  
     
     # take out of joint posterior for mixing model = make analysis conditional on fc
     #fcc[j] <- cut(fc[j])
@@ -22,23 +22,22 @@ model{
       
     }
     
-    for (f in 1:m.fats){
-      # take out of joint posterior for mixing model = make analysis conditional on prey mean distribution
-                
-    
-      # backtransform to apply fractionation and fat content
+  for (f in 1:m.fats){
+               # backtransform to apply fractionation and fat content
       preydd[j,f] <- exp(prey.means[j,f])
-      preyd[j,f] <- preydd[j,f]/(sum(preydd[j,1:m.fats])+1)
-      
-    }
-    
-    preyd[j,n.fats] <- 1/(sum(preydd[j,1:m.fats])+1)
-    
-    for (f in 1:n.fats){      
-      # draw fractionation coeffs for prey j and fatty acid f
-      fracs[j,f] ~ dnorm(mean_c[j,f],tau_coeffs[j,f])I(0,)
+      pre.fracs[j,f] ~ dgamma(mean_c[j,f],tau_coeffs[j,f])
+      fracs[j,f] <- pre.fracs[j,f]/sum(pre.fracs[j,1:n.fats])
+#apply all
       preyf[j,f] <- (preyd[j,f]*fracs[j,f]*fc[j])
     }
+
+    preyd[j,1:m.fats] <- preydd[j,1:m.fats]/(sum(preydd[j,1:m.fats])+1)
+    
+    preyd[j,n.fats] <- 1/(sum(preydd[j,1:m.fats])+1)
+      # draw fractionation coeffs for prey j and fatty acid f
+      pre.fracs[j,n.fats] ~ dgamma(mean_c[j,n.fats],tau_coeffs[j,n.fats])
+      fracs[j,n.fats] <- pre.fracs[j,n.fats]/sum(pre.fracs[j,1:n.fats])
+      preyf[j,n.fats] <- (preyd[j,n.fats]*fracs[j,n.fats]*fc[j])
 }
   
   for(i in 1:n.preds) {      

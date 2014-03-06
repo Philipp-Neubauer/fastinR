@@ -96,7 +96,7 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   
   ## first check for potential conflicts
   
-  stopifnot(nchar(SI.predators)>0 & nchar(SI.preys)>0)
+  #stopifnot(nchar(SI.predators)>0 & nchar(SI.preys)>0)
   
   # import predator and prey data - note that the first column is names, or an index
   if(is.character(SI.predators)) {
@@ -224,7 +224,7 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   n.preds <- dim(predators)[1]
   preys.ix <- as.character(preys[,1])
   
-  if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
+  #if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
   
   preys.names <- as.character(unique(preys.ix))
   
@@ -325,7 +325,7 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   
   ## first some data and inits ----
   
- datas.FA <- list(fc_mean=fc.mean,fc_tau=1/fc.var,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=NULL,preys=preys,preds.FA=predators,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=1/var_c)
+ datas.FA <- list(fc_mean=fc.mean,fc_tau=1/fc.var,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=NULL,preys=preys,preds.FA=predators,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=var_c)
   
   if(length(datas)<=1){
     datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix=preys.ix,datas.FA=datas.FA,datas.SI=NULL,even=NULL)

@@ -5,7 +5,7 @@ model{
     ps[j] ~ dgamma(1/n.preys,1)I(0.01,)
     
     # draw fat content from prior
-    fc[j] ~ dnorm(fc_mean[j],fc_tau[j])I(0.001,)    
+    fc[j] ~ dlnorm(fc_mean[j],fc_tau[j])
     
     # model for sources with Jeffrey's (uninformative, improper) prior
     prey.precs[j,1:m.fats,1:m.fats] ~ dwish(R[,,j],ni[j])
@@ -27,16 +27,21 @@ model{
       # backtransform to apply fractionation and fat content
       preydd[j,f] <- exp(prey.means[j,f])
       preyd[j,f] <- preydd[j,f]/(sum(preydd[j,1:m.fats])+1)
+
+# draw fractionation coeffs for prey j and fatty acid f
+      pre.fracs[j,f] ~ dgamma(mean_c[j,f],tau_coeffs[j,f])
+      fracs[j,f] <- pre.fracs[j,f]/sum(pre.fracs[j,1:n.fats])
+#apply all
+      preyf[j,f] <- (preyd[j,f]*fracs[j,f]*fc[j])
       
     }
     
     preyd[j,n.fats] <- 1/(sum(preydd[j,1:m.fats])+1)
-    
-    for (f in 1:n.fats){      
-      # draw fractionation coeffs for prey j and fatty acid f
-      fracs[j,f] ~ dnorm(mean_c[j,f],tau_coeffs[j,f])I(0,)
-      preyf[j,f] <- (preyd[j,f]*fracs[j,f]*fc[j])
-    }
+    # draw fractionation coeffs for prey j and fatty acid f
+      pre.fracs[j,n.fats] ~ dgamma(mean_c[j,n.fats],tau_coeffs[j,n.fats])
+      fracs[j,n.fats] <- pre.fracs[j,n.fats]/sum(pre.fracs[j,1:n.fats])
+      preyf[j,n.fats] <- (preyd[j,n.fats]*fracs[j,n.fats]*fc[j])
+
     
   }
   

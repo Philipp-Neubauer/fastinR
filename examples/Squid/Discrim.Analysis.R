@@ -1,5 +1,5 @@
-prey.table <- read.csv('prey_SI.csv',header=T)
-pred.table <- read.csv('predator_SI.csv',header=T,stringsAsFactors=F)
+prey.table <- read.csv('Prey_SI.csv',header=T)
+pred.table <- read.csv('Predator_SI.csv',header=T,stringsAsFactors=F)
 
 prey.type <- as.numeric(prey.table[,1] == 'Grass shrimp')+1
 n.preys <- 2 
@@ -95,33 +95,40 @@ dim(r.samps)
 
 #into format for analysis
 discr.means <- matrix(apply(r.samps,2,mean),2,2)
+# pretend discrimination is the same for all fish species
+discr.means <- rbind(discr.means[1,],discr.means[1,],discr.means)
+
 discr.var <- matrix(apply(r.samps,2,var),2,2)
+# pretend discrimination is the same for all fish species
+discr.var <- rbind(discr.var[1,],discr.var[1,],discr.var)
 
 # write to file
 colnames(discr.means) <- colnames(prey.table)[2:3]
-rownames(discr.means) <- c('fish','shrimp')
+rownames(discr.means) <- unique(prey.table[,1])
 write.csv(discr.means,file='discr.means.csv')
 
 # write to file
 colnames(discr.var) <- colnames(prey.table)[2:3]
-rownames(discr.var) <- c('fish','shrimp')
+rownames(discr.var) <- unique(prey.table[,1])
 write.csv(discr.var,file='discr.var.csv')
 
 ####
 ### do the same for fatty acids -----
 ####
 
-prey.table.FA <- t(read.csv('prey_FA.csv',header=T,stringsAsFactors=F,row.names=1))
-pred.table.FA <- t(read.csv('predator_FA.csv',header=T,stringsAsFactors=F,row.names=1))
+prey.table.FA <- t(read.csv('Prey_FA.csv',header=F,row.names=1))
+pred.table.FA <- t(read.csv('Predator_FA.csv',header=T,stringsAsFactors=F,row.names=1))
 
 prey.type <- rep(1,nrow(prey.table.FA))
-prey.type[grep('Grass.Shrimp',rownames(prey.table.FA))] <- 2
+prey.type[prey.table.FA[,1] == 'Grass Shrimp'] <- 2
 
 n.preys <- 2 
 n.preys.samps <- length(prey.type)
 
+prey.ix <- prey.table.FA[,1] 
+prey.table.FA <- matrix(as.numeric(prey.table.FA[,2:26]),n.preys.samps,n.fats)
 for (i in 1:ncol(prey.table.FA))
-  prey.table.FA[prey.table.FA[,i]==0,i] = min(prey.table[prey.table.FA[,i]>0,i])
+  prey.table.FA[prey.table.FA[,i]==0,i] = min(prey.table.FA[prey.table.FA[,i]>0,i])
 prey=alr(prey.table.FA)
 
 for (i in 1:ncol(pred.table.FA))
@@ -130,6 +137,7 @@ pred=alr(pred.table.FA)
 
 # feed type index
 feed.type <- pred.table.FA[,1]
+FAs <- colnames(pred.table.FA)
 feed.type[grep('F',rownames(pred.table.FA))] <- 1
 feed.type[grep('C',rownames(pred.table.FA))] <- 2
 # use only fish and crustations diets, rest will be assessed
@@ -142,7 +150,7 @@ n.preds.samps <- length(idx)
 # Set up FA priors ------
 # not sure here, conflicting evidence for many FA's, better 
 
-n.fats <- ncol(prey.table)
+n.fats <- ncol(prey.table.FA)
 m.fats <- n.fats-1
 S <- diag(0.1,m.fats)
 R <- diag(0.1,n.fats)
@@ -191,8 +199,9 @@ shrimp.cc.samples <- r.samps[,seq(2,2*n.fats,2)]
 fish.cc <- colMeans(fish.cc.samples)
 shrimp.cc <- colMeans(shrimp.cc.samples)
 #combine
-ccs <- rbind(fish.cc,shrimp.cc)
-colnames(ccs) <- colnames(prey.table)
+ccs <- rbind(fish.cc,fish.cc,fish.cc,shrimp.cc)
+rownames(ccs) <- unique(prey.ix)[-4]
+colnames(ccs) <- colnames(pred.table.FA)
 write.csv(ccs,file='cc_FA.csv')
 
 crosscorr.plot(samps)
@@ -200,9 +209,7 @@ crosscorr.plot(samps)
 fish.cc.var <- apply(fish.cc.samples,2,var)
 shrimp.cc.var <- apply(shrimp.cc.samples,2,var)
 # combine
-ccs.var <- rbind(fish.cc.var,shrimp.cc.var)
-colnames(ccs.var) <- colnames(prey.table)
+ccs.var <- rbind(fish.cc.var,fish.cc.var,fish.cc.var,shrimp.cc.var)
+rownames(ccs.var) <- unique(prey.ix)[-4]
+colnames(ccs.var) <- colnames(pred.table.FA)
 write.csv(ccs.var,file='cc_FA_var.csv')
-
-
-cor(fish.cc.samples)

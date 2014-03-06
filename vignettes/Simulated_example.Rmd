@@ -78,7 +78,7 @@ Data Grooming
 The grooming step in this case corresponds to selecting relevant variables for the analysis. In practice, one could measure lots of Fatty Acids, and researchers often choose arbitrary cutoff points in proportions to reduce the dataset. However, even Fatty Acids occurring in low proportions may be useful for source discrimination and diet estimation if they introduce systematic differences between sources (prey items). 
 The `select_vars` function provides a graphical way to choose a subset of Fatty Acids according to their contribution to prey separation and reduction in collinearity in the prey matrix. Using `select_vars` in the simulated example shows that only really 2 Fatty Acids contribute to source separation - the plot of cumulative separation converges to one after adding the two most important fatty acid proportions (see also cumulative separation scores displayed in the console): all remaining FAs only add to collinearity in the source matrix. We choose F Atty Acid no 3,5 and 7 for analysis (the second call does this directly without the graphical interface).
 
-```
+```{r,eval=FALSE}
 dats.subset <- select_vars(dats)
 ```
 or
