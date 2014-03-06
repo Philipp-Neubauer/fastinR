@@ -14,11 +14,9 @@ model{
     prey.precs_SI[j,1:isos,1:isos] ~ dwish(R_SI[,,j],ni.SI[j])
     prey.means_SI[j,1:isos] ~  dmnorm(preym.SI[j,],prey.precs_SI[j,,])
    
-    for (i in 1:isos)
-    { cs[j,i] ~ dnorm(mean_cs[j,i],tau_cs[j,i])
-      # take out of joint posterior for mixing model = make analysis conditional on prey mean distribution
-      prey_SI[j,i] <- cs[j,i]+prey.means_SI[j,i]
-           
+    for (i in 1:isos){ 
+      cs[j,i] ~ dnorm(mean_cs[j,i],tau_cs[j,i])
+      prey_SI[j,i] <- cs[j,i]+prey.means_SI[j,i]           
     }
     
     for (f in 1:m.fats){

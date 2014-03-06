@@ -3,7 +3,7 @@ Analysis of Stowasser et al. 2006 data
 
 Here we demonstrate the validity of our methods by re-analysing the experimental dataset of Stowasser et al. The original paper investigated the evolution of stable isotope (C/N) and fatty acid signatures for squid fed either fish, crustacean or mixed diets, as well as switched diet regimes. Our specific aim here is to estiamte diet proportions of mixed diet individuals, and to show the advantage of using both markers in concert over using a single marker for diet analysis. 
 
-We begin the analysis using just SI. Hussey et al 2014 (Ecology Letters Volume 17, Issue 2, pages 239–250, February 2014), following earlier anlyses by Caut et al and others, showed that discimintation is prey N dependent, and used a meta-analytic model to estiamte discrimination coefficients. 
+We begin the analysis using just SI. Hussey et al 2014 (Ecology Letters Volume 17, Issue 2, pages 239–250, February 2014), following earlier analyses by Caut et al and others, showed that discimintation is prey N dependent, and used a meta-analytic model to estiamte discrimination coefficients. 
 
 We initially estiamte prey specific discimination in stable isotopes following Hussey et al 2014, and develop analogous methods for fatty acid signatures. Discrimination is estiamted for both types of marker from animals that were fed on diets containing a single prey type (Fish or Crustaceans).
 
@@ -12,7 +12,14 @@ Stable Isotope analysis
 
 We first read in the data tables for SI:
 
+```{r echo=FALSE}
+library(knitr)
+require(dplyr)
+options(warn=-1)
+```
+
 ```{r}
+library(fastinR,warn.conflicts=F)
 require(dplyr)
 
 prey.table <- read.csv('Prey_SI.csv',header=T,stringsAsFactors=F)
@@ -36,7 +43,7 @@ This is all we need for a first analysis using SI data. We can now visualize the
 dataplot(squid.data)
 ```
 
-There seems to be reasonable separation among diet items, and even within fish, but lets leave them grouped for now (since we can't estiamte specific fractionation).
+SIs seem to provide some separation among diet items, even within fish, but there is still strong overlap. One way to find out if the analysis of SI alone yields anything interpretable.
 
 The run_MCMC function is the main workhorse for any type of analysis, it uses methods dispatch (=different models) based on function arguments and data types. Notice that the `Data.Type` argument is set to `'Stable.Isotopes'` and the `Analysis.Type` is `'Population.proportions'`. Lets not worry about the rest for now.
 
@@ -50,7 +57,7 @@ Plotting the MCMC is the easiest way to ensure that the sampler is mixing - mean
 MCMCplot(Squid.SI.run1)
 ```
 
-This looks rather uninformative, let's see if this is due to chains not running long enough. The `diags` function gives more information:
+This looks rather uninformative, let's see if this is due to chains not running long enough. The `diags` function gives more information, it dispalys two types of diagnostics (from coda package):
 
 ```{r}
 diags(Squid.SI.run1)
@@ -59,7 +66,7 @@ diags(Squid.SI.run1)
 Lets run it again for a bit longer, this time using spawn=T, which 'spawns' invisible R processes that do the calculations
 
 ```{r, results='hide'}
-Squid.SI.run2 <- run_MCMC(datas=squid.data,nIter=100000,nBurnin=1000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.01,plott=F,spawn=T)
+Squid.SI.run2 <- run_MCMC(datas=squid.data,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.01,plott=F,spawn=T)
 
 diags(Squid.SI.run2)
 
@@ -70,7 +77,7 @@ MCMCplot(Squid.SI.run2)
 ```
 Looks like that's about as good as it'll get, so let's look at a summary and produce a nicer plot for the outcome.
 
-```{r}
+```{r, results='hide'}
 summary(Squid.SI.run2)
 
 ```
@@ -79,7 +86,7 @@ summary(Squid.SI.run2)
 plot(Squid.SI.run2,save=F)
 ```
 
-Based on posterior medians, we'd say that Mixed diet treatment squid were mostly feding on fish (at the level of the predator population), but there's considerable uncertainty. Does this reflect variability in the individual diets or uncertainty due to lack of signal in the data? We can set the `Analysis.Type` to `'Individual.proportions'` to see how individual diets vary and get a better idea.
+Based on posterior medians, we'd say that Mixed diet treatment squid were mostly feeding on fish (at the level of the predator population), but there's considerable uncertainty. Does this reflect variability in the individual diets or uncertainty due to lack of signal in the data? We can set the `Analysis.Type` to `'Individual.proportions'` to see how individual diets vary and get a better idea.
 
 ```{r, results='hide'}
 Squid.SI.run3 <- run_MCMC(datas=squid.data,nIter=1000000,nBurnin=10000,nChains=3,nThin=1000,Data.Type='Stable.Isotopes',Analysis.Type='Individual.proportions',Rnot_SI=10,plott=F,spawn=T)
@@ -95,6 +102,8 @@ MCMCplot(Squid.SI.run3)
 ```{r, results='hide'}
 summary(Squid.SI.run3)
 ```
+
+Scolling through this summary, you should see both individual psoterior sumamries and population level estimates for all chains. 
 
 ```{r fig.width=7, fig.height=6}
 plot(Squid.SI.run3,save=F)
@@ -187,11 +196,12 @@ Plotting the new dataset in MDS-scaled space:
 dataplot(squid.data.FA)
 ```
 
-MDS sugegsts that FA alone may not allow us to accurately estiamte diet proportions either. Let's select a subset of FA for analysis first to cut down on computation time. This is done using the ```select_vars``` function.
+MDS sugegsts that FA alone may not allow us to accurately estiamte diet proportions either. To confirm this, let's select a subset of FA for analysis first to cut down on computation time. This is done using the ```select_vars``` function.
 
 ```{r}
-squid.subset <- select_vars(squid.data)
+squid.subset <- select_vars(squid.data.FA,c(25,24,11,21,6,13,12,10,15,5))
 ```
+
 The two plots (and console output) suggest that using FAs up to 16:0 will preserve 99.5% of the total cumulative separation (based on all FAs) between preys, and keeps the prey matrix-condition number low, meaning less collinearity among items. Great!
 
 ```{r fig.width=7, fig.height=6}
@@ -201,7 +211,7 @@ dataplot(squid.subset)
 This doesn't look much better, so let's see what a first stab at the analysis spits out...
 
 ```{r, results='hide'}
-Squid.subset.analysis <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot=1,plott=F,spawn=T)
+Squid.subset.analysis <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot=0.2,plott=F,spawn=T)
 
 diags(Squid.subset.analysis)
 
@@ -219,7 +229,7 @@ summary(Squid.subset.analysis)
 plot(Squid.subset.analysis,save=F)
 ```
 
-FAs suggest a greater importance of silversides in the diets of mixed diet squid. Let's compare more explicitly using the ```multiplot``` function:
+FAs suggest a greater importance of silversides in the diets of mixed diet squid, but there's still lots of uncvertainty. Let's compare more explicitly using the ```multiplot``` function:
 
 ```{r}
 Pop.list <- list(Stable.Isotopes = Squid.SI.run2, Fatty.Acids = Squid.subset.analysis)
@@ -227,7 +237,29 @@ Pop.list <- list(Stable.Isotopes = Squid.SI.run2, Fatty.Acids = Squid.subset.ana
 multiplot(Pop.list,save=F)
 ```
 
-Lets see what a combined analysis can tell us. Who will win - FA or SI? We need to combine the two data objects first.
+Calculating individual proportions with FA data alone works in the same way as before. The R.not prior is often key to get well bahving chains.
+
+```{r, results='hide'}
+Squid.subset.ind <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Individual.proportions',Rnot=1,plott=F,spawn=T)
+
+diags(Squid.subset.ind)
+
+```
+
+```{r fig.width=7, fig.height=6}
+MCMCplot(Squid.subset.ind)
+```
+
+```{r, results='hide'}
+summary(Squid.subset.ind)
+```
+
+```{r fig.width=7, fig.height=6}
+plot(Squid.subset.ind,save=F)
+```
+Looking at the individual (still preliminary!) psoterior of proportions, it seems that some of the uncertainty at the population level may stem from the dominance of Sheepshead minnow for squid 1,2 and 5, whereas Silverside dominantes for squid no 3 and 4. NEvertheless, a lot of uncertainty remains.
+
+Lets see is a combined analysis can improve on this. We need to combine the two data objects first.
 
 Combined analysis for population proportions
 --------------------------------------------
@@ -240,9 +272,9 @@ squid.data.comb <- add_FA(FA.predators=pred.table.FA,FA.preys=prey.table.FA,fat.
 And take the subset again to run a combined analysis:
 
 ```{r, results='hide'}
-squid.subset.comb <- select_vars(squid.data.comb)
+squid.subset.comb <- select_vars(squid.data.comb,c(25,24,11,21,6,13,12,10,15,5))
 
-Squid.combined.analysis <- run_MCMC(datas=squid.subset.comb,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',Rnot=1,plott=F,spawn=T)
+Squid.combined.analysis <- run_MCMC(datas=squid.subset.comb,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',plott=F,spawn=T)
 
 diags(Squid.combined.analysis)
 
@@ -259,15 +291,24 @@ summary(Squid.combined.analysis)
 ```{r fig.width=7, fig.height=6}
 plot(Squid.combined.analysis,save=F)
 ```
-The results seem to make sense: the feed for the original study included 60 silversides, 45 Sheepshead minnows and 50 Sailfin mollys, with 76 shrimp over all treatments. Assuming equal allocation suggests that the inferred proportions are quite likely to be close to the actual diet proportions.
+The results seem to make sense: the feed for the original study included 60 silversides, 45 Sheepshead minnows and 50 Sailfin mollys, with 76 shrimp over all treatments. Assuming equal allocation suggests that the inferred proportions are quite likely to be close to the actual diet proportions. Lets see how different they are between markers and the combined analysis:
+
+```{r}
+Pop.list <- list(
+  Stable.Isotopes = Squid.SI.run2, 
+  Fatty.Acids = Squid.subset.analysis,
+  Combined.Analysis = Squid.combined.analysis)
+
+multiplot(Pop.list,save=F)
+```
 
 Combined analysis for individual proportions
 --------------------------------------------
 
 ```{r, results='hide'}
-Squid.combined.ind <- run_MCMC(datas=squid.subset.comb,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Individual.proportions',Rnot=1,Rnot_SI=10,plott=F,spawn=T)
+Squid.combined.ind <- run_MCMC(datas=squid.subset.comb,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Individual.proportions',Rnot=0.2,Rnot_SI=10,plott=F,spawn=T)
 
-diags(Squid.combined.analysis)
+diags(Squid.combined.ind)
 
 ```
 

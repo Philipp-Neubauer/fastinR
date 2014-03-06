@@ -4,7 +4,7 @@
 \usage{
 add_FA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
   Conv.Coeffs.mean = "", Conv.Coeffs.var = "", FC.mean = 1, FC.var = 1,
-  CC.mean = 1, CC.var = 1, datas = NULL)
+  CC.mean = 1, CC.var = 1, datas = NULL, LN.par = F)
 }
 \arguments{
   \item{FA.predators}{Predator index/names (first column)
@@ -55,6 +55,9 @@ add_FA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
   \item{datas}{a data structure as produced by
   \code{\link{add_SI}}, needed if fatty acids and stable
   isotopes are added sequentially.}
+
+  \item{LN.par}{- are fat content means and variances given
+  as log-normal parameters or sample mean and variance?}
 }
 \description{
 Files must be in .csv format.
