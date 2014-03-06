@@ -37,4 +37,4 @@ A tutorial using simulated data is available [here](http://figshare.com/articles
 Current Limitations
 -------------------
 
-For a combined (Stable Siotope and FAtty Acids) analysis, both markers need to be emasured for all predator samples, but not necessarily for the same prey samples. IF they are measured on different prey samples, the ```dataplot``` function cannot be used on the combined object, but will have to be used on separate objects for each marker. All of this may improve in the future if there are specific requests for this.
+For a combined (Stable Isotope and Fatty Acids) analysis, both markers need to be measured for all predator samples, but not necessarily for the same prey samples. IF they are measured on different prey samples, the ```dataplot``` function cannot be used on the combined object, but will have to be used on separate objects for each marker. All of this may improve in the future if there are specific requests for this.
