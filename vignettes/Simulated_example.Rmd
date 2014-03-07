@@ -303,7 +303,7 @@ group.path <- system.file("extdata", "Simdata_groups.csv", package="fastinR")
 Covs <- add_Covs(Groups=group.path)
 
 
-Cov.Combined <- run_MCMC(datas=dats.subset,Covs=Covs,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Combined.Analysis',Analysis.Type='Analysis.with.Covariates',Rnot=1,Rnot_SI=1,even=2,plott=F,spawn=T)
+Cov.Combined <- run_MCMC(datas=dats.subset,Covs=Covs,nIter=100000,nBurnin=10000,nChains=3,nThin=10,Data.Type='Combined.Analysis',Analysis.Type='Analysis.with.Covariates',Rnot=1,Rnot_SI=1,even=2,plott=F,spawn=T)
 ```
 
 ```
