@@ -12,6 +12,10 @@ fastinR into a single interface, but some options (plottin
 options mainly) are not available through the gui.
 }
 \details{
+Disclaimer: R gui facilities are somewhat unstable and have
+a mind of their own. Often unloading the package and
+re-loading it will fix glitches, but not always. Therefore,
+the command line is the suggested way to use the package.
 Please consult the help individual functions to obtain help
 on a particular topic
 }

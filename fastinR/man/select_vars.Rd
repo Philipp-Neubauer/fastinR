@@ -2,7 +2,7 @@
 \alias{select_vars}
 \title{Select Fatty Acids from imported data (should really be a method for subset...)}
 \usage{
-select_vars(datas, ix = NULL)
+select_vars(datas, ix = NULL, plot = T)
 }
 \arguments{
   \item{datas}{A data structure produced by
@@ -12,6 +12,9 @@ select_vars(datas, ix = NULL)
   \code{\link{var_select_plot}} is called to itneractively
   select variables based on cosine distance and prey matrix
   condition.}
+
+  \item{plot}{Logical (T/F): should selection be
+  itneractive? Needs tcl-tk package(and X-quartz on Mac)}
 }
 \value{
 a data structure of the same form as datas, with Fatty

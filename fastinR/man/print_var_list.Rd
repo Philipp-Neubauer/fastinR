@@ -1,8 +1,8 @@
-\name{var_select_plot}
-\alias{var_select_plot}
-\title{Plot cosine distance and matrix condition number for variable selection}
+\name{print_var_list}
+\alias{print_var_list}
+\title{Prints cosine distance and matrix condition number for variable selection}
 \usage{
-var_select_plot(prey.mat, prey.ix)
+print_var_list(prey.mat, prey.ix)
 }
 \arguments{
   \item{prey.mat}{(row-wise) dataframe of prey
@@ -11,15 +11,18 @@ var_select_plot(prey.mat, prey.ix)
   \item{prey.ix}{Indexes rows of \code{prey.mat}}
 }
 \value{
-Two plots with 1) relative contributions of Fatty Acids to
-source separation and 2) matrix condition number.
+Prints a matrix in the console with columns being 1)
+relative contributions of Fatty Acids to source separation,
+2) matrix condition number and 3) original index used to
+select the fatty acids.
 }
 \description{
 Cosine distance based separation on CAP axes and matrix
-condition number are graphed as a function of Fatty Acids,
+condition number are printed as a function of Fatty Acids,
 where fatty acids are ordered by their relative
 contribution to Canonical axes in a CAP (Canonical Analysis
-of Principal Coordinates).
+of Principal Coordinates). The original indices of these
+fatty acids in the data are given to facilitate selection
 }
 \examples{
 \dontrun{
@@ -27,7 +30,7 @@ of Principal Coordinates).
 data('Sim')
 preys <- datas$datas.FA$preys
 prey.ix <- datas$prey.ix
-var_select_plot(preys,prey.ix)
+print_var_list(preys,prey.ix)
 }
 }
 \author{

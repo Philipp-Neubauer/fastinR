@@ -46,12 +46,22 @@ for each predator}
 GUI: Simulate Fatty Acid profiles and Stable Isotope data
 }
 \details{
-The function calls a gui to simulate data, functions are of
-little use outside the gui facility.
+Disclaimer: R gui facilities are somewhat unstable and have
+a mind of their own. Often unloading the package and
+re-loading it will fix glitches, but not always. Therefore,
+the command line is the suggested way to use the apckage.
 
-Simulating data proceeds by selecting to simualte either
-individual diet proportions for each predator as drawn from
-a population level distribution for diet proportions, or by
+The function calls a gui to simulate data, functions are of
+little use outside the gui facility. The simualtion is
+sequential, meaning one needs to first decide on thumber of
+samples for predator and prey items (top sliders in
+simulation window), then simulate diet proportions (first
+row of buttons in window, will open additional windows),
+then marker data (second row), which can then be plotted
+and/or saved to file (third row). Specifically, simulating
+data proceeds by selecting to simulate either individual
+diet proportions for each predator as drawn from a
+population level distribution for diet proportions, or by
 simulating grouped diet proportions (e.g., size groups,
 geographic groups) and/or by letting covariates influence
 the drawn diet proportions (e.g., size based diet shifts).
@@ -64,6 +74,9 @@ proportions alter the predator fatty acid/SI makeup.
 
 \code{Plot current simulation} will draw a NMDS (non-metric
 multidimensional scaling) plot to show the simulated data.
+Note that there are somtimes funny interactions between the
+GUI and plot windows, especially in Rstudio. Sometimes you
+will need to press cancel in order to see the plots.
 
 The gui will remain open to allow for many tries at
 simulating data. Variuous configurations can be written to

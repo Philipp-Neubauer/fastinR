@@ -10,8 +10,6 @@ DISCLAIMER: This is an evolving package and vignette, please read instructions [
 
 DISCLAIMER 2: This tutorial is by no means a real analysis, which should proceed more carefully, and with longer MCMC runs. The example is designed to run through in a few minutes, and is therefore only an illustration of how an analysis of real data could proceed.
 
-We start with a very simple simulated example. The easiest way to simulate relevant data is through the built in simulation GUI, which is called from the command line once fastinR has been loaded:
-
 ```{r echo=FALSE}
 library(knitr)
 options(markdown.HTML.header = 'vignette.css')
@@ -20,10 +18,7 @@ options(warn=-1)
 ```{r}
 library(fastinR,warn.conflicts=F)
 ```
-```
-simulation()
-```
-The simulation window displays, and the user is invited to select parameters for simulated data, which can be plotted to visualize source overlap etc. For more details call `?simulation`.
+We start with a very simple simulated example. The easiest way to simulate relevant data is through the built in simulation GUI, which is called from the command line once fastinR has been loaded. Plese type ?simulation to obtain help on simulating your own 'dataset'. 
 
 The package comes with a simulated dataset which can be called with `r data('Sim')`, which loads an object called _datas_ into the current environment.
 
@@ -76,10 +71,10 @@ Data Grooming
 -------------
 
 The grooming step in this case corresponds to selecting relevant variables for the analysis. In practice, one could measure lots of Fatty Acids, and researchers often choose arbitrary cutoff points in proportions to reduce the dataset. However, even Fatty Acids occurring in low proportions may be useful for source discrimination and diet estimation if they introduce systematic differences between sources (prey items). 
-The `select_vars` function provides a graphical way to choose a subset of Fatty Acids according to their contribution to prey separation and reduction in collinearity in the prey matrix. Using `select_vars` in the simulated example shows that only really 2 Fatty Acids contribute to source separation - the plot of cumulative separation converges to one after adding the two most important fatty acid proportions (see also cumulative separation scores displayed in the console): all remaining FAs only add to collinearity in the source matrix. We choose F Atty Acid no 3,5 and 7 for analysis (the second call does this directly without the graphical interface).
+The `select_vars` function provides a graphical way to choose a subset of Fatty Acids according to their contribution to prey separation and reduction in collinearity in the prey matrix. Using `select_vars` in the simulated example shows that only really 2 Fatty Acids contribute to source separation - the plot of cumulative separation converges to one after adding the two most important fatty acid proportions (see also cumulative separation scores displayed in the console): all remaining FAs only add to collinearity in the source matrix. We choose F Atty Acid no 3,2 and 6 for analysis (the second call does this directly without the graphical interface).
 
 ```{r,eval=FALSE}
-dats.subset <- select_vars(dats)
+dats.subset <- select_vars(dats,plot=F)
 ```
 or
 ```{r }
@@ -100,15 +95,17 @@ Apart from a rotation, the overall configuration should be similar.
 Bayesian Analysis
 -----------------
 
-The actual analysis can be performed locally (in the active R session) or in a distributed way, using as many R sessions as Markov Chains. A good strategy is usually to run a few chains locally for short runs, and then run 3 or more chains in parallel in a distributed way once a satisfactory set of priors, thinning interval etc has been found. The `run_MCMC` functions sets up the MCMC runs and takes `spawn = T` or `spawn = F` as parameter to run chains in R slave processes or locally, respectively. 
+The actual analysis usues Markov Chain Monte Carlo to estimate posterior distributions for diet parameters. Estiamtion can be performed locally (in the active R session) or in a distributed way, using as many R sessions as Markov Chains. A good strategy is usually to run a few chains locally for short runs, and then run 3 or more  chains in parallel in a distributed way once a satisfactory set of priors, thinning interval etc has been found (setting the number of chains to a maximum of n-1 cores on your CPU is a good idea to not hog ALL resources). The `run_MCMC` functions sets up the MCMC runs and takes `spawn = T` or `spawn = F` as parameter to run chains in R slave processes or locally, respectively.
+
+The Rnot parameter sets the prior scale for the predator logistic normal covariance matrix, and will often determine how well the chain mixes, that is, how well it explores the parameter space, or if it gets stuck in local modes (that can be of low probability). In the latter case, one would see strong autocorrelation in the Markov Chains for individual paramters. Increasing ```Rnot```/```Rnot_SI``` can help, but will make it ahrder to get precise estimates. There is thus a tradeoff between accuracy and mixing here, and often one will just have to run an analysis for many iterations and with a large thinning interval (e.g., >100k iterations with a thinning interval of >100). This should be done after finding reasonable parameters for Rnot on a shorter run, and then letting the final analysis run with long chains.
 
 For a combined analysis of stable isotopes and fatty acids, it is often useful to run the two datatypes separately to assure that good priors can be found for both datasets independently, and then combining them for a final analysis. The analysis type is chosen in the appropriate option in the function call.
 
-### Estiamting population proportions
+### Estimating population proportions
 
 #### From Stable Isotopes alone
 
-Lets start with an analysis of the stable isotopes, estimating only global (population) level diets. We will use the default prior on the predator covariance matrix, and will adjust this prior subsequently. *WARNING* This might take a while depending on your resources, the size of the dataset and the parameters used for the MCMC.
+Lets start with an analysis of the stable isotopes, estimating only global (population) level diets. We will use the default prior on the predator covariance matrix, and will adjust this prior subsequently. *WARNING* This might take a while depending on your resources, the size of the dataset and the parameters used for the MCMC. If you are not familiar with Markov Chain Monte Carlo, please take a minute to read up on it, there are lots of great explanations and summaries on the web.
 
 ```{r}
 Pop.SI <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=1,plott=F,spawn=F)
@@ -120,7 +117,7 @@ Plotting the MCMC is the easiest way to ensure that the sampler is mixing - mean
 MCMCplot(Pop.SI)
 ```
 
-The mixing isn't great, `diags` function gives more information:
+The mixing isn't great, meaning that some autocorrelation is evident in the Markov Chain time series in left-hand plots. The `diags` function gives more information, displaying two types of diagnostics in the console.:
 
 ```{r}
 diags(Pop.SI)
@@ -138,7 +135,7 @@ plot(Pop.SI,save=F)
 
 The credible intervals are very large for Prey items 1 and 2, and the correlation plot suggests that there is a reasonably strong posterior correlation between estimates of prey items 1 & 2.
 
-Increasing the default prior on the predator covariance matrix sometimes leads to better mixing. We'll also run more iterations and set `spawn=T` for this.
+Increasing the default prior ```Rnot_SI``` on the predator covariance matrix sometimes leads to better mixing. We'll also run more iterations and set `spawn=T` for this.
 
 ```{r}
 Pop.SI2 <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=5,plott=F,spawn=T)
@@ -248,7 +245,7 @@ colMeans(proportions)
 
 Looking at the proportions, it is clear that there are two groups of predators (e.g., juveniles and adults), one group preys preferentially on Prey 1 while the other preys mostly on Prey 2. Let's see if we can pick this up by estimating individual predator proportions:
 
-### Estiamting individual proportions
+### Estimating individual proportions
 
 Lets try this with fatty acids first - given that there was limited information about diets in the stable isotopes alone, they can't be expected SI alone to provide the extra information we're after. 
 
@@ -297,7 +294,7 @@ The uncertainty for predators preying predominantly on Prey 2 is significantly r
 
 While the patterns here offer great insights into individual diet proportions, they do not provide a means to estimate the population distribution of diet proportions for these two groups. This can be achieved in an anova type linear model:
 
-### Estiamting group proportions
+### Estimating group proportions
 
 We now need to add covariates in the form of group membership. The reasoning and procedure is the same for continuous covariates (e.g., size). To add the covariates, we use the `add_Covs` constructor:
 
