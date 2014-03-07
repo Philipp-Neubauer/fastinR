@@ -111,13 +111,13 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   }  
   n.preds <- dim(predators.SI)[1]
   
-  preys.ix  <- as.character(preys.SI[,1])
+  preys.ix.SI  <- as.character(preys.SI[,1])
   preys.SI  <- preys.SI[,-1]
   
   # check that samples are in the same order
-  if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
+  #if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
   
-  preys.names  <- unique(preys.ix)
+  preys.names  <- unique(preys.ix.SI)
   if(GUI) guiSet('prey.names',preys.names )
   
   # set number of isotopes
@@ -147,7 +147,7 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   
   for (i in 1:n.preys){
     
-    preym.SI[i,] <- apply(preys.SI[preys.ix==unique(preys.ix)[i],],2,mean)
+    preym.SI[i,] <- apply(preys.SI[preys.ix.SI==unique(preys.ix.SI)[i],],2,mean)
     
   }
   
@@ -156,19 +156,19 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   R.SI <- array(,c(isos,isos,n.preys))
   ni.SI<-rep(NA,n.preys)
   for (i in 1:n.preys){
-    ni.SI[i] <- max(isos+1,sum(preys.ix==unique(preys.ix)[i])-1)
-    R.SI[,,i]=cov(preys.SI[preys.ix==unique(preys.ix)[i],])*ni.SI[i]
+    ni.SI[i] <- max(isos+1,sum(preys.ix.SI==unique(preys.ix.SI)[i])-1)
+    R.SI[,,i]=cov(preys.SI[preys.ix.SI==unique(preys.ix.SI)[i],])*ni.SI[i]
   }
   
   datas.SI <- list(isos=isos,R.SI=R.SI,Rnot.SI=NULL,preys.SI=preys.SI,preym.SI=preym.SI,preds.SI=predators.SI,ni.SI=ni.SI,mean_cs=mean_cs,tau_cs=1/var_cs)
   
   if(length(datas)<=1){
-    datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix=preys.ix,datas.FA=NULL,datas.SI=datas.SI,even=NULL)
+    datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix.SI=preys.ix.SI,datas.FA=NULL,datas.SI=datas.SI,even=NULL)
   } else {
     datas$datas.SI = datas.SI
     datas$n.preys = n.preys
     datas$n.preds = n.preds
-    datas$prey.ix = preys.ix
+    datas$prey.ix.SI = preys.ix.SI
   }
   
   ifelse(GUI,guiSet('datas',datas),return(datas))

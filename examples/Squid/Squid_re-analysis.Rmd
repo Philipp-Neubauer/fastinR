@@ -187,13 +187,13 @@ We estimate discrimintation coefficients (also termed fractionation or conversio
 
 ```{r}
 # note the datas argument here taking our initial SI object
-squid.data.FA <- add_FA(FA.predators=pred.table.FA,FA.preys=prey.table.FA,fat.conts='fat.cont.csv',Conv.Coeffs.mean='cc_FA.csv',Conv.Coeffs.var='cc_FA_var.csv',LN.par=T)
+squid.data <- add_FA(FA.predators=pred.table.FA,FA.preys=prey.table.FA,fat.conts='fat.cont.csv',Conv.Coeffs.mean='cc_FA.csv',Conv.Coeffs.var='cc_FA_var.csv',datas=squid.data,LN.par=T)
 ```
 
 Plotting the new dataset in MDS-scaled space:
 
 ```{r fig.width=7, fig.height=6}
-dataplot(squid.data.FA)
+dataplot(squid.data)
 ```
 
 MDS sugegsts that FA alone may not allow us to accurately estiamte diet proportions either. To confirm this, let's select a subset of FA for analysis first to cut down on computation time. This is done using the ```select_vars``` function.

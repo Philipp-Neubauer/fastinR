@@ -75,7 +75,7 @@ The `select_vars` function provides a graphical way to choose a subset of Fatty 
 
 ```{r,eval=FALSE}
 dats.subset <- select_vars(dats,plot=F)
-```
+1```
 or
 ```{r }
 dats.subset <- select_vars(dats,c(3,2,6))
@@ -108,7 +108,7 @@ For a combined analysis of stable isotopes and fatty acids, it is often useful t
 Lets start with an analysis of the stable isotopes, estimating only global (population) level diets. We will use the default prior on the predator covariance matrix, and will adjust this prior subsequently. *WARNING* This might take a while depending on your resources, the size of the dataset and the parameters used for the MCMC. If you are not familiar with Markov Chain Monte Carlo, please take a minute to read up on it, there are lots of great explanations and summaries on the web.
 
 ```{r}
-Pop.SI <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=1,plott=F,spawn=F)
+Pop.SI <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.1,plott=F,spawn=F)
 ```
 
 Plotting the MCMC is the easiest way to ensure that the sampler is mixing - meaning that the chain explores the posterior distribution of each parameter efficiently.
@@ -138,7 +138,7 @@ The credible intervals are very large for Prey items 1 and 2, and the correlatio
 Increasing the default prior ```Rnot_SI``` on the predator covariance matrix sometimes leads to better mixing. We'll also run more iterations and set `spawn=T` for this.
 
 ```{r}
-Pop.SI2 <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=5,plott=F,spawn=T)
+Pop.SI2 <- run_MCMC(datas=dats.subset,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=1,plott=F,spawn=T)
 ```
 
 ```{r fig.width=7, fig.height=6}
@@ -257,7 +257,7 @@ We now need to deal with one extra prior to be set: the prior for the variance o
 Ind.FA <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Individual.proportions',Rnot=1,even=2,plott=F,spawn=T)
 ```
 
-We won't show the output of the next commands anymore since it is far too long. They are the same as for a population proportion analysis:
+We won't show the output of the next commands anymore since it is far too long. The commands are the same as for a population proportion analysis:
 
 ```
 MCMCplot(Ind.FA)

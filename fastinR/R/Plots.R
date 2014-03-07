@@ -16,20 +16,27 @@ dataplot <- function(datas=NULL){
     GUI=F
   }
   
-  preya <- {}
-  preda <- {}
+  preya <- {};preya.SI <- {}
+  preda <- {};preda.SI <- {}
   if(!is.null(datas$datas.FA$preys)) {
     preya=cbind(preya,clr(datas$datas.FA$preys))
     preda=cbind(preda,clr(datas$datas.FA$preds.FA))     
   }
   if(!is.null(datas$datas.SI$preys.SI)) {
-    preya=cbind(preya,as.matrix(datas$datas.SI$preys.SI))
-    preda=cbind(preda,as.matrix(t(t(datas$datas.SI$preds.SI)-colMeans(datas$datas.SI$mean_cs))))
-  }
+    if (ifelse(!is.null(datas$prey.ix),all(datas$prey.ix == datas$prey.ix.SI),TRUE)) {
+      preya=cbind(preya,as.matrix(datas$datas.SI$preys.SI))
+      preda=cbind(preda,as.matrix(t(t(datas$datas.SI$preds.SI)-colMeans(datas$datas.SI$mean_cs))))
+    } else {
+      preya.SI=cbind(preya.SI,as.matrix(datas$datas.SI$preys.SI))
+      preda.SI=cbind(preda.SI,as.matrix(t(t(datas$datas.SI$preds.SI)-colMeans(datas$datas.SI$mean_cs))))
+      dista.SI <- dist(rbind(preya.SI,preda.SI))
+    }
+  }  
   
   names(preya)  <- names(preda)
   
   dista <- dist(rbind(preya,preda))
+  if (!is.null(preya.SI)) dista = sqrt(dista^2 + dista.SI^2)
   mds <- metaMDS(dista)
   
   externalDevice<-FALSE
