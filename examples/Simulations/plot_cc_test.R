@@ -1,4 +1,4 @@
-load('cc.test.Rdata')
+load('./examples/Simulations/cc.test.Rdata')
 cc.test <- matrix(unlist(cc.test),ncol=3,byrow=T)
 
 error.bar <- function(x, y, upper, lower=upper, length=0.1,...){
@@ -32,12 +32,13 @@ axis(1,at=seq(0,0.5,0.1),cex=1.2)
 title(xlab=expression(sigma[kappa]))
 axis(4,cex=1.2)
 mtext(expression(Delta[pi]),4,line=2.5)
+mtext(expression(kappa),2,line=2.5)
 
 qs <-aggregate(cc.test[,2:3],list(cc.test[,1]),function(x){quantile(x,c(0.025,0.975),na.rm=T)})
 error.bar(seq(0,0.5,0.1)-0.005,cmeans[,2],qs[,2][,2],qs[,2][,1],lwd=1.2)
 
 points(seq(0.,0.5,0.1)+0.005,cmeans[,3],axes=NULL,pch=1,cex=1.2)
-qs <- apply((testa3[,,2]),1,function(x){quantile(x,c(0.05,0.95),na.rm=T)})
+#qs <- apply((cc.test[,2]),1,function(x){quantile(x,c(0.05,0.95),na.rm=T)})
 error.bar(seq(0,0.5,0.1)+0.005,cmeans[,3],qs[,3][,2],qs[,3][,1],lwd=1.2)
 
 abline(h=0,lty=3)

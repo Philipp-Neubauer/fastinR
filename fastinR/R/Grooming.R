@@ -115,7 +115,7 @@ select_vars <- function(datas,ix=NULL,plot=T){
     GUI=F
   }
   
-  prey.mat <- datas$datas.FA$preys
+  prey.mat <- clo(datas$datas.FA$preys*((datas$datas.FA$mean_c/datas$datas.FA$tau_c)[datas$prey.ix,]))
   
   n.fats=nrow(prey.mat)
   prey.ix <- datas$prey.ix

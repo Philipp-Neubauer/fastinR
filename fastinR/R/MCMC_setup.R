@@ -48,11 +48,13 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     {
       datas$datas.SI$Rnot.SI <- diag(Rnot_SI,datas$datas.SI$isos)
       datas$datas.FA$Rnot <- diag(Rnot,datas$datas.FA$m.fats)
+      datas$datas.FA$preys <- alr(datas$datas.FA$preys)
       class(datas) <- 'combined'
     } else if (Data.Type=='Fatty.Acid.Profiles')
     {
       datas$datas.FA$Rnot <- diag(Rnot,datas$datas.FA$m.fats)
       class(datas) <- 'FA'
+      datas$datas.FA$preys <- alr(datas$datas.FA$preys)
     } else if (Data.Type=='Stable.Isotopes')
     {
       datas$datas.SI$Rnot.SI <- diag(Rnot_SI,datas$datas.SI$isos)
@@ -277,7 +279,7 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     m.fats =datas$datas.FA$m.fats,
     ni =datas$datas.FA$ni,
     preds = data.frame(datas$datas.FA$preds),
-    preys = data.frame(alr(datas$datas.FA$preys)),
+    preys = data.frame(datas$datas.FA$preys),
     prey.ix = as.numeric(factor(datas$prey.ix,levels = unique(datas$prey.ix))),
     n.prey.samps = length(datas$prey.ix),
     prey.ix.SI = as.numeric(factor(datas$prey.ix.SI,levels = unique(datas$prey.ix.SI))),

@@ -247,7 +247,7 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
     stopifnot(dim(var_c)[1]==n.preys & dim(var_c)[2]==n.fats)
   } else if (nchar(Conv.Coeffs.mean)==0 & nchar(Conv.Coeffs.var)==0)
   { 
-    if(length(mean_c)==n.fats){
+    if(length(CC.mean)==n.fats){
       mean_c = matrix(CC.mean,n.preys,n.fats,byrow=T)
       var_c =matrix(CC.var,n.preys,n.fats,byrow=T)
     } else {

@@ -9,8 +9,8 @@ prey <- prey.table[,2:3]
 
 # feed type index
 feed.type <- pred.table[,1]
-feed.type[pred.table[,1] == 'F' | pred.table[,1] == 'SF'] <- 1
-feed.type[pred.table[,1] == 'C' | pred.table[,1] == 'SC'] <- 2
+feed.type[pred.table[,1] == 'F'] <- 1
+feed.type[pred.table[,1] == 'C'] <- 2
 # use only fish and crustations diets, rest will be assessed
 idx <- which(feed.type %in% c(1,2))
 feed.type <- as.numeric(feed.type[idx])
@@ -77,9 +77,9 @@ input <- list(prey=prey,
 
 require(rjags)
 
-DM <- jags.model('../../Discrim.model.SI.R',n.chains=3,inits = list(mu=prior.mu,beta.not=bnot.prior,beta.reg=beta.prior),data=input)
+DM <- jags.model('Discrim.model.SI.R',n.chains=3,inits = list(mu=prior.mu,beta.not=bnot.prior,beta.reg=beta.prior),data=input)
 
-update(DM,100000)
+update(DM,10000)
 
 samps <- coda.samples(DM,c('pred.discr','beta.reg','beta.not','mu','sigma'),n.iter=1e5,thin=100)
 
@@ -124,6 +124,7 @@ prey.type[prey.table.FA[,1] == 'Grass Shrimp'] <- 2
 
 n.preys <- 2 
 n.preys.samps <- length(prey.type)
+n.fats <- 25
 
 prey.ix <- prey.table.FA[,1] 
 prey.table.FA <- matrix(as.numeric(prey.table.FA[,2:26]),n.preys.samps,n.fats)
@@ -162,6 +163,9 @@ prior.mu <- data.matrix(alr(pt[,2:length(pt)]))
 p=rep(1/n.fats,n.fats)
 zeros = rep(0,n.fats)
 
+rm(sigma)
+rm(sigma.pred)
+
 # input <- list(prey=(prey),
 #               n.fats=n.fats,
 #               m.fats=m.fats,
@@ -177,11 +181,11 @@ zeros = rep(0,n.fats)
 
 require(rjags)
 
-DM <- jags.model('../../Discrim.model.FA.R',n.chains=2)
+DM <- jags.model('Discrim.model.FA.R',n.chains=2)
 
 update(DM,1000)
 
-samps <- coda.samples(DM,c('beta.reg'),n.iter=1e4,thin=10)
+samps <- coda.samples(DM,c('beta.reg'),n.iter=1e5,thin=100)
 
 x11()
 plot(samps,ask=T)

@@ -22,19 +22,17 @@ model{
         mu.p[k,f] <- log(l.mu[k,f] )
         mu.o[k,f] <- exp(mu[k,f])
         mu.p.org[k,f] <- beta.reg[k,f]*mu.org[k,f]
+        # uniform dirichlet
         ps[k,f] ~ dgamma(1/n.fats,1)I(0.01,)
-        #beta.reg[k,f]  <- exp(log.beta.reg[k,f])
       }
       ps[k,n.fats] ~ dgamma(1/n.fats,1)I(0.01,)
-      #beta.reg[k,n.fats]  <- exp(log.beta.reg[k,n.fats])
+      
       mu.p.org[k,n.fats] <- beta.reg[k,n.fats]*mu.org[k,n.fats]
       
       #closure
       mu.o[k,n.fats] <- 1
       mu.org[k,1:n.fats] <- mu.o[k,1:n.fats]/sum(mu.o[k,1:n.fats])
       # fractionation....
-      #log.beta.reg[k,1:n.fats] ~ dmnorm(zeros,R)
-      #beta.reg[k,1:n.fats] ~ ddirch(p)
       beta.reg[k,1:n.fats] <- ps[k,1:n.fats]/sum(ps[k,1:n.fats] )
       
     }

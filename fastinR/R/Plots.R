@@ -19,16 +19,16 @@ dataplot <- function(datas=NULL){
   preya <- {};preya.SI <- {}
   preda <- {};preda.SI <- {}
   if(!is.null(datas$datas.FA$preys)) {
-    preya=cbind(preya,clr(datas$datas.FA$preys))
+    preya=cbind(preya,clr(datas$datas.FA$preys*((datas$datas.FA$mean_c/datas$datas.FA$tau_c)[datas$prey.ix,])))
     preda=cbind(preda,clr(datas$datas.FA$preds.FA))     
   }
   if(!is.null(datas$datas.SI$preys.SI)) {
     if (ifelse(!is.null(datas$prey.ix),all(datas$prey.ix == datas$prey.ix.SI),TRUE)) {
-      preya=cbind(preya,as.matrix(datas$datas.SI$preys.SI))
-      preda=cbind(preda,as.matrix(t(t(datas$datas.SI$preds.SI)-colMeans(datas$datas.SI$mean_cs))))
+      preya=cbind(preya,as.matrix(datas$datas.SI$preys.SI+datas$datas.SI$mean_cs[datas$prey.ix.SI,]))
+      preda=cbind(preda,as.matrix(datas$datas.SI$preds.SI))
     } else {
-      preya.SI=cbind(preya.SI,as.matrix(datas$datas.SI$preys.SI))
-      preda.SI=cbind(preda.SI,as.matrix(t(t(datas$datas.SI$preds.SI)-colMeans(datas$datas.SI$mean_cs))))
+      preya.SI=cbind(preya.SI,as.matrix(datas$datas.SI$preys.SI+datas$datas.SI$mean_cs[datas$prey.ix.SI,]))
+      preda.SI=cbind(preda.SI,as.matrix(datas$datas.SI$preds.SI))
       dista.SI <- dist(rbind(preya.SI,preda.SI))
     }
   }  

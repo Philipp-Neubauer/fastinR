@@ -10,9 +10,9 @@ We initially estiamte prey specific discimination in stable isotopes following H
 Stable Isotope analysis
 ------------------------
 
-We first read in the data tables for SI:
+We first read in the data tables for SI, we need to be in the Squid example directory in R:
 
-```{r echo=FALSE}
+```{r echo=FALSE,results='hide'}
 library(knitr)
 require(dplyr)
 options(warn=-1)
@@ -20,7 +20,6 @@ options(warn=-1)
 
 ```{r}
 library(fastinR,warn.conflicts=F)
-require(dplyr)
 
 prey.table <- read.csv('Prey_SI.csv',header=T,stringsAsFactors=F)
 pred.table <- read.csv('Predator_SI.csv',header=T,stringsAsFactors=F)
@@ -48,7 +47,7 @@ SIs seem to provide some separation among diet items, even within fish, but ther
 The run_MCMC function is the main workhorse for any type of analysis, it uses methods dispatch (=different models) based on function arguments and data types. Notice that the `Data.Type` argument is set to `'Stable.Isotopes'` and the `Analysis.Type` is `'Population.proportions'`. Lets not worry about the rest for now.
 
 ```{r}
-Squid.SI.run1 <- run_MCMC(datas=squid.data,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.01,plott=F,spawn=F)
+Squid.SI.run1 <- run_MCMC(datas=squid.data,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.01,plott=F,spawn=F)
 ```
 
 Plotting the MCMC is the easiest way to ensure that the sampler is mixing - meaning that the Markov chain explores the posterior distribution of each parameter efficiently.
@@ -63,50 +62,39 @@ This looks rather uninformative, let's see if this is due to chains not running 
 diags(Squid.SI.run1)
 ```
 
-Lets run it again for a bit longer, this time using spawn=T, which 'spawns' invisible R processes that do the calculations
+Diagnostics suggest that the model has converged and that the number of iterations was reasonable. Looking at a summary of the results:
+
+```{r}
+summary(Squid.SI.run1)
+```
+
+Producing a prettier plot for the results:
+
+```{r fig.width=7, fig.height=6}
+plot(Squid.SI.run1,save=F)
+```
+
+All diet items seem to contribute equally to the mixed diets. Based on posterior medians, we'd say that Mixed diet treatment squid were mostly feeding on fish (at the level of the predator population), but there's considerable uncertainty. Does this reflect variability in the individual diets or is the uncertainty due to lack of signal in the data? We can set the `Analysis.Type` to `'Individual.proportions'` to see how individual diets vary and get a better idea.
 
 ```{r, results='hide'}
-Squid.SI.run2 <- run_MCMC(datas=squid.data,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.01,plott=F,spawn=T)
+Squid.SI.run2 <- run_MCMC(datas=squid.data,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Individual.proportions',Rnot_SI=100,plott=F,spawn=T)
 
 diags(Squid.SI.run2)
 
 ```
 
-```{r fig.width=7, fig.height=6}
+```{r fig.width=7, fig.height=6,eval=FALSE}
 MCMCplot(Squid.SI.run2)
 ```
-Looks like that's about as good as it'll get, so let's look at a summary and produce a nicer plot for the outcome.
 
 ```{r, results='hide'}
 summary(Squid.SI.run2)
-
-```
-
-```{r fig.width=7, fig.height=6}
-plot(Squid.SI.run2,save=F)
-```
-
-Based on posterior medians, we'd say that Mixed diet treatment squid were mostly feeding on fish (at the level of the predator population), but there's considerable uncertainty. Does this reflect variability in the individual diets or uncertainty due to lack of signal in the data? We can set the `Analysis.Type` to `'Individual.proportions'` to see how individual diets vary and get a better idea.
-
-```{r, results='hide'}
-Squid.SI.run3 <- run_MCMC(datas=squid.data,nIter=1000000,nBurnin=10000,nChains=3,nThin=1000,Data.Type='Stable.Isotopes',Analysis.Type='Individual.proportions',Rnot_SI=10,plott=F,spawn=T)
-
-diags(Squid.SI.run3)
-
-```
-
-```{r fig.width=7, fig.height=6}
-MCMCplot(Squid.SI.run3)
-```
-
-```{r, results='hide'}
-summary(Squid.SI.run3)
 ```
 
 Scolling through this summary, you should see both individual psoterior sumamries and population level estimates for all chains. 
 
 ```{r fig.width=7, fig.height=6}
-plot(Squid.SI.run3,save=F)
+plot(Squid.SI.run2,save=F)
 ```
 
 This still looks very uncertain, and we could play with Rnot to see if we can get a better prior that improves mixing and perhaps the estiamtes. I tried that allready, and it doesn't work, which means that the uncertainty in the SI analysis is irreducible.
@@ -131,8 +119,9 @@ prey.ix <- prey.ix[-mullets]
 prey.table.FA <- prey.table.FA[-mullets,]
 
 # need to replace 0 proportions in dataset by min for that FA (ad-hoc..), no need to worry if it doesn't sum to 100 anymore
-for (i in 1:ncol(prey.table.FA))
+for (i in 1:ncol(prey.table.FA)){
   prey.table.FA[prey.table.FA[,i]==0,i] = min(prey.table.FA[prey.table.FA[,i]>0,i])
+  }
 
 # cumbersome, but need to add column of prey.ix
 prey.table.FA <- data.frame(prey.ix,prey.table.FA)
@@ -141,8 +130,9 @@ prey.table.FA <- data.frame(prey.ix,prey.table.FA)
 pred.table.FA <- t(read.csv('Predator_FA.csv',header=T,stringsAsFactors=F,row.names=1))
 pred.table.FA <- pred.table.FA[grep('Mixed',rownames(pred.table.FA))[c(1,2,3,13,14)],]
 # same here, replace
-for (i in 1:ncol(pred.table.FA))
+for (i in 1:ncol(pred.table.FA)){
   pred.table.FA[pred.table.FA[,i]==0,i] = min(pred.table.FA[pred.table.FA[,i]>0,i])
+}
 
 Silverside <- 2.27
 Silverside.sd <- 1.02 
@@ -199,7 +189,7 @@ dataplot(squid.data)
 MDS sugegsts that FA alone may not allow us to accurately estiamte diet proportions either. To confirm this, let's select a subset of FA for analysis first to cut down on computation time. This is done using the ```select_vars``` function.
 
 ```{r}
-squid.subset <- select_vars(squid.data.FA,c(25,24,11,21,6,13,12,10,15,5))
+squid.subset <- select_vars(squid.data,c(25,11,21,6,19))
 ```
 
 The two plots (and console output) suggest that using FAs up to 16:0 will preserve 99.5% of the total cumulative separation (based on all FAs) between preys, and keeps the prey matrix-condition number low, meaning less collinearity among items. Great!
@@ -211,13 +201,13 @@ dataplot(squid.subset)
 This doesn't look much better, so let's see what a first stab at the analysis spits out...
 
 ```{r, results='hide'}
-Squid.subset.analysis <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot=0.2,plott=F,spawn=T)
+Squid.subset.analysis <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot=2,plott=F,spawn=T)
 
 diags(Squid.subset.analysis)
 
 ```
 
-```{r fig.width=7, fig.height=6}
+```{r fig.width=7, fig.height=6,eval=FALSE}
 MCMCplot(Squid.subset.analysis)
 ```
 
@@ -232,7 +222,7 @@ plot(Squid.subset.analysis,save=F)
 FAs suggest a greater importance of silversides in the diets of mixed diet squid, but there's still lots of uncvertainty. Let's compare more explicitly using the ```multiplot``` function:
 
 ```{r}
-Pop.list <- list(Stable.Isotopes = Squid.SI.run2, Fatty.Acids = Squid.subset.analysis)
+Pop.list <- list(Stable.Isotopes = Squid.SI.run1, Fatty.Acids = Squid.subset.analysis)
 
 multiplot(Pop.list,save=F)
 ```
@@ -240,13 +230,13 @@ multiplot(Pop.list,save=F)
 Calculating individual proportions with FA data alone works in the same way as before. The R.not prior is often key to get well bahving chains.
 
 ```{r, results='hide'}
-Squid.subset.ind <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Individual.proportions',Rnot=1,plott=F,spawn=T)
+Squid.subset.ind <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Individual.proportions',Rnot=5,plott=F,spawn=T)
 
 diags(Squid.subset.ind)
 
 ```
 
-```{r fig.width=7, fig.height=6}
+```{r fig.width=7, fig.height=6,eval=FALSE}
 MCMCplot(Squid.subset.ind)
 ```
 
@@ -257,30 +247,21 @@ summary(Squid.subset.ind)
 ```{r fig.width=7, fig.height=6}
 plot(Squid.subset.ind,save=F)
 ```
-Looking at the individual (still preliminary!) psoterior of proportions, it seems that some of the uncertainty at the population level may stem from the dominance of Sheepshead minnow for squid 1,2 and 5, whereas Silverside dominantes for squid no 3 and 4. NEvertheless, a lot of uncertainty remains.
+Looking at the individual (still preliminary!) posterior of proportions, it seems that some of the uncertainty at the population level may stem from the dominance of Sheepshead minnow for squid 1,2 and 5, whereas Silverside dominantes for squid no 3 and 4. Nevertheless, a lot of uncertainty remains.
 
 Lets see is a combined analysis can improve on this. We need to combine the two data objects first.
 
 Combined analysis for population proportions
 --------------------------------------------
 
-```{r}
-# note the datas argument here taking our initial SI object
-squid.data.comb <- add_FA(FA.predators=pred.table.FA,FA.preys=prey.table.FA,fat.conts='fat.cont.csv',Conv.Coeffs.mean='cc_FA.csv',Conv.Coeffs.var='cc_FA_var.csv',datas=squid.data,LN.par=T)
-```
-
-And take the subset again to run a combined analysis:
-
 ```{r, results='hide'}
-squid.subset.comb <- select_vars(squid.data.comb,c(25,24,11,21,6,13,12,10,15,5))
-
-Squid.combined.analysis <- run_MCMC(datas=squid.subset.comb,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',plott=F,spawn=T)
+Squid.combined.analysis <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',plott=F,spawn=T)
 
 diags(Squid.combined.analysis)
 
 ```
 
-```{r fig.width=7, fig.height=6}
+```{r fig.width=7, fig.height=6, eval=FALSE}
 MCMCplot(Squid.combined.analysis)
 ```
 
@@ -312,7 +293,7 @@ diags(Squid.combined.ind)
 
 ```
 
-```{r fig.width=7, fig.height=6}
+```{r fig.width=7, fig.height=6,eval=FALSE}
 MCMCplot(Squid.combined.ind)
 ```
 
@@ -323,3 +304,65 @@ summary(Squid.combined.ind)
 ```{r fig.width=7, fig.height=6}
 plot(Squid.combined.ind,save=F)
 ```
+
+Analysing switched diets:
+--------------------------
+
+```{r}
+# predators - subset to Mixed feed only taht have SI data (to be quicker)
+pred.table.FA <- t(read.csv('Predator_FA.csv',header=T,stringsAsFactors=F,row.names=1))
+
+#switched treatments
+pred.treat <- c(grep('SF',rownames(pred.table.FA)),grep('SC',rownames(pred.table.FA)))
+pred.treat[1:length(grep('SF',rownames(pred.table.FA)))] <- 1
+pred.treat[(length(grep('SF',rownames(pred.table.FA)))+1):length(pred.treat)] <- 2
+
+pred.table.FA <- pred.table.FA[c(grep('SF',rownames(pred.table.FA)),grep('SC',rownames(pred.table.FA))),]
+# same here, replace
+for (i in 1:ncol(pred.table.FA))
+  pred.table.FA[pred.table.FA[,i]==0,i] = min(pred.table.FA[pred.table.FA[,i]>0,i])
+
+# add data
+# note the datas argument here taking our initial SI object
+squid.data <- add_FA(FA.predators=pred.table.FA,FA.preys=prey.table.FA,fat.conts='fat.cont.csv',Conv.Coeffs.mean='cc_FA.csv',Conv.Coeffs.var='cc_FA_var.csv',datas=squid.data,LN.par=T)
+```
+
+Plotting the new dataset in MDS-scaled space:
+
+```{r fig.width=7, fig.height=6}
+dataplot(squid.data)
+```
+
+MDS sugegsts that FA alone may not allow us to accurately estiamte diet proportions either. To confirm this, let's select a subset of FA for analysis first to cut down on computation time. This is done using the ```select_vars``` function.
+
+```{r}
+squid.subset <- select_vars(squid.data,c(25,11,21,6,19))
+```
+
+The two plots (and console output) suggest that using FAs up to 16:0 will preserve 99.5% of the total cumulative separation (based on all FAs) between preys, and keeps the prey matrix-condition number low, meaning less collinearity among items. Great!
+
+```{r fig.width=7, fig.height=6}
+dataplot(squid.subset)
+```
+
+This doesn't look much better, so let's see what a first stab at the analysis spits out...
+
+```{r, results='hide'}
+Squid.sc.analysis <- run_MCMC(datas=squid.subset,nIter=30000,nBurnin=10000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot=0.2,plott=F,spawn=T)
+
+diags(Squid.subset.analysis)
+
+```
+
+```{r fig.width=7, fig.height=6,eval=FALSE}
+MCMCplot(Squid.subset.analysis)
+```
+
+```{r, results='hide'}
+summary(Squid.subset.analysis)
+```
+
+```{r fig.width=7, fig.height=6}
+plot(Squid.subset.analysis,save=F)
+```
+
