@@ -37,7 +37,7 @@ dataplot <- function(datas=NULL){
   
   dista <- dist(rbind(preya,preda))
   if (!is.null(preya.SI)) dista = sqrt(dista^2 + dista.SI^2)
-  mds <- metaMDS(dista)
+  mds <- metaMDS(dista,trymax=100)
   
   externalDevice<-FALSE
   if (!is.function(options()$device) & GUI==T){
@@ -56,7 +56,7 @@ dataplot <- function(datas=NULL){
   }
   
   pl <- plot(mds,type='n')
-  points(pl,'sites',pch=cbind(as.numeric(as.factor(datas$prey.ix)),rep(16,datas$n.preds)),col=cbind(1+as.numeric(as.factor(datas$prey.ix)),rep(1,datas$n.preds)))
+  points(pl,'sites',pch=cbind(as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(16,datas$n.preds)),col=cbind(1+as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(1,datas$n.preds)))
   legend('bottomright',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
   
 }

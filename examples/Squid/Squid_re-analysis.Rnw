@@ -1,0 +1,405 @@
+
+\documentclass{article}
+\usepackage{hyperref}            
+\hypersetup{pdfpagelayout=SinglePage}
+
+\title{Analysis of Stowasser et al. 2006 experimental data}
+
+\begin{document}
+\maketitle
+
+\section*{Preamble}
+
+Here we demonstrate the validity of our methods by re-analysing the experimental dataset of Stowasser et al. The original paper investigated the evolution of stable isotope (C/N) and fatty acid signatures for squid fed either fish, crustacean or mixed diets, as well as switched diet regimes. Our specific aim here is to estiamte diet proportions of switched diet treatment individuals, and to show the advantage of using both markers in concert over using a single marker for diet analysis. 
+
+We begin the analysis using just SI. Hussey et al 2014 (Ecology Letters Volume 17, Issue 2, pages 239–250, February 2014), following earlier analyses by Caut et al and others, showed that discimintation is prey N dependent, and used a meta-analytic model to estiamte discrimination coefficients. 
+
+We initially estiamte prey specific discimination in stable isotopes following Hussey et al 2014, and develop analogous methods for fatty acid signatures. Discrimination is estiamted for both types of marker from animals that were fed on diets containing a single prey type (Fish or Crustaceans). We estimate discrimintation coefficients (also termed fractionation or conversion for SI and FA, respectively) using Bayesian models. The analysis is done in a separate file (Discrimination.Analysis.Rnw) and produces files discr.means.csv/discr.var.csv for SI, and corresponding cc_FA.csv and cc_FA_var.csv for FA.The estiamtion isn't trivial, so we just pass over it here and refer the itnerested reader to the separate file. 
+
+\Section{Fatty Acid Analysis}
+
+We first read in the data tables, for this we need to be in the Squid example directory in R, or point to the appropraite path. We proceed with the analysis by adding the necessary items for the final analysis to the workspace, using the add_SI function in fastin-R. This function just adds the data, and puts it into a specific format.
+
+```{r echo=FALSE,results='hide'}
+library(knitr)
+require(dplyr)
+options(warn=-1)
+```
+
+\SubSection{Data Grooming}
+
+The FA prey data has 3 profiles for striped mullet - since these are similar to other fish and were fed in very low proportions, we'll exclude them here. We do not have the original fat content data (could ask for it?), so we just use the empirical mean and variance to calculate priors for a log-normal model of fat content:
+
+<<FAP data grooming>>=
+# load fatty acid data tables
+# prey
+prey.ix <- t(read.csv('Prey_FA.csv',header=F,stringsAsFactors=F,row.names=1))[,1]
+prey.table.FA <- t(read.csv('Prey_FA.csv',header=T,stringsAsFactors=F,row.names=1))
+
+mullets <- which(prey.ix=='Striped Mullet')
+prey.ix <- prey.ix[-mullets]
+prey.table.FA <- prey.table.FA[-mullets,]
+
+# need to replace 0 proportions in dataset by min for that FA (ad-hoc..), no need to worry if it doesn't sum to 100 anymore
+for (i in 1:ncol(prey.table.FA)){
+  prey.table.FA[prey.table.FA[,i]==0,i] = min(prey.table.FA[prey.table.FA[,i]>0,i])
+  }
+
+# cumbersome, but need to add column of prey.ix
+prey.table.FA <- data.frame(prey.ix,prey.table.FA)
+
+# predators - subset to Mixed feed only taht have SI data (to be quicker)
+pred.table.treat <- t(read.csv('Predator_FA.csv',header=T,stringsAsFactors=F,row.names=1))
+
+#switched treatment index
+pred.treat <- c(grep('SF',rownames(pred.table.treat))[4:6],grep('SC',rownames(pred.table.treat))[4:8])
+pred.treat[1:length(grep('SF',rownames(pred.table.treat))[4:6])] <- 1
+pred.treat[(length(grep('SF',rownames(pred.table.treat))[4:6])+1):length(pred.treat)] <- 2
+
+# subset the predsator table
+pred.table.treat <- pred.table.treat [c(grep('SF',rownames(pred.table.treat))[4:6],grep('SC',rownames(pred.table.treat))[4:8]),]
+# same here, replace zeros in FAP
+for (i in 1:ncol(pred.table.treat ))
+  pred.table.treat[pred.table.treat[,i]==0,i] = min(pred.table.treat[pred.table.treat[,i]>0,i])
+@
+
+First, we subset the data table for each treatment. Since we only have SI for the same fish for the SC treatment, we analyse SC first with FAP and SI independently to demonstrate the benefit of a combined model. We then use FAP to estiamte diets for squid from the SF treatment, and look at a model with group effects to estiamte group diet proportions and individual predator diets.
+
+<<subset tables >>==
+pred.table.treat.SC <- pred.table.treat[grep('SC',rownames(pred.table.treat)),]
+pred.table.treat.SF <- pred.table.treat[grep('SF',rownames(pred.table.treat)),]
+@
+
+<<adding data to workspace>>=
+# add data
+squid.data.treat.SC <- add_FA(FA.predators=pred.table.treat.SC,FA.preys=prey.table.FA,fat.conts='fat.cont.csv',Conv.Coeffs.mean='cc_FA.csv',Conv.Coeffs.var='cc_FA_var.csv',LN.par=T)
+
+squid.data.treat.SF <- add_FA(FA.predators=pred.table.treat.SF,FA.preys=prey.table.FA,fat.conts='fat.cont.csv',Conv.Coeffs.mean='cc_FA.csv',Conv.Coeffs.var='cc_FA_var.csv',LN.par=T)
+
+# a combined object as well
+squid.data.treat<- add_FA(FA.predators=pred.table.treat,FA.preys=prey.table.FA,fat.conts='fat.cont.csv',Conv.Coeffs.mean='cc_FA.csv',Conv.Coeffs.var='cc_FA_var.csv',LN.par=T)
+@
+
+Plotting the new dataset in MDS-scaled space:
+
+<<NMDS plot of both treatments,fig.width=7, fig.height=6>>=
+dataplot(squid.data.treat)
+@
+
+The NMDS plot (scaled by conversion coefficients) suggests that one group of squid mostly fed on crustaceans, while the other fed mostly on fish - as we would expect.
+
+Instead of using the whole FAP for each rpedator and prey, we subset:
+
+<<subsetting FAPs,eval=FALSE>>=
+squid.subset.treat <- select_vars(squid.data.treat,plot=F)
+@                                  
+
+Doing this directly with indices, using the first 4 FAs that combine for $>95\%$ of separation:
+<<subsetting FAPs with indices,eval=FALSE>>=
+squid.subset.treat.SC <- select_vars(squid.data.treat.SC,c(24,20,18,10))
+squid.subset.treat.SF <- select_vars(squid.data.treat.SF,c(24,20,18,10))
+squid.subset.treat <- select_vars(squid.data.treat,c(24,20,18,10))
+@
+
+To confirm that we haven't lost too much resolution, we plot the subset in NMDS space:
+
+<<NMDS plot of FAP subset,fig.width=7, fig.height=6>>=
+dataplot(squid.subset.treat)
+@
+
+This still looks reasonable, which suggests that we can proceed with the analysis. We now can now move to the Bayesian analysis.
+
+\SubSection{Bayesian analysis of SC treatment diet composition}
+
+\SubSubSection{FAP analysis}
+
+We start with the default Rnot prior of 0.2, which is reasonably broad and often given leads to efficient MCMC sampling. Prior eveness of diet proportions is set to 0.5, which does constrain extreme proportions somewhat, but often leads to better mixing during the MCMC.
+
+<<FAP SC analysis v0,results='hide'>>=
+Squid.SC.analysis <- run_MCMC(datas=squid.subset.treat.SC,nIter=50000,nBurnin=10000,nChains=3,nThin=50,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot=0.2,even=0.5,plott=F,spawn=T)
+
+#diagnostics
+diags(Squid.SC.analysis)
+@
+
+<<Evaluating the MCMC,eval=FALSE>>=
+MCMCplot(Squid.SC.analysis)
+
+summary(Squid.SC.analysis)
+@
+
+As all diagnostics sugsget that the chains converged, and the results are in agreement with our expectation, we can now plot the results:
+
+<<Plotting the diet proportions,fig.width=7, fig.height=6>>=
+plot(Squid.SC.analysis,save=F)
+@
+
+\SubSubSection{Adding SI}
+
+<<Reading data,results='hide'>>=
+detach("package:dplyr", unload=TRUE)
+require(dplyr)
+prey.table <- read.csv('Prey_SI.csv',header=T,stringsAsFactors=F)
+pred.table <- read.csv('Predator_SI.csv',header=T,stringsAsFactors=F)
+
+# use only mixed feed individuals for analysis - using dplyr
+pred.table <- pred.table %.% 
+  filter(Feed=='SC') %.%
+  select(X_13C,X_15N)
+
+@
+
+We now combine the two data types to a single object:
+
+<<combining mearkers in workspace>>=
+squid.subset.treat.SC.comb <- add_SI(SI.predators=pred.table,SI.preys=prey.table,Frac.Coeffs.mean='discr.means.csv',Frac.Coeffs.var='discr.var.csv',datas=squid.subset.treat.SC)
+@
+
+We can check the NMDS plot to see what the combined set looks like:
+
+<<Combined NMDS, fig.width=7, fig.height=6>>=
+dataplot(squid.subset.treat.SC.comb)
+@
+
+<<SI analysis,results='hide'>>=
+Squid.SC.SI.analysis <- run_MCMC(datas=squid.subset.treat.SC.comb,nIter=50000,nBurnin=10000,nChains=3,nThin=50,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.2,plott=F,spawn=T)
+
+#diagnostics
+diags(Squid.SC.SI.analysis)
+@
+
+Again, verifying convergence visually:
+
+<<eval=FALSE>>=
+MCMCplot(Squid.SC.SI.analysis)
+
+#result summary for all 3 chains
+summary(Squid.SC.SI.analysis)
+@
+
+<<SI results,fig.width=7, fig.height=6>>=
+plot(Squid.SC.SI.analysis,save=F)
+@
+
+It looks as though both markers can resolve the treatment effect, but leave a long tail in the psoterior that euqates to uncertainty about SC diet proportions. A combined analysis of FAP and SI provides a clearer picture:
+
+<<Combined analysis,results='hide'>>=
+Squid.SC.comb.analysis <- run_MCMC(datas=squid.subset.treat.SC.comb,nIter=50000,nBurnin=10000,nChains=3,nThin=50,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',Rnot=0.2,Rnot_SI=0.2,plott=F,spawn=T)
+
+#diagnostics
+diags(Squid.SC.comb.analysis)
+@
+
+Making sure that the chains converged, and looking at posterior summaries.
+
+<<eval=FALSE>>=
+MCMCplot(Squid.SC.comb.analysis)
+
+summary(Squid.SC.comb.analysis)
+@
+
+And plotting the final combined proportions:
+
+<<Combined proportions plot,fig.width=7, fig.height=6>>=
+plot(Squid.SC.comb.analysis,save=F)
+@
+
+We can directly compare population level proportions using the \emph{multiplot} function.
+
+<<Marker Comparison,fig.width=6>>=
+# combining individual elements to a named list
+Pop.list <- list(
+  Stable.Isotopes = Squid.SC.SI.analysis, 
+  Fatty.Acids = Squid.SC.analysis,
+  Combined.Analysis = Squid.SC.comb.analysis)
+
+#plotting
+multiplot(Pop.list,save=F)
+@
+
+This combined plot illustrates the advantage of using the two markers together, reducing uncertainty and obtaining better point estiamtes.
+
+Anotehr advantage 
+
+Squid.SC.analysis.ind.FAP <- run_MCMC(datas=squid.subset.treat.SC,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Individual.proportions',Rnot=1,even=0.1,plott=F,spawn=T)
+
+Squid.SC.analysis.ind <- run_MCMC(datas=squid.subset.treat.SC.comb,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Combined.Analysis',Analysis.Type='Individual.proportions',Rnot=1,even=0.1,plott=F,spawn=T)
+
+
+
+
+\SubSection{FAP analysis of SF and combined treatments}
+
+<<SF analysis>>=
+Squid.SF.analysis <- run_MCMC(datas=squid.subset.treat.SF,nIter=50000,nBurnin=10000,nChains=3,nThin=50,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot=1,plott=F,spawn=T)
+
+#diagnostics
+diags(Squid.SF.analysis)
+@
+
+<<eval=FALSE>>=
+MCMCplot(Squid.SF.analysis)
+
+summary(Squid.SF.analysis)
+@
+
+<<SF plot,fig.width=7, fig.height=6>>=
+plot(Squid.SF.analysis,save=F)
+@
+
+Again, the resutls are in line with expectations, although the psoterior distributions for the individual fish species all show long tail, leaving their relative contribution somewhat uncertain. This is not surprising given the overlap in NMDS space visible on the plots above.
+
+Adding covariates for a compelte analysis that estimates treatment effects and group specific population level diets:
+
+<<Grouped analysis,results='hide'>>=
+Squid.treat.analysis2 <- run_MCMC(datas=squid.subset.treat,Covs=treatments,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Analysis.with.Covariates',Rnot=0.02,even=0.05,plott=F,spawn=T)
+
+#diagnostics
+diags(Squid.treat.analysis)
+@
+
+<<eval=FALSE>>=
+MCMCplot(Squid.treat.analysis2)
+
+
+summary(Squid.treat.analysis)
+@
+
+<<Grouped plot,fig.width=7, fig.height=6>>=
+plot(Squid.treat.analysis,save=F)
+
+@
+
+
+
+
+
+
+
+This is all we need for a first analysis using SI data. We can now visualize the data on an Non-Metric Dimensional Scaling plot like so:
+
+```{r fig.width=7, fig.height=6}
+dataplot(squid.data)
+```
+
+SIs seem to provide some separation among diet items, even within fish, but there is still strong overlap. One way to find out if the analysis of SI alone yields anything interpretable.
+
+The run_MCMC function is the main workhorse for any type of analysis, it uses methods dispatch (=different models) based on function arguments and data types. Notice that the `Data.Type` argument is set to `'Stable.Isotopes'` and the `Analysis.Type` is `'Population.proportions'`. Lets not worry about the rest for now.
+
+```{r}
+Squid.SI.run1 <- run_MCMC(datas=squid.data,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.01,plott=F,spawn=F)
+```
+
+Plotting the MCMC is the easiest way to ensure that the sampler is mixing - meaning that the Markov chain explores the posterior distribution of each parameter efficiently.
+
+```{r fig.width=7, fig.height=6}
+MCMCplot(Squid.SI.run1)
+```
+
+This looks rather uninformative, let's see if this is due to chains not running long enough. The `diags` function gives more information, it dispalys two types of diagnostics (from coda package):
+
+```{r}
+diags(Squid.SI.run1)
+```
+
+Diagnostics suggest that the model has converged and that the number of iterations was reasonable. Looking at a summary of the results:
+
+```{r}
+summary(Squid.SI.run1)
+```
+
+Producing a prettier plot for the results:
+
+```{r fig.width=7, fig.height=6}
+plot(Squid.SI.run1,save=F)
+```
+
+All diet items seem to contribute equally to the mixed diets. Based on posterior medians, we'd say that Mixed diet treatment squid were mostly feeding on fish (at the level of the predator population), but there's considerable uncertainty. Does this reflect variability in the individual diets or is the uncertainty due to lack of signal in the data? We can set the `Analysis.Type` to `'Individual.proportions'` to see how individual diets vary and get a better idea.
+
+```{r, results='hide'}
+Squid.SI.run2 <- run_MCMC(datas=squid.data,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Individual.proportions',Rnot_SI=100,plott=F,spawn=T)
+
+diags(Squid.SI.run2)
+
+```
+
+```{r fig.width=7, fig.height=6,eval=FALSE}
+MCMCplot(Squid.SI.run2)
+```
+
+```{r, results='hide'}
+summary(Squid.SI.run2)
+```
+
+Scolling through this summary, you should see both individual psoterior sumamries and population level estimates for all chains. 
+
+```{r fig.width=7, fig.height=6}
+plot(Squid.SI.run2,save=F)
+```
+
+This still looks very uncertain, and we could play with Rnot to see if we can get a better prior that improves mixing and perhaps the estiamtes. I tried that allready, and it doesn't work, which means that the uncertainty in the SI analysis is irreducible.
+
+Let's switch to fatty acids and see what that data can reveal independently of SIs.
+
+FAtty Acid Analysis
+-------------------
+
+First, we need to calculate the moments for fat content of prey types. 
+
+```{r}
+
+
+# predators - subset to Mixed feed only taht have SI data (to be quicker)
+pred.table.FA <- t(read.csv('Predator_FA.csv',header=T,stringsAsFactors=F,row.names=1))
+pred.table.FA <- pred.table.FA[grep('Mixed',rownames(pred.table.FA))[c(1,2,3,13,14)],]
+# same here, replace
+for (i in 1:ncol(pred.table.FA)){
+  pred.table.FA[pred.table.FA[,i]==0,i] = min(pred.table.FA[pred.table.FA[,i]>0,i])
+}
+
+Silverside <- 2.27
+Silverside.sd <- 1.02 
+
+Sailfin.Molly <- 3.97
+Sailfin.Molly.sd <- 1.25
+
+Sheepshead.Minnow <- 3.59 
+Sheepshead.Minnow.sd <- 1.45
+
+fish.means <- c(Silverside,Sailfin.Molly,Sheepshead.Minnow)
+
+fish.vars <- c(Silverside.sd,Sailfin.Molly.sd,Sheepshead.Minnow.sd)^2
+
+```
+
+Assuming a log normal model for fat content - this is done internally in fastin-R, so the next bit is for illustrative purposes only...
+
+```{r}
+fish.ln.vars = log(fish.vars + fish.means^2) - 2*log(fish.means)
+fish.ln.means = log(fish.means)-fish.ln.vars/2
+
+hist(rlnorm(10000,meanlog=fish.ln.means[1],sdlog=sqrt(fish.ln.vars[1])),30)
+
+shrimp.mean <- 2.43
+shrimp.var <- 0.66^2
+
+shrimp.ln.var = log(shrimp.var + shrimp.mean^2) - 2*log(shrimp.mean)
+shrimp.ln.mean = log(shrimp.mean)-shrimp.ln.var/2
+
+hist(rlnorm(10000,meanlog=shrimp.ln.mean,sdlog=sqrt(shrimp.ln.var)),30)
+
+fat.cont <- rbind(cbind(fish.ln.means,fish.ln.vars),c(shrimp.ln.mean,shrimp.ln.var))
+colnames(fat.cont) <- NULL
+rownames(fat.cont) <- unique(prey.ix)
+
+write.table(fat.cont,file='fat.cont.csv',col.names=F,sep=',')
+
+```
+
+We estimate discrimintation coefficients (also termed fractionation or conversion for SI and FA, respectively) using Bayesian models. The analysis is done in a separate file (Discrim.Analysis.R) and produces files discr.means.csv/discr.var.csv for SI, and corresponding cc_FA.csv and cc_FA_var.csv for FA.The estiamtion isn't trivial for FA, so we just pass over it here. We instead proceed with the analysis by adding the necessary items for the FA analysis to the workspace.
+
+
+
+
+Analysing switched diets:
+--------------------------

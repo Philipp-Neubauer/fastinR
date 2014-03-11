@@ -7,26 +7,31 @@ add_FA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
   CC.mean = 1, CC.var = 1, datas = NULL, LN.par = F)
 }
 \arguments{
-  \item{FA.predators}{Predator index/names (first column)
-  and fatty acid profiles (1 row pey predator), with fatty
-  acids named across the first row}
+  \item{FA.predators}{A data frame or a path to a csv file
+  with the predator index/names (first column) and fatty
+  acid profiles (1 row pey predator), with fatty acids
+  named across the first row}
 
-  \item{FA.preys}{Prey names/sample id (first column) and
-  fatty acid profiles (1 row pey prey item), with fatty
-  acids names across the first row}
+  \item{FA.preys}{A data frame or a path to a csv file with
+  the prey names/sample id (first column) and fatty acid
+  profiles (1 row pey prey item), with fatty acids names
+  across the first row}
 
-  \item{fat.conts}{Prey fat contents, as (columnwise) mean
-  and variance per prey species or specified for each prey
+  \item{fat.conts}{A data frame or a path to a csv file
+  with the prey fat contents, as (columnwise) mean and
+  variance per prey species or specified for each prey
   sample for the main analysis, in that case the first
   column is the prey sample id id and the second column is
   the individual sample's fat content}
 
-  \item{Conv.Coeffs.mean}{Prey specific conversion
-  coefficient means: Prey names (first column) and an n x P
-  matrix for n preys and P fatty acids}
+  \item{Conv.Coeffs.mean}{A data frame or a path to a csv
+  file with the prey specific conversion coefficient means:
+  Prey names (first column) and an n x P matrix for n preys
+  and P fatty acids}
 
-  \item{Conv.Coeffs.var}{Prey specific conversion
-  coefficient variances, dimensions as for the means}
+  \item{Conv.Coeffs.var}{A data frame or a path to a csv
+  file with the prey specific conversion coefficient
+  variances, dimensions as for the means}
 
   \item{FC.mean}{optional - if no prey or sample specific
   fat content means are supplied in a fat.conts file, prey

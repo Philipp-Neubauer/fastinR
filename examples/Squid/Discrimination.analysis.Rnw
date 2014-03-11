@@ -9,6 +9,8 @@
 
 This document details the estiamtion procedure for stable isotope dicrimination and fatty acid conversion coefficients. The data used is from Stowasser et al 2006 (JEMBE 333: 97–114), and is available as .csv files in the same folder as this document. We group all fish together as we don't know the proportions of individual fish species that were fed in the treatment. The uncertainty in estiamted dicromination coefficients will reflect any variability in species specific coefficients, so will mainly just introduce additional uncertainty in the final analysis.
 
+NOTE: The fatty acid analysis takes a long time to run (possibbly several hours, depending on CPU speed and number of cores). Please factor this in when considering to repeat/modify this analysis.
+
 \section*{Stable Isotope discimination}
 
 We start with estiamting SI discrimination based on fish and crustacean only diets. First we read the .csv files with raw data:
@@ -248,18 +250,13 @@ Ready to run JAGS...
 
 <<JAGS for FAP>>=
 
-# input <- list(prey=(prey),
-#               n.fats=n.fats,
-#               m.fats=m.fats,
-#               pred=data.matrix(pred),
-#               n.preys.samps=n.preys.samps,
-#               n.preys=n.preys,
-#               n.preds.samps=n.preds.samps,
-#               prey.type=prey.type,
-#               feed.type=feed.type,
-#               prior.mu=prior.mu,
-#               p=p
-#               )
+require(rjags)
+
+DM <- jags.model('Discrim.model.FA.R',n.chains=3)
+
+update(DM,10000)
+
+samps.FA <- coda.samples(DM,c('beta.reg'),n.iter=1e5,thin=100)
 
 @
 

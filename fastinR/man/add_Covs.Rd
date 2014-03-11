@@ -6,10 +6,13 @@ add_Covs(Groups = "", Covariates = "")
 }
 \arguments{
   \item{Groups}{Index of group membership for each
-  predator, one (named) column per grouping variable}
+  predator, one (named) column per grouping variable. Can
+  be a file path to a csv file with the data or a data
+  frame.}
 
   \item{Covariates}{Covariate values for each predator, one
-  (named) column per covariate}
+  (named) column per covariate. Can be a file path to a csv
+  file with the data or a data frame.}
 }
 \description{
 Files must be in .csv format

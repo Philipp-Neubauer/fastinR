@@ -6,21 +6,25 @@ add_SI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
   Frac.Coeffs.var = "", FC.mean = 1, FC.var = 1, datas = NULL)
 }
 \arguments{
-  \item{SI.predators}{Predator index/names (first column)
-  and Stable Isotopes (1 row pey predator), with Stable
-  Isotope named across the first row}
+  \item{SI.predators}{A data frame or a path to a csv file
+  with the predator index/names (first column) and Stable
+  Isotopes (1 row per predator), with Stable Isotope named
+  across the first row.}
 
-  \item{SI.preys}{Prey names/sample id (first column) and
-  fatty acid profiles (1 row pey prey item), ith Stable
-  Isotope named across the first row}
+  \item{SI.preys}{A data frame or a path to a csv file with
+  the prey names/sample id (first column) and fatty acid
+  profiles (1 row pey prey item), with Stable Isotope named
+  across the first row. Samples from the same species
+  should have the same prey name/sample id.}
 
-  \item{Frac.Coeffs.mean}{Prey specific additive
-  fractionation coefficient means: Prey names (first
-  column) and an n x P matrix for n preys and P Stable
-  Isotopes}
+  \item{Frac.Coeffs.mean}{A data frame or a path to a csv
+  file with the prey specific additive fractionation
+  coefficient means: Prey names (first column) and an n x P
+  matrix for n preys and P Stable Isotopes}
 
-  \item{Frac.Coeffs.var}{Prey specific Fractionation
-  coefficient variances, dimensions as for the means}
+  \item{Frac.Coeffs.var}{A data frame or a path to a csv
+  file with the prey specific fractionation coefficient
+  variances, dimensions as for the means}
 
   \item{FC.mean}{optional - if no prey specific
   fractionation coefficiants are supplied via

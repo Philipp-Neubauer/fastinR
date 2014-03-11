@@ -1,26 +1,27 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{fastinR: Fatty Acids and Stable Isotopes in R}
--->
+\documentclass{article}
+\usepackage{hyperref}            
+\hypersetup{pdfpagelayout=SinglePage}
 
-Estimating diet proportions form Fatty Acids and Stable Isotopes
-========================================================
+\title{Simulated example: Estimating diet proportions form Fatty Acids and Stable Isotopes}
 
-DISCLAIMER: This is an evolving package and vignette, please read instructions [here](https://github.com/Philipp-Neubauer/fastinR/blob/master/README.md) for installation and to see what dependencies are required. If you find a bug or want so suggest improvements, please [submit an issue on github](https://github.com/Philipp-Neubauer/fastinR/issues?state=open), collaborations and contributions are very welcome!
+\begin{document}
+\maketitle
+
+\section*{Preamble}
+
+DISCLAIMER: This is an evolving package and vignette, please read instructions \href{https://github.com/Philipp-Neubauer/fastinR/blob/master/README.md}{here} for installation and to see what dependencies are required. If you find a bug or want so suggest improvements, please \href{https://github.com/Philipp-Neubauer/fastinR/issues?state=open}{submit an issue}, collaborations and contributions are very welcome!
 
 DISCLAIMER 2: This tutorial is by no means a real analysis, which should proceed more carefully, and with longer MCMC runs. The example is designed to run through in a few minutes, and is therefore only an illustration of how an analysis of real data could proceed.
 
 ```{r echo=FALSE}
 library(knitr)
-options(markdown.HTML.header = 'vignette.css')
-options(warn=-1)
 ```
 ```{r}
 library(fastinR,warn.conflicts=F)
 ```
-We start with a very simple simulated example. The easiest way to simulate relevant data is through the built in simulation GUI, which is called from the command line once fastinR has been loaded. Plese type ?simulation to obtain help on simulating your own 'dataset'. 
+We start with a very simple simulated example. It is possible to simulate relevant data using the built in simulation GUI, which is called from the command line once fastinR has been loaded. Plese type ?simulation to obtain help on simulating your own 'dataset'. Note, however, that the recommended way to interact with the package is the command line - the GUI is somewhat unstable and has a mind of its own (see warnings in gui help files). 
 
-The package comes with a simulated dataset which can be called with `r data('Sim')`, which loads an object called _datas_ into the current environment.
+The package comes with a simulated dataset which can be called with \Sexr{data('Sim')}, which loads an object called $datas$ into the current environment.
 
 Loading data from files
 -----------------------
