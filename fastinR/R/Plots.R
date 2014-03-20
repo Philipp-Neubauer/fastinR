@@ -96,8 +96,10 @@ plot.pop_props <- function(x,save="fastinR_MCMC_",density=T,...){
     outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
     outs <- rbind(outs,outp)
   }
-  colnames(outs) <- preya.names
+  
   outs <- as.data.frame(outs)
+  colnames(outs) <- preya.names
+  
   
   if (sava==1) {
     pdf(paste(save,"correlations.pdf",sep=''))
@@ -238,7 +240,7 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
   
   colnames(outs) <- colnames(x[[1]])
   popix <- grep('pop',colnames(outs))
-  colnames(outs[popix]) <- preya.names
+  names(outs)[popix] <- preya.names
   
   if (sava==1)  {
     pdf(paste(save,"correlations.pdf",sep=''))
@@ -514,6 +516,8 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
   
   popix <- grep('pop',colnames(outs))
   n.preys <- length(popix)/nGr
+  names(outs)[popix] <- preya.names
+  
   
   betaix <- grep('beta',colnames(outs))
   
