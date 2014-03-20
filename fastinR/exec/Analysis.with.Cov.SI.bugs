@@ -21,8 +21,8 @@ for(ps in 1:n.prey.samps.SI){
   for(i in 1:n.preds) {      
     
        # draw clr(proportions)
-mus[i,1:m.preys] <- beta[1:m.preys,1:n.covs] %*% Covs[i,1:n.covs]
-   pnorm[i,1:m.preys] ~ dmnorm(mus[i,],pprec[,])
+pnorm[i,1:m.preys] <- beta[1:m.preys,1:n.covs] %*% Covs[i,1:n.covs]
+    
     for(j in 1:m.preys) {
       
       # backtransform clr proportions by clr^-1
