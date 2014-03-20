@@ -138,7 +138,7 @@ plot(samps,ask=T) # need to run this outside of compilation
 summary(samps)
 @
 
-It seems that despite the informative priors, the poterior for both beta.not[2] and beta.reg[2] (coeffs for $\Delta N$) are higher and lower in their posterior median than their respective priors. The higt intercept leads to $\Delta N$ discrimination coefficients that are both high and similar in magniturde for both prey species, indicating that this may be linked to the tissue type or to the predator. For $\Delta C$ the posterior medians are close to the respective priors means. Estiamted $\Delta C$ discrimination is positive for both species.
+It seems that despite the informative priors, the posterior for both beta.not[2] and beta.reg[2] (coeffs for $\Delta N$) are higher and lower in their posterior median than their respective priors. The high intercept leads to $\Delta N$ discrimination coefficients that are both high and similar in magniturde for both prey species, indicating that this may be linked to the tissue type or to the predator. For $\Delta C$ the posterior medians are close to the respective priors means. Estiamted $\Delta C$ discrimination is positive for both species.
 
 <<output to file>>=
 # get estiamted discrimintation from all chains:

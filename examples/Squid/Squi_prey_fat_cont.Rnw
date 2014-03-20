@@ -1,0 +1,63 @@
+\documentclass{article}
+
+\title{Specifying prey fat content distributions for Squid diet analysis}
+
+\begin{document}
+\maketitle
+
+<< Grab sample means and sd from paper>>=
+Silverside <- 2.27
+Silverside.sd <- 1.02 
+
+Sailfin.Molly <- 3.97
+Sailfin.Molly.sd <- 1.25
+
+Sheepshead.Minnow <- 3.59 
+Sheepshead.Minnow.sd <- 1.45
+
+fish.means <- c(Silverside,Sailfin.Molly,Sheepshead.Minnow)
+
+fish.vars <- c(Silverside.sd,Sailfin.Molly.sd,Sheepshead.Minnow.sd)^2
+
+@
+
+Assuming a log normal model for fat content - this is done internally in fastin-R, so the next bit is for illustrative purposes only...
+
+<< transform to log-normal means >>=
+fish.ln.vars = log(fish.vars + fish.means^2) - 2*log(fish.means)
+fish.ln.means = log(fish.means)-fish.ln.vars/2
+@
+
+<<Example for one species,fig.width=7, fig.height=6>>=
+hist(rlnorm(10000,meanlog=fish.ln.means[1],sdlog=sqrt(fish.ln.vars[1])),30,xlab='Fat content',main='')
+@
+
+<<same for shrimp>>=
+shrimp.mean <- 2.43
+shrimp.var <- 0.66^2
+
+shrimp.ln.var = log(shrimp.var + shrimp.mean^2) - 2*log(shrimp.mean)
+shrimp.ln.mean = log(shrimp.mean)-shrimp.ln.var/2
+@
+
+<<histogram for shrimp,fig.width=7, fig.height=6>>=
+hist(rlnorm(10000,meanlog=shrimp.ln.mean,sdlog=sqrt(shrimp.ln.var)),30,xlab='Fat content',main='')
+@
+
+<<write to file>>=
+fat.cont <- rbind(cbind(fish.ln.means,fish.ln.vars),c(shrimp.ln.mean,shrimp.ln.var))
+colnames(fat.cont) <- NULL
+
+# add prey names
+prey.ix <- t(read.csv('Prey_FA.csv',header=F,stringsAsFactors=F,row.names=1))[,1]
+mullets <- which(prey.ix=='Striped Mullet')
+prey.ix <- prey.ix[-mullets]
+
+rownames(fat.cont) <- unique(prey.ix)
+
+write.table(fat.cont,file='fat.cont.csv',col.names=F,sep=',')
+
+@
+
+
+\end{document}
