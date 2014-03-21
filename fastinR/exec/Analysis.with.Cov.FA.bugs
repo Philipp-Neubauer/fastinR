@@ -33,8 +33,10 @@ for(p in 1:n.prey.samps){
   for(i in 1:n.preds) {      
     
        # draw clr(proportions)
-pnorm[i,1:m.preys] <- beta[1:m.preys,1:n.covs] %*% Covs[i,1:n.covs]
-   
+
+  mus[i,1:m.preys] <- beta[1:m.preys,1:n.covs] %*% Covs[i,1:n.covs]
+  pnorm[i,1:m.preys] ~ dmnorm(mus[i,],pprec[,])
+
     for(j in 1:m.preys) {
       
       # backtransform clr proportions by clr^-1
@@ -74,4 +76,5 @@ for(k in 1:n.covs){
 	pop.prop[1:n.preys,k] <- (pm_unn[1:n.preys,k])/sum(pm_unn[1:n.preys,k])
 }
 
+ pprec[1:m.preys,1:m.preys] ~ dwish(SS[,],m.preys)
 }
