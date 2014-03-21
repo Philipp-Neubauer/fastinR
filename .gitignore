@@ -5,9 +5,10 @@
 *#
 *~*
 *.png
-.pdf
-*.pdf
 *.tar.gz
 *#*
 *.Rdata
 FASTIN-R.Rproj
+.tex
+.log
+.gz

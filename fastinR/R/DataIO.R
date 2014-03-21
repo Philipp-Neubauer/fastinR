@@ -118,6 +118,9 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   } else {
     preys.SI = SI.preys
   }  
+  
+  
+  
   n.preds <- dim(predators.SI)[1]
   
   preys.ix.SI  <- as.character(preys.SI[,1])
@@ -167,6 +170,34 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   for (i in 1:n.preys){
     ni.SI[i] <- max(isos+1,sum(preys.ix.SI==unique(preys.ix.SI)[i])-1)
     R.SI[,,i]=cov(preys.SI[preys.ix.SI==unique(preys.ix.SI)[i],])*ni.SI[i]
+  }
+  
+  if (length(datas$datas.FA)>1){
+    # if rownames don't match, make matching representation for both
+    if(length(rownames(datas$datas.FA$preds)) != length(rownames(predators.SI)) | 
+      any(rownames(datas$datas.FA$preds) %in% rownames(predators.SI) ==F)) {
+      
+      urows <- unique(c(rownames(datas$datas.FA$preds.FA),rownames(predators.SI)))
+      n.preds <- length(urows)
+      
+      # change FAP
+      new.FA.rep <- data.frame(matrix(,n.preds,datas$datas.FA$n.fats))
+      rownames(new.FA.rep) <- urows
+      colnames(new.FA.rep) <- colnames(datas$datas.FA$preds.FA)
+      mix <- match(rownames(datas$datas.FA$preds.FA),rownames(new.FA.rep))
+      new.FA.rep[mix,] <- datas$datas.FA$preds.FA
+      datas$datas.FA$preds.FA <- new.FA.rep
+      datas$datas.FA$preds <- alr(datas$datas.FA$preds.FA)
+      
+      # change SI
+      new.SI.rep <- data.frame(matrix(,n.preds,isos))
+      rownames(new.SI.rep) <- urows
+      colnames(new.SI.rep) <- colnames(predators.SI)
+      mix <- match(rownames(predators.SI),rownames(new.SI.rep))
+      new.SI.rep[mix,] <- predators.SI
+      predators.SI <- new.SI.rep
+            
+    }
   }
   
   datas.SI <- list(isos=isos,R.SI=R.SI,Rnot.SI=NULL,preys.SI=preys.SI,preym.SI=preym.SI,preds.SI=predators.SI,ni.SI=ni.SI,mean_cs=mean_cs,tau_cs=1/var_cs)
@@ -332,6 +363,35 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
     R[,,i]=cov(alr(preys[preys.ix==unique(preys.ix)[i],]))*ni[i]
   }
   
+# align predators for SI and FAP
+if (length(datas$datas.SI)>1){
+  # if rownames don't match, make matching representation for both
+  if(length(rownames(datas$datas.SI$preds.SI)) != length(rownames(predators)) | 
+       any(rownames(datas$datas.SI$preds.SI) %in% rownames(predators) ==F)) {
+    urows <- unique(c(rownames(datas$datas.SI$preds.SI),rownames(predators)))
+    n.preds <- length(urows)
+    
+    # change FAP
+    new.FA.rep <- data.frame(matrix(,n.preds,n.fats))
+    rownames(new.FA.rep) <- urows
+    colnames(new.FA.rep) <- colnames(predators)
+    mix <- match(rownames(predators),rownames(new.FA.rep))
+    new.FA.rep[mix,] <- predators
+    predators <- new.FA.rep
+    preds <- alr(predators)
+    
+    # change SI
+    new.SI.rep <- data.frame(matrix(,n.preds,datas$datas.SI$isos))
+    rownames(new.SI.rep) <- urows
+    colnames(new.SI.rep) <- colnames(datas$datas.SI$preds.SI)
+    mix <- match(rownames(datas$datas.SI$preds.SI),rownames(new.SI.rep))
+    new.SI.rep[mix,] <- datas$datas.SI$preds.SI
+    datas$datas.SI$preds.SI <- new.SI.rep
+    
+  }
+}
+
+
   ## first some data and inits ----
   
  datas.FA <- list(fc_mean=fc.mean,fc_tau=1/fc.var,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=NULL,preys=preys,preds.FA=predators,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=var_c)
