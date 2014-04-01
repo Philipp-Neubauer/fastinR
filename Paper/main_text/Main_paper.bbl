@@ -1,0 +1,1496 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 1.7 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{aitchison_convex_1999}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Aitchison}{A.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bacon-Shone}{B.-S.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{AJBSJ1}
+  \strng{fullhash}{AJBSJ1}
+  \field{labelyear}{1999}
+  \field{sortinit}{A}
+  \field{number}{2}
+  \field{pages}{351–364}
+  \field{title}{Convex linear combinations of compositions}
+  \verb{url}
+  \verb http://biomet.oxfordjournals.org/content/86/2/351.short
+  \endverb
+  \field{volume}{86}
+  \field{journaltitle}{Biometrika}
+  \field{year}{1999}
+  \field{urlday}{21}
+  \field{urlmonth}{03}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{van_der_bank_dietary_2011}{article}{}
+  \name{author}{7}{}{%
+    {{}%
+     {Bank}{B.}%
+     {M.~G.}{M.~G.}%
+     {van~der}{v.~d.}%
+     {}{}}%
+    {{}%
+     {Utne-Palm}{U.-P.}%
+     {A.~C.}{A.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pittman}{P.}%
+     {K.}{K.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Sweetman}{S.}%
+     {A.~K.}{A.~K.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Richoux}{R.}%
+     {N.~B.}{N.~B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brüchert}{B.}%
+     {Volger}{V.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gibbons}{G.}%
+     {M.~J.}{M.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BMGvd+1}
+  \strng{fullhash}{BMGvdUPACPKSAKRNBBVGMJ1}
+  \field{labelyear}{2011}
+  \field{sortinit}{B}
+  \field{pages}{219–233}
+  \field{shorttitle}{Dietary success of a ‘new’key fish in an overfished
+  ecosystem}
+  \field{title}{Dietary success of a ‘new’key fish in an overfished
+  ecosystem: evidence from fatty acid and stable isotope signatures}
+  \verb{url}
+  \verb http://www.int-res.com/abstracts/meps/v428/p219-233/
+  \endverb
+  \field{volume}{428}
+  \field{journaltitle}{Marine Ecology Progress Series}
+  \field{year}{2011}
+  \field{urlday}{06}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{belicka_stable_2012}{article}{}
+  \name{author}{6}{}{%
+    {{}%
+     {Belicka}{B.}%
+     {Laura~L.}{L.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Burkholder}{B.}%
+     {Derek}{D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fourqurean}{F.}%
+     {James~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Heithaus}{H.}%
+     {Michael~R.}{M.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Macko}{M.}%
+     {Stephen~A.}{S.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Jaffé}{J.}%
+     {Rudolf}{R.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BLL+1}
+  \strng{fullhash}{BLLBDFJWHMRMSAJR1}
+  \field{labelyear}{2012}
+  \field{sortinit}{B}
+  \field{number}{11}
+  \field{pages}{1085–1097}
+  \field{title}{Stable isotope and fatty acid biomarkers of seagrass,
+  epiphytic, and algal organic matter to consumers in a pristine seagrass
+  ecosystem}
+  \verb{url}
+  \verb http://www.publish.csiro.au/?paper=MF12027
+  \endverb
+  \field{volume}{63}
+  \field{journaltitle}{Marine and Freshwater Research}
+  \field{year}{2012}
+  \field{urlday}{07}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{bowen_methods_2012}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Bowen}{B.}%
+     {W.~D.}{W.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Iverson}{I.}%
+     {S.~J.}{S.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {en}%
+  }
+  \keyw{{DNA}, fatty acids, feces, otoliths, stable isotopes}
+  \strng{namehash}{BWDISJ1}
+  \strng{fullhash}{BWDISJ1}
+  \field{labelyear}{2012}
+  \field{sortinit}{B}
+  \field{abstract}{%
+  Diet estimation in marine mammals relies on indirect methods including
+  recovery of prey hard parts from stomachs and feces, quantitative fatty acid
+  signature analysis ({QFASA)}, stable isotope mixing models, and
+  identification of prey {DNA} in stomach contents and feces. Experimental
+  evidence (9 species/13 studies) shows that digestion strongly influences the
+  proportion and size of otoliths that can be recovered in feces. Number
+  correction factors ({NCF)} and digestion coefficients have been
+  experimentally determined to reduce the biases in fecal analysis. Correction
+  factors and coefficients have not been determined for diet estimated from
+  stomach contents. {QFASA} estimates which prey species and amounts must have
+  been eaten to account for the fatty acid composition of the predator.
+  Experimental studies on mammals and seabirds (9 species/10 studies) indicate
+  that accurate estimates of diet can be determined using {QFASA.} Stable
+  isotope mixing models provide rather coarse taxonomic resolution of diet
+  composition. Prey {DNA} analysis shows promise as a method to estimate the
+  species composition of diet, but further development and testing is needed to
+  validate its use. Obtaining a representative sample from marine mammal
+  populations is a significant challenge. Therefore, the use of complementary
+  methods is recommended to obtain the most informative results.%
+  }
+  \verb{doi}
+  \verb 10.1111/j.1748-7692.2012.00604.x
+  \endverb
+  \field{issn}{1748-7692}
+  \field{pages}{n/a–n/a}
+  \field{shorttitle}{Methods of estimating marine mammal diets}
+  \field{title}{Methods of estimating marine mammal diets: A review of
+  validation experiments and sources of bias and uncertainty}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1748-7692.2012.00604.x/abs
+  \verb tract
+  \endverb
+  \field{journaltitle}{Marine Mammal Science}
+  \field{year}{2012}
+  \field{urlday}{15}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{budge_tracing_2008}{article}{}
+  \name{author}{6}{}{%
+    {{}%
+     {Budge}{B.}%
+     {S.~M.}{S.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wooller}{W.}%
+     {M.~J.}{M.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Springer}{S.}%
+     {A.~M.}{A.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Iverson}{I.}%
+     {S.~J.}{S.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {{McRoy}}{M.}%
+     {C.~P.}{C.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Divoky}{D.}%
+     {G.~J.}{G.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BSM+1}
+  \strng{fullhash}{BSMWMJSAMISJMCPDGJ1}
+  \field{labelyear}{2008}
+  \field{sortinit}{B}
+  \field{number}{1}
+  \field{pages}{117–129}
+  \field{title}{Tracing carbon flow in an arctic marine food web using fatty
+  acid-stable isotope analysis}
+  \verb{url}
+  \verb http://link.springer.com/article/10.1007/s00442-008-1053-7
+  \endverb
+  \field{volume}{157}
+  \field{journaltitle}{Oecologia}
+  \field{year}{2008}
+  \field{urlday}{07}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{budge_studying_2006}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Budge}{B.}%
+     {Suzanne~M.}{S.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Iverson}{I.}%
+     {Sara~J.}{S.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Koopman}{K.}%
+     {Heather~N.}{H.~N.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {en}%
+  }
+  \strng{namehash}{BSM+2}
+  \strng{fullhash}{BSMISJKHN1}
+  \field{labelyear}{2006}
+  \field{sortinit}{B}
+  \verb{doi}
+  \verb 10.1111/j.1748-7692.2006.00079.x
+  \endverb
+  \field{issn}{1748-7692}
+  \field{number}{4}
+  \field{pages}{759–801}
+  \field{shorttitle}{Studying Trophic Ecology in Marine Ecosystems Using Fatty
+  Acids}
+  \field{title}{Studying Trophic Ecology in Marine Ecosystems Using Fatty
+  Acids: A Primer on Analysis and Interpretation}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1748-7692.2006.00079.x/abs
+  \verb tract
+  \endverb
+  \field{volume}{22}
+  \field{journaltitle}{Marine Mammal Science}
+  \field{year}{2006}
+  \field{urlday}{15}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{caut_variation_2009}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Caut}{C.}%
+     {Stéphane}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Angulo}{A.}%
+     {Elena}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Courchamp}{C.}%
+     {Franck}{F.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {en}%
+  }
+  \keyw{{CARBON}, diet isotopic value, {DISCRIMINATION}, fractionation,
+  isotopic model, {NITROGEN}}
+  \strng{namehash}{CS+1}
+  \strng{fullhash}{CSAECF1}
+  \field{labelyear}{2009}
+  \field{sortinit}{C}
+  \field{abstract}{%
+  * {1The} use of stable isotopic techniques to study animal diets and trophic
+  levels requires a priori estimates of discrimination factors ({Δ13C} and
+  {Δ15N}, also called fractionation factors), which are the differences in
+  isotopic composition between an animal and its diet. Previous studies have
+  shown that these parameters depend on several sources of variation (e.g.
+  taxon, environment, tissue) but diet as a source of variation still needs
+  assessment. * {2We} conducted an extensive review of the literature (66
+  publications) concerning estimates of animal-diet {Δ13C} (n = 290) and
+  {Δ15N} (n = 268). We analysed this data set to test the effect of diet
+  isotopic ratio on the discrimination factor, taking into account taxa,
+  tissues, environments and lipid extraction treatments. Our results showed
+  differences among taxonomic classes for {Δ13C}, but not for {Δ15N}, and
+  significant differences among tissues for both {Δ13C} and {Δ15N.} We found
+  a significant negative relationship between both, {Δ13C} and {Δ15N}, with
+  their corresponding diet isotopic ratios. This relationship was found also
+  within taxonomic classes for mammals ({Δ13C} and {Δ15N)}, birds ({Δ13C)},
+  fishes ({Δ13C} and {Δ15N)} and invertebrates ({Δ13C} and {Δ15N).} From
+  these relationships, we propose a method to calculate discrimination factors
+  based on data on diet isotope ratios (termed the {‘Diet-Dependent}
+  Discrimination Factor’, {DDDF).} * {3To} investigate current practice in
+  the use of discrimination factors, we reviewed studies that used
+  multi-resource isotopic models. More than 60\% of models used a
+  discrimination factor coming from a different species or tissues, and in more
+  than 70\% of models, only one {Δ13C} or {Δ15N} was used for all resources,
+  even if resources had very different isotopic ratios. Also, we estimated
+  {DDDFs} for the studies that used isotopic models. More than 40\% used
+  {Δ15N} values and more than 33\% used {Δ13C} values differing
+  {\textgreater} 2‰ from estimated {DDDFs.} * {4Synthesis} and applications.
+  Over the last decade, applied ecologists have discovered the potential of
+  stable isotopes for animal diet reconstruction, but the successful adoption
+  of the method relies on a good estimation of discrimination factors. We draw
+  attention to the high variability in discrimination factors, advise caution
+  in the use of single discrimination factors in isotopic models, and point to
+  a method for obtaining adequate values for this parameter when discrimination
+  factors cannot be measured experimentally. Future studies should focus on
+  understanding why discrimination factors vary as a function of the isotopic
+  value of the diet.%
+  }
+  \verb{doi}
+  \verb 10.1111/j.1365-2664.2009.01620.x
+  \endverb
+  \field{issn}{1365-2664}
+  \field{number}{2}
+  \field{pages}{443–453}
+  \field{shorttitle}{Variation in discrimination factors ({Δ15N} and {Δ13C)}}
+  \field{title}{Variation in discrimination factors ({Δ15N} and {Δ13C):} the
+  effect of diet isotopic values and applications for diet reconstruction}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2664.2009.01620.x/abs
+  \verb tract
+  \endverb
+  \field{volume}{46}
+  \field{journaltitle}{Journal of Applied Ecology}
+  \field{year}{2009}
+  \field{urlday}{23}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{elsdon_unraveling_2010}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Elsdon}{E.}%
+     {Travis~S.}{T.~S.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{ETS1}
+  \strng{fullhash}{ETS1}
+  \field{labelyear}{2010}
+  \field{sortinit}{E}
+  \field{number}{1}
+  \field{pages}{61–68}
+  \field{title}{Unraveling diet and feeding histories of fish using fatty acids
+  as natural tracers}
+  \verb{url}
+  \verb http://www.sciencedirect.com/science/article/pii/S0022098110000389
+  \endverb
+  \field{volume}{386}
+  \field{journaltitle}{Journal of Experimental Marine Biology and Ecology}
+  \field{year}{2010}
+  \field{urlday}{07}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{guest_evidence_2008}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Guest}{G.}%
+     {M.~A.}{M.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nichols}{N.}%
+     {P.~D.}{P.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Frusher}{F.}%
+     {S.~D.}{S.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Hirst}{H.}%
+     {A.~J.}{A.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {en}%
+  }
+  \keyw{Biomedicine general, Ecology, Microbiology, Oceanography, Zoology}
+  \strng{namehash}{GMA+1}
+  \strng{fullhash}{GMANPDFSDHAJ1}
+  \field{labelyear}{2008}
+  \field{sortinit}{G}
+  \field{abstract}{%
+  Abalone are common herbivores throughout temperate and tropical waters, and
+  yet the contribution of red and brown macroalgae to the diet of wild abalone
+  remains unclear. In the northern hemisphere, adult abalone are considered to
+  consume predominantly brown algae, but in the southern hemisphere abalone are
+  thought to prefer red algae. Conventional methods such as gut content
+  analysis and feeding trials provide some insight into diet choice, but the
+  associated biases of these techniques create uncertainty surrounding the
+  aforementioned variability in abalone diet. We use combined stable isotope
+  and fatty acid analysis to determine the relative contribution of red algae,
+  brown algae and detritus/microalgae to the diet of wild abalone in Tasmanian
+  waters. Stable isotopes of carbon suggest that brown algae and/detritus are a
+  more important source of carbon than red algae. Fatty acid analysis confirmed
+  the larger contribution of brown algae to the diet of abalone, and also
+  identified the bacterial and diatom component of detritus to be an important
+  contributor to abalone diet. These results show combined use of chemical
+  tracers to be a promising technique for resolving abalone diet, and challenge
+  current perceptions regarding spatial variability in abalone diet choice.%
+  }
+  \verb{doi}
+  \verb 10.1007/s00227-007-0831-9
+  \endverb
+  \field{issn}{0025-3162, 1432-1793}
+  \field{number}{4}
+  \field{pages}{579\bibrangedash 588}
+  \field{title}{Evidence of abalone (Haliotis rubra) diet from combined fatty
+  acid and stable isotope analyses}
+  \verb{url}
+  \verb http://link.springer.com/article/10.1007/s00227-007-0831-9
+  \endverb
+  \field{volume}{153}
+  \field{journaltitle}{Marine Biology}
+  \field{month}{02}
+  \field{year}{2008}
+  \field{urlday}{15}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{guest_trophic_2009}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Guest}{G.}%
+     {Ma}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Frusher}{F.}%
+     {Sd}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nichols}{N.}%
+     {Pd}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Johnson}{J.}%
+     {Cr}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wheatley}{W.}%
+     {Ke}{K.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{GM+1}
+  \strng{fullhash}{GMFSNPJCWK1}
+  \field{labelyear}{2009}
+  \field{sortinit}{G}
+  \verb{doi}
+  \verb 10.3354/meps08096
+  \endverb
+  \field{issn}{0171-8630, 1616-1599}
+  \field{pages}{169\bibrangedash 184}
+  \field{title}{Trophic effects of fishing southern rock lobster Jasus
+  edwardsii shown by combined fatty acid and stable isotope analyses}
+  \verb{url}
+  \verb http://ecite.utas.edu.au/58640
+  \endverb
+  \field{volume}{388}
+  \field{journaltitle}{Marine Ecology Progress Series}
+  \field{month}{08}
+  \field{year}{2009}
+  \field{urlday}{15}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{hopkins_estimating_2012}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Hopkins}{H.}%
+     {John~B.}{J.~B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ferguson}{F.}%
+     {Jake~M.}{J.~M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{HJBFJM1}
+  \strng{fullhash}{HJBFJM1}
+  \field{labelyear}{2012}
+  \field{sortinit}{H}
+  \field{abstract}{%
+  Using stable isotope mixing models ({SIMMs)} as a tool to investigate the
+  foraging ecology of animals is gaining popularity among researchers. As a
+  result, statistical methods are rapidly evolving and numerous models have
+  been produced to estimate the diets of animals—each with their benefits and
+  their limitations. Deciding which {SIMM} to use is contingent on factors such
+  as the consumer of interest, its food sources, sample size, the familiarity a
+  user has with a particular framework for statistical analysis, or the level
+  of inference the researcher desires to make (e.g., population- or
+  individual-level). In this paper, we provide a review of commonly used {SIMM}
+  models and describe a comprehensive {SIMM} that includes all features
+  commonly used in {SIMM} analysis and two new features. We used data collected
+  in Yosemite National Park to demonstrate {IsotopeR's} ability to estimate
+  dietary parameters. We then examined the importance of each feature in the
+  model and compared our results to inferences from commonly used {SIMMs.}
+  {IsotopeR's} user interface (in R) will provide researchers a user-friendly
+  tool for {SIMM} analysis. The model is also applicable for use in
+  paleontology, archaeology, and forensic studies as well as estimating
+  pollution inputs.%
+  }
+  \verb{doi}
+  \verb 10.1371/journal.pone.0028478
+  \endverb
+  \field{number}{1}
+  \field{pages}{e28478}
+  \field{title}{Estimating the Diets of Animals Using Stable Isotopes and a
+  Comprehensive Bayesian Mixing Model}
+  \verb{url}
+  \verb http://dx.doi.org/10.1371/journal.pone.0028478
+  \endverb
+  \field{volume}{7}
+  \field{journaltitle}{{PLoS} {ONE}}
+  \field{month}{01}
+  \field{year}{2012}
+  \field{urlday}{24}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{hussey_rescaling_2014}{article}{}
+  \name{author}{9}{}{%
+    {{}%
+     {Hussey}{H.}%
+     {Nigel~E.}{N.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {{MacNeil}}{M.}%
+     {M.~Aaron}{M.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {{McMeans}}{M.}%
+     {Bailey~C.}{B.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Olin}{O.}%
+     {Jill~A.}{J.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Dudley}{D.}%
+     {Sheldon~{F.J.}}{S.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cliff}{C.}%
+     {Geremy}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wintner}{W.}%
+     {Sabine~P.}{S.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fennessy}{F.}%
+     {Sean~T.}{S.~T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fisk}{F.}%
+     {Aaron~T.}{A.~T.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {en}%
+  }
+  \keyw{{DISCRIMINATION}, fish, food webs, marine, shark, stable isotopes,
+  trophic level, trophic position}
+  \strng{namehash}{HNE+1}
+  \strng{fullhash}{HNEMMAMBCOJADSFCGWSPFSTFAT1}
+  \field{labelyear}{2014}
+  \field{sortinit}{H}
+  \field{abstract}{%
+  Measures of trophic position ({TP)} are critical for understanding food web
+  interactions and human-mediated ecosystem disturbance. Nitrogen stable
+  isotopes ({δ15N)} provide a powerful tool to estimate {TP} but are limited
+  by a pragmatic assumption that isotope discrimination is constant (change in
+  {δ15N} between predator and prey, {Δ15N} = 3.4‰), resulting in an
+  additive framework that omits known {Δ15N} variation. Through meta-analysis,
+  we determine narrowing discrimination from an empirical linear relationship
+  between experimental {Δ15N} and {δ15N} values of prey consumed. The
+  resulting scaled {Δ15N} framework estimated reliable {TPs} of
+  zooplanktivores to tertiary piscivores congruent with known feeding
+  relationships that radically alters the conventional structure of marine food
+  webs. Apex predator {TP} estimates were markedly higher than currently
+  assumed by whole-ecosystem models, indicating perceived food webs have been
+  truncated and species-interactions over simplified. The scaled {Δ15N}
+  framework will greatly improve the accuracy of trophic estimates widely used
+  in ecosystem-based management.%
+  }
+  \verb{doi}
+  \verb 10.1111/ele.12226
+  \endverb
+  \field{issn}{1461-0248}
+  \field{number}{2}
+  \field{pages}{239–250}
+  \field{title}{Rescaling the trophic structure of marine food webs}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/ele.12226/abstract
+  \endverb
+  \field{volume}{17}
+  \field{journaltitle}{Ecology Letters}
+  \field{year}{2014}
+  \field{urlday}{07}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{iverson_quantitative_2004}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Iverson}{I.}%
+     {S.~J.}{S.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Field}{F.}%
+     {C.}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Don~Bowen}{D.~B.}%
+     {W.}{W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Blanchard}{B.}%
+     {W.}{W.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{ISJ+1}
+  \strng{fullhash}{ISJFCDBWBW1}
+  \field{labelyear}{2004}
+  \field{sortinit}{I}
+  \field{number}{2}
+  \field{pages}{211–235}
+  \field{shorttitle}{Quantitative fatty acid signature analysis}
+  \field{title}{Quantitative fatty acid signature analysis: a new method of
+  estimating predator diets}
+  \field{volume}{74}
+  \field{journaltitle}{Ecological Monographs}
+  \field{year}{2004}
+\endentry
+
+\entry{jack_individual_2011}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Jack}{J.}%
+     {Lucy}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wing}{W.}%
+     {Stephen~R.}{S.~R.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{JLWSR1}
+  \strng{fullhash}{JLWSR1}
+  \field{labelyear}{2011}
+  \field{sortinit}{J}
+  \field{abstract}{%
+  {ABSTRACT:} Omnivores play an important role in the routing and distribution
+  of organic matter across food webs. We demonstrate a novel approach to
+  quantifying the coincidence of landscape-scale nutritional gradients with
+  niche breadth in terms of variability in trophic level and use of basal
+  organic matter sources. We provide an example of the links between individual
+  variability in resource use and habitat of a broad-spectrum omnivore, the red
+  rock lobster Jasus edwardsii. Information on the co-occurrence of J.
+  edwardsii with kelp bed habitats Ecklonia radiata and with their preferred
+  prey Mytilus edulis galloprovinciallis were collected at 60 sites across
+  Fiordland, southwest New Zealand. Analysis of distance-based linear models
+  ({DISTLM)} indicated that the presence of mussels was the best predictor of
+  lobster occurrence in the model set. At a subset of sites, we collected
+  lobster muscle for stable isotope analysis and measured 3 demographic
+  parameters from the lobsters: relative abundance, sex and carapace lengths.
+  We characterised habitats with surveys of common kelp and mussels. Using
+  stable isotope signatures ({δ13C} and {δ15N)}, we calculated
+  individual-based estimates of trophic level and the mixture of organic matter
+  sources, i.e. phytoplankton and macroalgae. Using {DISTLM}, lobster and
+  mussel densities best explained variability in lobster diet. Variability in
+  resource use was distinct inside and outside of kelp bed habitat. In kelp
+  beds, lobsters fed at a higher average trophic level, with low variability
+  among individuals in trophic level and use of organic matter sources. Outside
+  kelp beds, individual variability indicated broad trophic diversification.
+  These patterns indicate a strong influence of the nutritional landscape at
+  the scale of the metapopulation, which has important implications for
+  understanding dietary influences on population structure.%
+  }
+  \verb{doi}
+  \verb 10.3354/meps09468
+  \endverb
+  \field{pages}{129\bibrangedash 139}
+  \field{title}{Individual variability in trophic position and diet of a marine
+  omnivore is linked to kelp bed habitat}
+  \verb{url}
+  \verb http://www.int-res.com/abstracts/meps/v443/p129-139/
+  \endverb
+  \field{volume}{443}
+  \field{journaltitle}{Marine Ecology Progress Series}
+  \field{month}{12}
+  \field{year}{2011}
+  \field{urlday}{21}
+  \field{urlmonth}{03}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{jaschinski_carbon_2008}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Jaschinski}{J.}%
+     {Sybill}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brepohl}{B.}%
+     {Daniela~C.}{D.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Sommer}{S.}%
+     {Ulrich}{U.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{JS+1}
+  \strng{fullhash}{JSBDCSU1}
+  \field{labelyear}{2008}
+  \field{sortinit}{J}
+  \field{abstract}{%
+  {ABSTRACT:} Multiple stable isotope and fatty acid analyses were applied to
+  examine food web dynamics in an eelgrass Zostera marina L. system in the
+  western Baltic Sea. Samples of eelgrass, epiphytic algae, sand microflora,
+  red algae, phytoplankton and main consumer species were collected in June
+  2002. {δ13C} values of primary producers ranged from –9.6‰ for eelgrass
+  to the most depleted value of –34.9‰ for the most abundant red alga,
+  Delesseria sanguinea. Epiphyte {δ13C} (–11.3‰) was close to the value
+  for eelgrass, whereas sand microflora and phytoplankton showed intermediate
+  values (–20.0 and –22.6‰, respectively). {δ13C} values of consumer
+  species varied from –12.2‰ in the gastropod Lacuna vincta to –23.9‰
+  in the amphipod Amphitoe rubricata. Epiphytes, sand microflora and
+  phytoplankton had relatively similar fatty acid signatures, indicating a
+  dominance of diatoms. Fatty acid composition of the main consumers included
+  the biomarker fatty acids for diatoms and red algae, whereas those for
+  eelgrass were negligible. The stable isotope data in combination with the
+  results of the fatty acid analysis strongly indicated that the food web in
+  this eelgrass community was based on epiphytes, sand microflora and red
+  algae. Additionally, the continuous distribution of {δ15N} values implied a
+  food web that was characterized by a large proportion of generalist feeders
+  in every group of consumers and by a high degree of omnivory.%
+  }
+  \verb{doi}
+  \verb 10.3354/meps07327
+  \endverb
+  \field{pages}{103\bibrangedash 114}
+  \field{title}{Carbon sources and trophic structure in an eelgrass Zostera
+  marina bed, based on stable isotope and fatty acid analyses}
+  \verb{url}
+  \verb http://www.int-res.com/abstracts/meps/v358/p103-114/
+  \endverb
+  \field{volume}{358}
+  \field{journaltitle}{Marine Ecology Progress Series}
+  \field{month}{04}
+  \field{year}{2008}
+  \field{urlday}{18}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{kelly_fatty_2011}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Kelly}{K.}%
+     {Jennifer~R.}{J.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Scheibling}{S.}%
+     {Robert~E.}{R.~E.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{KJRSRE1}
+  \strng{fullhash}{KJRSRE1}
+  \field{labelyear}{2011}
+  \field{sortinit}{K}
+  \field{pages}{1–22}
+  \field{title}{Fatty acids as dietary tracers in benthic food webs}
+  \verb{url}
+  \verb http://www.int-res.com/articles/feature/m446p001.pdf
+  \endverb
+  \field{volume}{446}
+  \field{journaltitle}{Marine Ecology Progress Series}
+  \field{year}{2011}
+  \field{urlday}{06}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{moore_incorporating_2008}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Moore}{M.}%
+     {J.~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Semmens}{S.}%
+     {B.~X.}{B.~X.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{MJWSBX1}
+  \strng{fullhash}{MJWSBX1}
+  \field{labelyear}{2008}
+  \field{sortinit}{M}
+  \field{number}{5}
+  \field{pages}{470–480}
+  \field{title}{Incorporating uncertainty and prior information into stable
+  isotope mixing models}
+  \field{volume}{11}
+  \field{journaltitle}{Ecology Letters}
+  \field{year}{2008}
+\endentry
+
+\entry{parnell_bayesian_2012}{article}{}
+  \name{author}{8}{}{%
+    {{}%
+     {Parnell}{P.}%
+     {Andrew~C.}{A.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Phillips}{P.}%
+     {Donald~L.}{D.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bearhop}{B.}%
+     {Stuart}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Semmens}{S.}%
+     {Brice~X.}{B.~X.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ward}{W.}%
+     {Eric~J.}{E.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Moore}{M.}%
+     {Jonathan~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Jackson}{J.}%
+     {Andrew~L.}{A.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Inger}{I.}%
+     {Richard}{R.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{Bayesian hierarchical model, compositional data, mixing models, stable
+  isotope analysis, Statistics - Applications, time series}
+  \strng{namehash}{PAC+1}
+  \strng{fullhash}{PACPDLBSSBXWEJMJWJALIR1}
+  \field{labelyear}{2012}
+  \field{sortinit}{P}
+  \field{abstract}{%
+  In this paper we review recent advances in Stable Isotope Mixing Models
+  ({SIMMs)} and place them into an over-arching Bayesian statistical framework
+  which allows for several useful extensions. {SIMMs} are used to quantify the
+  proportional contributions of various sources to a mixture. The most widely
+  used application is quantifying the diet of organisms based on the food
+  sources they have been observed to consume. At the centre of the multivariate
+  statistical model we propose is a compositional mixture of the food sources
+  corrected for various metabolic factors. The compositional component of our
+  model is based on the isometric log ratio (ilr) transform of Egozcue (2003).
+  Through this transform we can apply a range of time series and non-parametric
+  smoothing relationships. We illustrate our models with 3 case studies based
+  on real animal dietary behaviour.%
+  }
+  \field{title}{Bayesian Stable Isotope Mixing Models}
+  \verb{url}
+  \verb http://arxiv.org/abs/1209.6457
+  \endverb
+  \field{journaltitle}{{arXiv:1209.6457}}
+  \field{month}{09}
+  \field{year}{2012}
+  \field{urlday}{24}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{pethybridge_seasonal_2012}{article}{}
+  \name{author}{7}{}{%
+    {{}%
+     {Pethybridge}{P.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Virtue}{V.}%
+     {P.}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Casper}{C.}%
+     {R.}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Yoshida}{Y.}%
+     {T.}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Green}{G.}%
+     {C.p.}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Jackson}{J.}%
+     {G.}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nichols}{N.}%
+     {P.d.}{P.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{Cephalopods, intraspecific dietary variation, Signature fatty acids,
+  Trophic ecology}
+  \strng{namehash}{PH+1}
+  \strng{fullhash}{PHVPCRYTGCJGNP1}
+  \field{labelyear}{2012}
+  \field{sortinit}{P}
+  \field{abstract}{%
+  This study details the feeding ecology of arrow squid, Nototodarus gouldi,
+  collected opportunistically from trawlers in waters south-east off Australia
+  in 2007 and 2008. Combined stomach content and fatty acid ({FA)} signature
+  analyses provided clear evidence of seasonal dietary shifts in prey
+  composition. Teleost fish remains (mainly otoliths) were found in 67\% of
+  stomachs with the two mesopelagic planktivorous fish, Lampanyctodes hectoris
+  and Maurolicus muelleri dominating. Cephalopods and crustaceans were
+  supplementary dietary components, with an increased representation in the
+  diet over winter. Digestive gland lipid content was moderate (16.4 ± 8.4\%
+  wet weight) and was rich in triacylglycerol and monounsaturated fatty acids.
+  Multivariate analysis of {FA} profiles grouped arrow squid with profiles of
+  mesopelagic fish and cephalopods, thus supporting the findings of stomach
+  content analysis. Seasonal differences in total lipid content were likely
+  related to summer upwelling events and local changes in productivity, while
+  intraspecific differences in lipid class and {FA} composition were related to
+  seasonal differences of prey consumption. {FA} analyses also demonstrated
+  dietary differences associated with gender, size and female maturation. Such
+  relationships demonstrate that the diet of N. gouldi is closely linked to
+  prey size, abundance and availability and possibly also, to key life-history
+  stages.%
+  }
+  \verb{doi}
+  \verb 10.1017/S0025315411000841
+  \endverb
+  \field{number}{01}
+  \field{pages}{187\bibrangedash 196}
+  \field{shorttitle}{Seasonal variations in diet of arrow squid (Nototodarus
+  gouldi)}
+  \field{title}{Seasonal variations in diet of arrow squid (Nototodarus
+  gouldi): stomach content and signature fatty acid analysis}
+  \field{volume}{92}
+  \field{journaltitle}{Journal of the Marine Biological Association of the
+  United Kingdom}
+  \field{year}{2012}
+\endentry
+
+\entry{phillips_source_2003}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Phillips}{P.}%
+     {Donald~L.}{D.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gregg}{G.}%
+     {Jillian~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{PDLGJW1}
+  \strng{fullhash}{PDLGJW1}
+  \field{labelyear}{2003}
+  \field{sortinit}{P}
+  \verb{doi}
+  \verb 10.1007/s00442-003-1218-3
+  \endverb
+  \field{issn}{0029-8549, 1432-1939}
+  \field{number}{2}
+  \field{pages}{261\bibrangedash 269}
+  \field{shorttitle}{Source partitioning using stable isotopes}
+  \field{title}{Source partitioning using stable isotopes: coping with too many
+  sources}
+  \verb{url}
+  \verb http://www.springerlink.com/Index/10.1007/s00442-003-1218-3
+  \endverb
+  \field{volume}{136}
+  \field{journaltitle}{Oecologia}
+  \field{month}{07}
+  \field{year}{2003}
+  \field{urlday}{03}
+  \field{urlmonth}{05}
+  \field{urlyear}{2012}
+\endentry
+
+\entry{plummer_jags_2003}{inproceedings}{}
+  \true{moreauthor}
+  \name{author}{1}{}{%
+    {{}%
+     {Plummer}{P.}%
+     {Martyn}{M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{PM+1}
+  \strng{fullhash}{PM+1}
+  \field{labelyear}{2003}
+  \field{sortinit}{P}
+  \field{booktitle}{Proceedings of the 3rd International Workshop on
+  Distributed Statistical Computing (DSC 2003). March}
+  \field{pages}{20\bibrangedash 22}
+  \field{title}{JAGS: A program for analysis of Bayesian graphical models using
+  Gibbs sampling}
+  \field{year}{2003}
+\endentry
+
+\entry{R_core_2014}{manual}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{R Core Team}}{R.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{organization}{1}{%
+    {R Foundation for Statistical Computing}%
+  }
+  \strng{namehash}{R1}
+  \strng{fullhash}{R1}
+  \field{labelyear}{2014}
+  \field{sortinit}{R}
+  \field{title}{R: A Language and Environment for Statistical Computing}
+  \verb{url}
+  \verb http://www.R-project.org/
+  \endverb
+  \list{location}{1}{%
+    {Vienna, Austria}%
+  }
+  \field{year}{2014}
+\endentry
+
+\entry{rosen_effects_2012}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Rosen}{R.}%
+     {Das}{D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Tollit}{T.}%
+     {Dj}{D.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{RDTD1}
+  \strng{fullhash}{RDTD1}
+  \field{labelyear}{2012}
+  \field{sortinit}{R}
+  \verb{doi}
+  \verb 10.3354/meps09934
+  \endverb
+  \field{issn}{0171-8630, 1616-1599}
+  \field{pages}{263\bibrangedash 276}
+  \field{shorttitle}{Effects of phylogeny and prey type on fatty acid
+  calibration coefficients in three pinniped species}
+  \field{title}{Effects of phylogeny and prey type on fatty acid calibration
+  coefficients in three pinniped species: implications for the {QFASA} dietary
+  quantification technique}
+  \verb{url}
+  \verb http://www.int-res.com/abstracts/meps/v467/p263-276/
+  \endverb
+  \field{volume}{467}
+  \field{journaltitle}{Marine Ecology Progress Series}
+  \field{month}{10}
+  \field{year}{2012}
+  \field{urlday}{25}
+  \field{urlmonth}{01}
+  \field{urlyear}{2013}
+\endentry
+
+\entry{semmens_quantifying_2009}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Semmens}{S.}%
+     {Brice~X.}{B.~X.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ward}{W.}%
+     {Eric~J.}{E.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Moore}{M.}%
+     {Jonathan~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Darimont}{D.}%
+     {Chris~T.}{C.~T.}%
+     {}{}%
+     {}{}}%
+  }
+  \name{editor}{1}{}{%
+    {{}%
+     {Getz}{G.}%
+     {Wayne~M.}{W.~M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{SBX+1}
+  \strng{fullhash}{SBXWEJMJWDCT1}
+  \field{labelyear}{2009}
+  \field{sortinit}{S}
+  \verb{doi}
+  \verb 10.1371/journal.pone.0006187
+  \endverb
+  \field{issn}{1932-6203}
+  \field{number}{7}
+  \field{pages}{e6187}
+  \field{title}{Quantifying Inter- and Intra-Population Niche Variability Using
+  Hierarchical Bayesian Stable Isotope Mixing Models}
+  \verb{url}
+  \verb http://dx.plos.org/10.1371/journal.pone.0006187
+  \endverb
+  \field{volume}{4}
+  \field{journaltitle}{{PLoS} {ONE}}
+  \field{month}{07}
+  \field{year}{2009}
+  \field{urlday}{03}
+  \field{urlmonth}{05}
+  \field{urlyear}{2012}
+\endentry
+
+\entry{stowasser_experimental_2006}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Stowasser}{S.}%
+     {Gabriele}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pierce}{P.}%
+     {Graham~J.}{G.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Moffat}{M.}%
+     {Colin~F.}{C.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Collins}{C.}%
+     {Martin~A.}{M.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Forsythe}{F.}%
+     {John~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{SG+1}
+  \strng{fullhash}{SGPGJMCFCMAFJW1}
+  \field{labelyear}{2006}
+  \field{sortinit}{S}
+  \field{number}{1}
+  \field{pages}{97–114}
+  \field{title}{Experimental study on the effect of diet on fatty acid and
+  stable isotope profiles of the squid{\textless} i{\textgreater} Lolliguncula
+  brevis{\textless}/i{\textgreater}}
+  \verb{url}
+  \verb http://www.sciencedirect.com/science/article/pii/S0022098105005915
+  \endverb
+  \field{volume}{333}
+  \field{journaltitle}{Journal of Experimental Marine Biology and Ecology}
+  \field{year}{2006}
+  \field{urlday}{07}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{tucker_convergence_2008}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Tucker}{T.}%
+     {Strahan}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bowen}{B.}%
+     {W.~Don}{W.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Iverson}{I.}%
+     {Sara~J.}{S.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{TS+1}
+  \strng{fullhash}{TSBWDISJ1}
+  \field{labelyear}{2008}
+  \field{sortinit}{T}
+  \field{pages}{267\bibrangedash 276}
+  \field{title}{Convergence of diet estimates derived from fatty acids and
+  stable isotopes within individual grey seals}
+  \verb{url}
+  \verb http://www.int-res.com/abstracts/meps/v354/p267-276/
+  \endverb
+  \field{volume}{354}
+  \field{journaltitle}{Marine Ecology Progress Series}
+  \field{month}{02}
+  \field{year}{2008}
+\endentry
+
+\entry{wang_validating_2010}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Wang}{W.}%
+     {Shiway~W.}{S.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Hollmén}{H.}%
+     {Tuula~E.}{T.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Iverson}{I.}%
+     {Sara~J.}{S.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{WSW+1}
+  \strng{fullhash}{WSWHTEISJ1}
+  \field{labelyear}{2010}
+  \field{sortinit}{W}
+  \field{number}{1}
+  \field{pages}{125–139}
+  \field{title}{Validating quantitative fatty acid signature analysis to
+  estimate diets of spectacled and Steller’s eiders (Somateria fischeri and
+  Polysticta stelleri)}
+  \verb{url}
+  \verb http://link.springer.com/article/10.1007/s00360-009-0393-x
+  \endverb
+  \field{volume}{180}
+  \field{journaltitle}{Journal of Comparative Physiology B}
+  \field{year}{2010}
+  \field{urlday}{06}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\entry{ward_including_2010}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Ward}{W.}%
+     {E.~J.}{E.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Semmens}{S.}%
+     {B.~X.}{B.~X.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schindler}{S.}%
+     {D.~E.}{D.~E.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{WEJ+1}
+  \strng{fullhash}{WEJSBXSDE1}
+  \field{labelyear}{2010}
+  \field{sortinit}{W}
+  \field{number}{12}
+  \field{pages}{4645–4650}
+  \field{title}{Including source uncertainty and prior information in the
+  analysis of stable isotope mixing models}
+  \field{volume}{44}
+  \field{journaltitle}{Environmental science \& technology}
+  \field{year}{2010}
+\endentry
+
+\entry{ward_quantitative_2011}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Ward}{W.}%
+     {Eric~J.}{E.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Semmens}{S.}%
+     {Brice~X.}{B.~X.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Phillips}{P.}%
+     {Donald~L.}{D.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Moore}{M.}%
+     {Jonathan~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bouwes}{B.}%
+     {Nicolaas}{N.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{WEJ+2}
+  \strng{fullhash}{WEJSBXPDLMJWBN1}
+  \field{labelyear}{2011}
+  \field{sortinit}{W}
+  \verb{doi}
+  \verb 10.1890/ES10-00190.1
+  \endverb
+  \field{issn}{2150-8925}
+  \field{number}{2}
+  \field{pages}{art19}
+  \field{title}{A quantitative approach to combine sources in stable isotope
+  mixing models}
+  \verb{url}
+  \verb http://www.esajournals.org/doi/abs/10.1890/ES10-00190.1
+  \endverb
+  \field{volume}{2}
+  \field{journaltitle}{Ecosphere}
+  \field{month}{02}
+  \field{year}{2011}
+  \field{urlday}{03}
+  \field{urlmonth}{05}
+  \field{urlyear}{2012}
+\endentry
+
+\entry{williams_using_2010}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Williams}{W.}%
+     {Cory~T.}{C.~T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Buck}{B.}%
+     {C.~Loren}{C.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{WCTBCL1}
+  \strng{fullhash}{WCTBCL1}
+  \field{labelyear}{2010}
+  \field{sortinit}{W}
+  \field{number}{3}
+  \field{pages}{531–543}
+  \field{shorttitle}{Using fatty acids as dietary tracers in seabird trophic
+  ecology}
+  \field{title}{Using fatty acids as dietary tracers in seabird trophic
+  ecology: theory, application and limitations}
+  \verb{url}
+  \verb http://link.springer.com/article/10.1007/s10336-010-0513-0
+  \endverb
+  \field{volume}{151}
+  \field{journaltitle}{Journal of Ornithology}
+  \field{year}{2010}
+  \field{urlday}{06}
+  \field{urlmonth}{01}
+  \field{urlyear}{2014}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput

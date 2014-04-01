@@ -1,13 +1,22 @@
 \documentclass{article}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\usepackage[backend=bibtex, citestyle=ele, bibstyle= ele]{biblatex}
+\addbibresource{Stable_Isotopes_and_Fatty_ acids.bib} 
 
-\section{Appendix 2: Maximizing resolution and computational efficiency - selecting fatty acids for analysis}
+\title{Appendix 2: Maximizing resolution and computational efficiency - selecting fatty acids for analysis}
 
-Given the data transformations applied in our model, choosing a large number of FAs becomes computationally prohibitive: model complexity scales with the number of FAs predators and prey species, but, due to transformations, the number of FAs disproportionately affects computation time. It is thus inevitable to choose an appropriate subset of FAs for diet analysis. When FAP are obtained from Gas chromatography, the practitioner faces the question of which FAs out of the potentially large number of measured FAs to retain for the analysis of diet proportions. Once could add a large number of fatty acids, however, only few fatty acids will typically be informative about diets by separating sources in multivariate space. Adding FAs beyond these informative FAs does not improve estimates of diet proportions, but may instead increase colinearity among prey samples, add more within-prey variance and thereby make discrimination more difficult.
+Given the data transformations applied in our model, choosing a large
+number of fatty acids (FAs) becomes computationally
+prohibitive. Although model complexity scales with the number of FAs,
+individual predators and prey species, transformation of FAs disproportionately affect computation time. It is thus inevitable to
+choose an appropriate subset of FAs for diet analysis. When FA
+profiles are obtained (typically from gas chromatography), the
+practitioner faces the choice of which FAs out of the potentially
+large number of measured FAs to retain for the analysis of diet
+proportions. Typically, only few fatty acids will be informative about diets by separating sources in multivariate space. Adding FAs beyond these informative FAs does not improve estimates of diet proportions, but may instead increase colinearity among prey samples, adding more within-prey variance and thereby make discrimination more difficult.
 
-While most studies quantify and list the most abundant FAs, these may not be the most informative to discriminate among potential prey species. Choosing FAs with experimentally validated conversion coefficients is another important consideration. Eliminating FAs with conversion coefficients that are unknown and suspected to be far from 1 is an important first step since their inclusion can introduce significant uncertainty and error in point estimates (Appendix1). Once this preliminary sorting is complete, we propose to select variables based on their contribution to axes in a constrained ordination. We specifically use Constrained Analysis of Principal Coordinates (CAP – Anderson and Willis 2003) since it can deal with any distance metric, and use compositional distance (Aitchison 2001) as a distance metric for ordination. For each FA, we sum over the product of the FA’s contribution to the axis and the axis’ eigenvalue: , where  indexes individual ordination axes, and  is the contribution of FA p to axis a. We then sort  and choose a number of variables that contribute to a proportion p of the cumulative.
+While most studies quantify and list the most abundant FAs, these may not be the most informative to discriminate among potential prey species. Choosing FAs with experimentally validated conversion coefficients is another important consideration. Eliminating FAs with conversion coefficients that are unknown and suspected to be far from 1 is an important first step since their inclusion can introduce significant uncertainty and error in point estimates. Once this preliminary sorting is complete, we propose to select variables based on their contribution to axes in a constrained ordination. We specifically use Constrained Analysis of Principal Coordinates (CAP – Anderson and Willis 2003) since it can deal with any distance metric, and use compositional distance as a distance metric for ordination. For each FA, we sum over the product of the FA’s contribution to the axis and the axis’ eigenvalue: , where  indexes individual ordination axes, and  is the contribution of FA p to axis a. We then sort  and choose a number of variables that contribute to a proportion p of the cumulative.
 
 To test this approach to selecting variables in a FAP, we ran the fatty acid mixing model (for 100 individual simulations) using both a full dataset of 25 FAs and a reduced dataset that accounted for at least 95\% of the cumulative. To illustrate how selecting informative variables quickly reduces error, we also ran simulations with 3, 5, 8 and 12 FAs for one test case.
 
