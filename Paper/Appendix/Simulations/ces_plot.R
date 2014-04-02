@@ -1,4 +1,4 @@
-load(file='./examples/Simulations/ces.test.Rdata')
+load(file='ces.test.Rdata')
 
 ces <- matrix(unlist(ces.test),ncol=4,byrow=T)
 
@@ -11,7 +11,7 @@ ces[,1:3] <- apply(ces[,1:3],2,function(x){(x-mean(x))/(2*sd(x))})
 ces <- as.data.frame(ces)
 attach(ces)
 
-mod <- glm(log(Error) ~ Eveness*Sep*Condition,data=ces)
+mod <- lm(log(Error) ~ Eveness*Sep*Condition,data=ces)
 plot(mod)
 summary(step(mod))
 
