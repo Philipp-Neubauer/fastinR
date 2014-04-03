@@ -9,6 +9,10 @@
 *#*
 *.Rdata
 FASTIN-R.Rproj
-.tex
 .log
 .gz
+.aux
+.bbl
+.blg
+.log
+.run.xml

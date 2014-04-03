@@ -1,2 +1,0 @@
-\beamer@endinputifotherversion {3.26pt}
-\beamer@sectionintoc {1}{Estimating diet proportions}{2}{0}{1}
