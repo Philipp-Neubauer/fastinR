@@ -57,7 +57,7 @@ dataplot <- function(datas=NULL){
   
   pl <- plot(mds,type='n')
   points(pl,'sites',pch=cbind(as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(16,datas$n.preds)),col=cbind(1+as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(1,datas$n.preds)))
-  legend('bottomright',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
+  legend('topleft',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
   
 }
 
