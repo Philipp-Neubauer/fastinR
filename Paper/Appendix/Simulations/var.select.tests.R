@@ -2,8 +2,7 @@ var.select.tests <- function(selecta=c(0.75,0.9,0.95,0.98,0.99),n.fats=20,n.prey
 
     require(fastinR)    
 
-    
-    # loop over ks
+     # loop over ks
 
     cc_test <- array(,c(length(selecta),2))
    
