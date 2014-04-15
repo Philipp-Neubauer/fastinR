@@ -258,6 +258,8 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
 
 .delist <- function(datas,Covs=NULL){
   
+  options(warn=-1)
+  
   n.preys =datas$n.preys
   m.preys =datas$n.preys-1
   n.preds =datas$n.preds

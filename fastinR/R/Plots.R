@@ -849,7 +849,8 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
     panel.abline(h=seq(n.preys+0.5,ncol(outs),n.preys),col=1,lty=2)
     trellis.unfocus()
     if (sava==1) dev.off()
-  } else {
+  } else 
+    {
     
     if(is.null(names(MCMCouts))){MCnames <- sprintf(paste('MCMC %s'),1:length(MCMCouts))}else{MCnames <-names(MCMCouts)}
     
@@ -867,12 +868,12 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
     
     outs[,1] <- as.factor(outs[,1])
     attr(outs[,1],'levels') <- MCnames
+
     
     xx<-reshape::melt.data.frame(outs)
     
     yy<-split(xx,factor(xx$variable))
-    
-    
+        
     ggs_density <- function(D, pos=0,title) {
       # Manage subsetting a family of parameters
       
@@ -945,7 +946,84 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
     if(sava==T) pdf(paste(save,"_densities.pdf",sep=''))
     multiplot(plotlist=g,cols=2)
     if(sava==T) dev.off()
-  }}
+    
+    par(ask=T)
+    
+    ggs_double_violin <- function(D,num_cat,between_cat,within_cat,x.title,y.title,trans=NULL,breaks=NULL,ylims=NA,scallab=NULL){
+      
+      require(ggplot2)
+      
+      cbPalette <-c( "#ADD8E6","#87CEEB","#6495ED",  "#4169E1")
+      num <- which(names(D)== substitute(num_cat))
+      bet_cat <- which(names(D)== substitute(between_cat))
+      with_cat <- which(names(D)== substitute(within_cat))
+      
+      if (is.null(scallab)) scallab = within_cat
+      
+      D <- data.frame(num = D[,num],bet_cat= D[,bet_cat],with_cat= D[,with_cat])
+      
+      if (!is.null(breaks)){
+        m <- ggplot()+ geom_violin(data=D,aes(x=bet_cat,y=num),col=NA,fill=NA)+
+          geom_rect(aes(xmin=0.5,xmax=1.5,ymin=0,ymax=1000),col=NA,fill='grey',alpha=0.8)+
+          geom_rect(aes(xmin=2.5,xmax=3.5,ymin=0,ymax=1000),col=NA,fill='grey',alpha=0.8)+
+          geom_violin(data=D,aes(x=bet_cat,y=num,fill=with_cat,col=with_cat))+
+          scale_y_continuous(trans=paste(trans),breaks=breaks,limits=ylims)+
+          ylab(y.title)+
+          xlab(paste(x.title))+
+          scale_fill_manual(substitute(scallab),values=cbPalette)+
+          scale_colour_manual(substitute(scallab),values=cbPalette)+                          
+          theme(panel.grid.major=element_blank(),
+                panel.grid.minor=element_blank(),
+                axis.ticks.x = element_blank(),
+                axis.title.x = element_text(vjust = -0.3),
+                axis.title.y = element_text(vjust = 0.3),
+                legend.title= element_text(size=14),
+                legend.text = element_text(size=14),
+                axis.text = element_text(colour='black',size=14),
+                axis.title=element_text(colour='black',size=16)
+                
+          )
+      } else {
+        m <- ggplot()+ geom_violin(data=D,aes(x=bet_cat,y=num),col=NA,fill=NA)+
+          geom_rect(aes(xmin=0.5,xmax=1.5,ymin=-Inf,ymax=Inf),col=NA,fill='grey',alpha=0.8)+
+          geom_rect(aes(xmin=2.5,xmax=3.5,ymin=-Inf,ymax=Inf),col=NA,fill='grey',alpha=0.8)+
+          geom_violin(data=D,aes(x=bet_cat,y=num,fill=with_cat,col=with_cat))+
+          ylab(y.title)+
+          xlab(paste(x.title))+
+          scale_fill_manual(substitute(scallab),values=cbPalette)+
+          scale_colour_manual(substitute(scallab),values=cbPalette)+
+          theme(panel.grid.major=element_blank(),
+                panel.grid.minor=element_blank(),
+                axis.ticks.x = element_blank(),
+                axis.title.x = element_text(vjust = -0.3),
+                axis.title.y = element_text(vjust = 0.3),
+                legend.title= element_text(size=14),
+                legend.text = element_text(size=14),
+                axis.text = element_text(colour='black',size=14),
+                axis.title=element_text(colour='black',size=16)
+          )
+      }
+      
+      
+      
+      m
+    }
+    
+    
+    names(outs)[2:(n.preys+1)] <- preya.names
+    xx<-reshape::melt.data.frame(outs)
+    
+    names(xx) <- c('Method','Prey','draws')
+    
+    if(sava==T) pdf(paste(save,"_violin.pdf",sep=''))
+    g <- ggs_double_violin(xx,draws,'Prey','Method','Prey','Density',trans=NULL,breaks=NULL,ylims=NA,scallab='Method')
+    print(g)
+    if(sava==T) dev.off()
+    
+  }
+  
+  par(ask=F)
+}
 
 #' Revert MCMC output class to coda's mcmc.list and use plot.mcmc to display chains. To be run with output from \code{\link{run_MCMC}}
 #' @param x MCMC output from \code{\link{run_MCMC}}, containing diet proportion MCMC chains

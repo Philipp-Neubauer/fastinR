@@ -25,14 +25,14 @@ var_select_plot <- function(prey.mat,prey.ix){
 
   par(mfcol=c(2,1))
   sv = sort(clo(rowSums(sqrt((t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)))),decreasing =T,index.return=T)
-  plot(cumsum(sort(clo(rowSums(sqrt(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2))),decreasing =T)),axes=F,xlab='',ylab='Cumulative source separation',ylim=c(0,1))
+  plot(cumsum(sort(clo(rowSums(sqrt(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2))),decreasing =T)),axes=F,xlab='',ylab=expression(Delta),ylim=c(0,1))
   axis(2,at=seq(0,1,0.2))
   axis(1,at=1:n.fats,labels=F)
   text(1:n.fats, par("usr")[3] - 0.2, srt = 45, adj = 1,
        labels = colnames(prey.mat)[sv$ix], xpd = TRUE)
   
   ks <- kappas(prey.mat,sv$ix)
-  plot(ks,axes=F,ylab='Prey matrix condition number',xlab='',ylim=c(0,max(ks)))
+  plot(ks,axes=F,ylab=expression(kappa),xlab='',ylim=c(0,max(ks)))
   axis(2)
   axis(1,at=1:n.fats,labels=F)
   text(1:n.fats, par("usr")[3] - max(ks)/5 , srt = 45, adj = 1,
@@ -114,6 +114,12 @@ select_vars <- function(datas,ix=NULL,plot=T){
   } else {
     GUI=F
   }
+  
+  colnames(datas$datas.FA$preys) <- sub('X(*)','\\1',colnames(datas$datas.FA$preys))
+  
+  colnames(datas$datas.FA$tau_c) <- colnames(datas$datas.FA$preys)
+  
+  colnames(datas$datas.FA$mean_c)  <- colnames(datas$datas.FA$tau_c)
   
   prey.mat <- clo(datas$datas.FA$preys*((datas$datas.FA$mean_c/datas$datas.FA$tau_c)[datas$prey.ix,]))
   
