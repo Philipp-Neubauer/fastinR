@@ -38,6 +38,7 @@ Current Limitations
 -------------------
 
  - plotting SI in dataplot function should just give SI as axes if n<=2 isotopes. 
+ - multiplot only works for population proportion settings, not when estiamting individual proportions.
  - the violin multiplot only works for lists of length 3 (i.e, for comparing three methods). Should be useful in otehr circumstances too, so needs to be generalised.
  - the default prior setup works ok in some cases but needs lots of manual tweaking in others. Better default options should be possible, but will require further work.
  - The jags backend is very inefficient for data with lots of dimensions (```predators*preys*fatty acids```), a custom backend would probably be better but would be significantly more work
