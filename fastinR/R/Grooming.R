@@ -20,7 +20,7 @@
 var_select_plot <- function(prey.mat,prey.ix){
   
   n.fats=ncol(prey.mat)
-  distan <- adist(t(prey.mat))
+  distan <- cdist(prey.mat)
   PR.RDA <- vegan::capscale(as.dist(distan)~as.factor(prey.ix),comm=(prey.mat))
 
   par(mfcol=c(2,1),mar=c(6,6,4,4))
@@ -105,8 +105,8 @@ print_var_list <- function(prey.mat,prey.ix){
   
   n.fats=ncol(prey.mat) 
 
-  distan <- adist(t(prey.mat))
-  PR.RDA <- vegan::capscale(as.dist(distan)~as.factor(prey.ix),comm=(prey.mat))
+  distan <- cdist(prey.mat)
+  PR.RDA <- vegan::capscale(distan~as.factor(prey.ix),comm=(prey.mat))
   
   sv = sort(clo(rowSums(sqrt((t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)))),decreasing =T,index.return=T)
         

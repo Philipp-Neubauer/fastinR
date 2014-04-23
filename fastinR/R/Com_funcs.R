@@ -48,14 +48,14 @@ clr <- function(x){
   if (is.null(dim(x))){xc <- log(x)-mean(log(x))} else { t(apply(x,1,function(y){log(y)-mean(log(y))}))}
 }
 
-#' Cosine distance among composition vectors
+#' Cosine distance of elements in a row wise composition matrix
 #' 
-#' Implements the clr transformation for vectors and dataframes
 #' @param mat A dataframe of row-wise compositions
 #' @return A distance matrix
 #' @export 
 adist <- function(mat){
   
+  mat <- t(mat)
   dims <- dim(mat)
   dists <- matrix(,dims[2],dims[2])
   for (i in 1:(dims[2]-1)){
@@ -65,6 +65,23 @@ adist <- function(mat){
   dista <- as.dist(dists)
   return(dista)
 }
+
+#' Aitchison distance  of elements in a row wise composition matrix
+#' @param mat A dataframe of row-wise compositions
+#' @return A distance matrix
+#' @export 
+cdist <- function (mat) {
+  dims <- dim(mat)
+  dists <- matrix(, dims[1], dims[1])
+  for (i in 1:(dims[1] - 1)) {
+    for (j in (i + 1):dims[1]) {
+      dists[j, i] <- robCompositions::aDist(mat[i,],mat[j,])
+    }
+  }
+  dista <- as.dist(dists)
+  return(dista)
+}
+
 
 #' Geometric mean of a vector or columns of a dataframe
 #' 
