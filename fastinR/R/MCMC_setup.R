@@ -125,7 +125,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 
 # this is called in the slave processes to run jags
 .jagger <- function(sysfile,nBurnin,nIter,nThin,i){
-  
+  options(warn=-1)
   load('jagsdata.Rdata')
   JM <- jags.model(file=sysfile,data=jagsdata,inits=list(.RNG.name="base::Mersenne-Twister",.RNG.seed=i),n.chains=1)
   

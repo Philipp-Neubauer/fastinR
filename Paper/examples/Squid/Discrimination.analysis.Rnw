@@ -13,7 +13,7 @@ NOTE: The fatty acid analysis takes a long time to run (possibbly several hours,
 
 \section*{Stable Isotope discimination}
 
-We start with estiamting SI discrimination based on fish and crustacean only diets. First we read the .csv files with raw data:
+Start with estiamting SI discrimination based on fish and crustacean only diets. First we read the .csv files with raw data:
 
 \subsection*{Data grooming}
 
@@ -46,7 +46,7 @@ feed.type <- pred.table[,1]
 feed.type[pred.table[,1] == 'F'] <- 1
 # crustacean
 feed.type[pred.table[,1] == 'C'] <- 2
-# use only fish and crustations diets, rest will be assessed
+# use only fish and crustacean diets, rest will be used for diet estimation
 # subset
 idx <- which(feed.type %in% c(1,2))
 feed.type <- as.numeric(feed.type[idx])
@@ -59,7 +59,7 @@ n.preds.samps <- length(idx)
 
 \subsection*{Priors}
 
-We now set up priors for the analysis. We need priors for both the intercept and concentration dependence of the priors. Priors for $\Delta N$ follow from Hussey et al 2014 (Ecology Letters Volume 17, Issue 2, pages 239–250, February 2014). Priors for $\Delta C$ are from Caut et al 2009 (Journal of Applied Ecology, 46, 443–453).
+We now set up priors for the analysis. We need priors for both the intercept and concentration dependence of the priors. These are most parsimoniously set from meta-analyses: Priors for $\Delta N$ follow from Hussey et al 2014 (Ecology Letters Volume 17, Issue 2, pages 239–250, February 2014). Priors for $\Delta C$ are from Caut et al 2009 (Journal of Applied Ecology, 46, 443–453).
 
 <<discrimination priors>>=
 # beta.not - 95% interval contains 2SD, if symmetric then
@@ -129,7 +129,7 @@ samps <- coda.samples(DM,c('pred.discr','beta.reg','beta.not','mu'),n.iter=1e5,t
 
 @
 
-All done, checking output visually for adequacy (convergence, lack of strong autocorrelation in the Markov Chains) and extract estiamted coefficients for each preys species and isotope and put the resulting matrix into the right format.
+All done, checking output visually for adequacy (convergence, lack of strong autocorrelation in the Markov Chains) , extract estiamted coefficients for each preys species and isotope and put the resulting matrix into the right format.
 
 <<output, eval=FALSE>>=
 plot(samps,ask=T) # need to run this outside of compilation
@@ -138,7 +138,7 @@ plot(samps,ask=T) # need to run this outside of compilation
 summary(samps)
 @
 
-It seems that despite the informative priors, the posterior for both beta.not[2] and beta.reg[2] (coeffs for $\Delta N$) are higher and lower in their posterior median than their respective priors. The high intercept leads to $\Delta N$ discrimination coefficients that are both high and similar in magniturde for both prey species, indicating that this may be linked to the tissue type or to the predator. For $\Delta C$ the posterior medians are close to the respective priors means. Estiamted $\Delta C$ discrimination is positive for both species.
+It seems that despite the informative priors, the posterior for both beta.not[2] and beta.reg[2] (coeffs for $\Delta N$) are higher and lower, repsectively, in their posterior median than their respective priors. The high intercept leads to $\Delta N$ discrimination coefficients that are both high and similar in magnitude for both prey species, indicating that this may be linked to the tissue type or to the predator. For $\Delta C$ the posterior medians are close to the respective prior means. Estiamted $\Delta C$ discrimination is positive for both species.
 
 <<output to file>>=
 # get estiamted discrimintation from all chains:

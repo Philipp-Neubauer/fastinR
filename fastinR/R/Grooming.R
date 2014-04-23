@@ -23,30 +23,62 @@ var_select_plot <- function(prey.mat,prey.ix){
   distan <- adist(t(prey.mat))
   PR.RDA <- vegan::capscale(as.dist(distan)~as.factor(prey.ix),comm=(prey.mat))
 
-  par(mfcol=c(2,1))
-  sv = sort(clo(rowSums(sqrt((t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)))),decreasing =T,index.return=T)
-  plot(cumsum(sort(clo(rowSums(sqrt(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2))),decreasing =T)),axes=F,xlab='',ylab=expression(Delta),ylim=c(0,1))
+  par(mfcol=c(2,1),mar=c(6,6,4,4))
+  sv = sort(clo(rowSums(sqrt(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2))),decreasing =T,index.return=T)
+  plot(cumsum(sort(clo(rowSums(sqrt(t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2))),decreasing =T)),axes=F,xlab='',ylab=expression(Delta),ylim=c(0,1),pch=16)
   axis(2,at=seq(0,1,0.2))
   axis(1,at=1:n.fats,labels=F)
   text(1:n.fats, par("usr")[3] - 0.2, srt = 45, adj = 1,
        labels = colnames(prey.mat)[sv$ix], xpd = TRUE)
+  text(n.fats/2, par("usr")[3] - 0.6,labels='Fatty Acids', xpd = TRUE)
+  
   
   ks <- kappas(prey.mat,sv$ix)
-  plot(ks,axes=F,ylab=expression(kappa),xlab='',ylim=c(0,max(ks)))
+  plot(log(ks),axes=F,ylab=expression(log(kappa)),xlab='',ylim=c(0,max(log(ks))),pch=16)
   axis(2)
   axis(1,at=1:n.fats,labels=F)
-  text(1:n.fats, par("usr")[3] - max(ks)/5 , srt = 45, adj = 1,
+  text(1:n.fats, par("usr")[3] - max(log(ks))/5 , srt = 45, adj = 1,
        labels = colnames(prey.mat)[sv$ix], xpd = TRUE)
-  
-  
+  text(n.fats/2, par("usr")[3] - 4,labels='Fatty Acids', xpd = TRUE)
+    
   cumsums <- as.data.frame(matrix(,n.fats,1))
-  cumsums[,1] <- cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T))
-  names(cumsums) <- 'Cumulative Proportion'
+  cumsums[,1] <- cumsum(sort(clo(rowSums(sqrt((t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)))),decreasing =T))
+  cumsums[,2] <- kappas(prey.mat,sv$ix)
+  names(cumsums) <- c('Cumulative Separation','Prey Matrix Condition')
   rownames(cumsums) <-  colnames(prey.mat)[sv$ix]
   print(cumsums)
   
   par(mfcol=c(1,1))
   return(sv)
+}
+
+#' Combine MCMC chains for prey items
+#' 
+#' Prey items can be combined into groups post hoc by summing their individual MCMC draws
+#' 
+#' @param mcmc output from \code{\link{run_MCMC}}
+#' @param index A vector of integer indices or prey names to combine.
+#' 
+#' @return An object of the same class as the input with combined MCMC chains.
+#' 
+#' @author Philipp Neubauer
+#' @references Neubauer.P. and Jensen, O.P. (in prep)
+#' @seealso \code{\link{run_MCMC}}
+#' @export
+pcombine <- function(mcmc,index){
+  if(is.character(index[1])){
+    index <- match(index,mcmc$prey.names)
+  }
+  
+  nindex <- (1:length(mcmc$prey.names))[-index]
+  
+  for (i in 1:mcmc$nChains){
+    mcmc[[i]] <- cbind(rowSums(mcmc[[i]][,index]),mcmc[[i]][,nindex])
+  }
+  
+  mcmc$prey.names <- c('Combined prey',mcmc$prey.names[nindex])
+  
+  return(mcmc)
 }
 
 #' Prints cosine distance and matrix condition number for variable selection
@@ -71,14 +103,15 @@ var_select_plot <- function(prey.mat,prey.ix){
 #' @export
 print_var_list <- function(prey.mat,prey.ix){
   
-  n.fats=ncol(prey.mat)
+  n.fats=ncol(prey.mat) 
+
   distan <- adist(t(prey.mat))
   PR.RDA <- vegan::capscale(as.dist(distan)~as.factor(prey.ix),comm=(prey.mat))
   
   sv = sort(clo(rowSums(sqrt((t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)))),decreasing =T,index.return=T)
         
   cumsums <- as.data.frame(matrix(,n.fats,2))
-  cumsums[,1] <- cumsum(sort(clo(rowSums(t(t(cbind(PR.RDA$CCA$v,PR.RDA$CA$v))*c(PR.RDA$CCA$eig,PR.RDA$CA$eig))^2)),decreasing =T))
+  cumsums[,1] <- cumsum(sort(clo(rowSums(sqrt((t(t(PR.RDA$CCA$v)*PR.RDA$CCA$eig)^2)))),decreasing =T))
   cumsums[,2] <- kappas(prey.mat,sv$ix)
   names(cumsums) <- c('Cumulative Separation','Prey Matrix Condition')
   rownames(cumsums) <-  colnames(prey.mat)[sv$ix]
