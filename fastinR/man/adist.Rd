@@ -1,6 +1,6 @@
 \name{adist}
 \alias{adist}
-\title{Cosine distance among composition vectors}
+\title{Cosine distance of elements in a row wise composition matrix}
 \usage{
 adist(mat)
 }
@@ -11,7 +11,7 @@ adist(mat)
 A distance matrix
 }
 \description{
-Implements the clr transformation for vectors and
-dataframes
+Cosine distance of elements in a row wise composition
+matrix
 }
 
