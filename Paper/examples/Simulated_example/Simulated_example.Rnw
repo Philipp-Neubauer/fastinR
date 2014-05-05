@@ -80,7 +80,7 @@ The grooming step in this case corresponds to selecting relevant variables for t
 The \emph{select\_vars} function provides a graphical way to choose a subset of Fatty Acids according to their contribution to prey separation and reduction in collinearity in the prey matrix. Using \emph{select\_vars} in the simulated example shows that only really 2 Fatty Acids contribute to source separation - the cumulative separation displayed in the console converges to one after adding the two most important fatty acid proportions: all remaining FAs only add to collinearity in the source matrix. We choose Fatty Acid no 3,2 and 6 for analysis (the second call does this directly without prompting the user, by giving the index of the fatty acids to choose).
 
 <<eval=FALSE>>=
-dats.subset <- select_vars(dats,plot=F)
+dats.subset <- select_vars(dats)
 @
 or
 <<subsetting FAP>>=

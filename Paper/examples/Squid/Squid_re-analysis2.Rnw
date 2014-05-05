@@ -136,9 +136,9 @@ Instead of using the whole FAP for each predator and prey, we subset:
 squid.subset.treat <- select_vars(squid.data.treat)
 @                                  
 
-Doing this directly with indices, using the first 4 FAs that combine for $>95\%$ of separation:
+Doing this directly with indices, using the first 4 FAs that combine for $>69\%$ of separation:
 <<subsetting FAPs with indices>>=
-squid.subset.treat.SC <- select_vars(squid.data.treat.SC,
+squid.subset.treat.SC <- select_vars(squid.data.treat.SC) #,
                                      c(24,20,18,10))
 squid.subset.treat.SF <- select_vars(squid.data.treat.SF,
                                      c(24,20,18,10))
@@ -161,17 +161,17 @@ This still looks reasonable, which suggests that we can proceed with the analysi
 We start with the default Rnot prior of 0.2, which is reasonably broad and often seems to lead to efficient MCMC sampling (but by no means always!). Prior eveness of diet proportions is set to 0.5, which does constrain extreme proportions somewhat, but often leads to better mixing during the MCMC.
 
 <<FAP SC analysis v0,results='hide',eval=FALSE>>=
-Squid.SC.analysis <- run_MCMC(datas=squid.subset.treat.SC,
-                              nIter=600000,
+Squid.SC.analysis.alt <- run_MCMC(datas=squid.subset.treat.SC,
+                              nIter=60000,
                               nBurnin=10000,
                               nChains=3,
-                              nThin=200,
+                              nThin=20,
                               Data.Type='Fatty.Acid.Profiles',
                               Analysis.Type='Population.proportions',
                               Rnot=0.2,plott=F,spawn=T)
 #diagnostics
 
-diags(Squid.SC.analysis)
+diags(Squid.SC.analysis.alt)
 @
 
 We evaluate the MCMC visually using coda's plot function, wrapped here to deal with the run\_MCMC output class. Note that we don't show the output in the compiled file since it is long (especially for 3 chains). We instead just include the plot below which summarises the results more elegantly.
@@ -185,7 +185,7 @@ summary(Squid.SC.analysis)
 The summaries show that the posterior distributions are wide for all potential diet items. Nevertheless, as all diagnostics suggest that the chains converged, and the results are in agreement with our expectation, we can now plot the results:
 
 <<Plotting the diet proportions>>=
-plot(Squid.SC.analysis,save=F)
+plot(Squid.SC.analysis.alt,save=F)
 @
 
 The posterior suggests a purely shrimp based diet. Does this suggest that FA turnover is much faster than the week-months time-frame commonly cited?
@@ -291,14 +291,14 @@ plot(Squid.SC.SI.analysis,save=F)
 In summary, it looks as though both markers can resolve the treatment effect, but leave a long tail in the posterior that equates to uncertainty about SC diet proportions. A combined analysis of FAP and SI provides a clearer picture:
 
 <<Combined analysis,results='hide',eval=FALSE>>=
-Squid.SC.comb.analysis <- run_MCMC(datas=squid.subset.treat.SC.comb,
-                                   nIter=600000,
+Squid.SC.comb.analysis.alt <- run_MCMC(datas=squid.subset.treat.SC.comb,
+                                   nIter=60000,
                                    nBurnin=10000,
                                    nChains=3,
-                                   nThin=200,
+                                   nThin=20,
                                    Data.Type='Combined.Analysis',
                                    Analysis.Type='Population.proportions',
-                                   Rnot=1, Rnot_SI=1,
+                                   Rnot=0.2, Rnot_SI=0.2,
                                    plott=F, spawn=T)
 
 #diagnostics
@@ -310,7 +310,7 @@ Making sure that the chains converged, and looking at posterior summaries.
 <<eval=FALSE>>=
 MCMCplot(Squid.SC.comb.analysis)
 
-summary(Squid.SC.comb.analysis)
+summary(Squid.SC.comb.analysis.alt)
 @
 
 Estiamtes of diet proportion from all three chains converge to consistent values, with a posterior median of ~87\% shrimp, and a 95\% interval of ~67\% - 96.5\%. Plotting the final combined proportions:

@@ -7,7 +7,7 @@ model{
       
     }
     for (k in 1:n.preys){
-      #prey mean and var
+      #prey mean and precision
       mu[k,i] ~ dnorm(prior.mu[k,i],0.001)
       tau[k,i] ~ dgamma(0.1,0.1)
       
@@ -23,7 +23,7 @@ model{
     {
       pred[n,i] ~ dnorm(pred.mu[feed.type[n],i],tau.pred[feed.type[n],i])
     }
-    
+    # regression priors
     beta.not[i] ~ dnorm(bnot.prior[i],bnot.tau.prior[i])
     beta.reg[i] ~ dnorm(beta.prior[i],beta.tau.prior[i])
   }
