@@ -10,7 +10,7 @@ This repository is still in development and will be updated frequently to elimin
 Install
 -------
 
-The package uses jags for BAyesian computations, JAGS needs to be installed manually from [here](http://sourceforge.net/projects/mcmc-jags/files/JAGS/3.x/).
+The package uses jags for Bayesian computations, JAGS needs to be installed manually from [here](http://sourceforge.net/projects/mcmc-jags/files/JAGS/3.x/).
 
 Requirements: Some R package requirements, these should install automatically. If not, use R's ```install.package``` to install dependencies manually.
 
