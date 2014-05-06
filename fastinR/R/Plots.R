@@ -7,7 +7,7 @@
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @export
 dataplot <- function(datas=NULL){
-  
+  options(warn=-1)
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
     GUI <- get('GUI',envir=.GlobalEnv)

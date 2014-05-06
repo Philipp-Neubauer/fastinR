@@ -5,6 +5,7 @@
 \title{Simulated example: Estimating diet proportions form fatty acids and stable isotopes}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \maketitle
 
 \section*{Preamble}
@@ -17,7 +18,7 @@ DISCLAIMER 2: This tutorial is by no means a real analysis, which should proceed
 library(knitr)
 library(ggplot2)
 
-opts\_chunk$set(fig.path='figure/', fig.align='center',dev = "pdf")
+opts_chunk$set(fig.path='figure/', fig.align='center',dev = "pdf")
 options(replace.assign=TRUE,width=90)
 @
 <<load fastinR>>=
@@ -39,13 +40,16 @@ Files are imported with the help of three constructor functions: \emph{add\_FA}t
 The package comes with simulated data in .csv files, which can be found using the \emph{system.file} function. The \emph{add\_SI} constructor takes separate files for predator and prey Stable Isotope data, as well as files for additive fractionation coefficient means and variances - these are optional and can be specified manually in the function call, see the function help for details.
 
 <<Read SI data>>=
-# these commands just read data supplied with the package. For a real analysis these would be substituted with paths to data files, or with R data objects.
+# these commands return paths to data supplied with the package. For a real analysis these would be substituted with paths to data files, or with R data objects.
 SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="fastinR")
 SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="fastinR")
 Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="fastinR")
 Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="fastinR")
 
-dats <- add_SI(SI.predators,SI.preys,Frac.Coeffs.mean,Frac.Coeffs.var)
+dats <- add_SI(SI.predators = SI.predators,
+               SI.preys = SI.preys,
+               Frac.Coeffs.mean = Frac.Coeffs.mean,
+               Frac.Coeffs.var = Frac.Coeffs.var)
 @
 
 We can now visualize the data on an Non-Metric Dimensional Scaling plot like so:
@@ -63,7 +67,12 @@ Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="f
 Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
 fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
 
-dats <- add_FA(FAP.predators,FAP.preys,fat.conts,Conv.Coeffs.mean,Conv.Coeffs.var,datas=dats)
+dats <- add_FA(FA.predators = FAP.predators,
+               FA.preys = FAP.preys,
+               fat.conts = fat.conts,
+               Conv.Coeffs.mean = Conv.Coeffs.mean,
+               Conv.Coeffs.var = Conv.Coeffs.var,
+               datas=dats)
 @
 
 *Note* the last argument in \emph{add\_FA} now contains a reference to the data object that was constructed from the Stable Isotopes beforehand. \emph{add\_FA} just adds fatty acid data to the mix - the same would apply if data were added the other way around (only \emph{add\_Covs} works separately, it needs it's own object).
@@ -77,12 +86,22 @@ dataplot(dats)
 \section{Data Grooming}
 
 The grooming step in this case corresponds to selecting relevant variables for the analysis. In practice, one could measure lots of Fatty Acids, and researchers often choose arbitrary cutoff points in proportions to reduce the dataset. However, even Fatty Acids occurring in low proportions may be useful for source discrimination and diet estimation if they introduce systematic differences between sources (prey items). 
-The \emph{select\_vars} function provides a graphical way to choose a subset of Fatty Acids according to their contribution to prey separation and reduction in collinearity in the prey matrix. Using \emph{select\_vars} in the simulated example shows that only really 2 Fatty Acids contribute to source separation - the cumulative separation displayed in the console converges to one after adding the two most important fatty acid proportions: all remaining FAs only add to collinearity in the source matrix. We choose Fatty Acid no 3,2 and 6 for analysis (the second call does this directly without prompting the user, by giving the index of the fatty acids to choose).
+The \emph{select\_vars} function provides a graphical way to choose a
+subset of Fatty Acids according to their contribution to prey
+separation and reduction in colinearity in the prey matrix. Using
+\emph{select\_vars} in the simulated example shows that only really 2
+Fatty Acids contribute to source separation - the cumulative
+separation displayed in the console converges to one after adding the
+two most important fatty acid proportions: all remaining FAs only add
+to colinearity in the source matrix. We choose Fatty Acid no 3,2 and 6
+for analysis (the second function call does this directly without prompting the user, by giving the index of the fatty acids to choose).
 
 <<eval=FALSE>>=
 dats.subset <- select_vars(dats)
 @
+
 or
+
 <<subsetting FAP>>=
 dats.subset <- select_vars(dats,c(3,2,6))
 
@@ -102,7 +121,7 @@ Apart from a rotation, the overall configuration should be similar.
 
 The actual analysis usues Markov Chain Monte Carlo to estimate posterior distributions for diet parameters. Estiamtion can be performed locally (in the active R session) or in a distributed way, using as many R sessions as Markov Chains. A good strategy is usually to run a few chains locally for short runs, and then run 3 or more  chains in parallel in a distributed way once a satisfactory set of priors, thinning interval etc has been found (setting the number of chains to a maximum of n-1 cores on your CPU is a good idea to not hog ALL resources). The \emph{run\_MCMC} functions sets up the MCMC runs and takes \emph{spawn = T} or \emph{spawn = F} as parameter to run chains in R slave processes or locally, respectively.
 
-The Rnot parameter sets the prior scale for the predator logistic normal covariance matrix, and will often determine how well the chain mixes, that is, how well it explores the parameter space, or if it gets stuck in local modes (that can be of low probability). In the latter case, one would see strong autocorrelation in the Markov Chains for individual paramters. Increasing \emph{Rnot} and/or \emph{Rnot\_SI} can help, but will make it harder to get precise estimates. There is thus a tradeoff between accuracy and mixing here, and often one will just have to run an analysis for many iterations and with a large thinning interval (e.g., >100k iterations with a thinning interval of >100). This should be done after finding reasonable parameters for Rnot on a shorter run, and then letting the final analysis run with long chains.
+The Rnot parameter sets the prior scale for the predator logistic normal covariance matrix, and will often determine how well the chain mixes, that is, how well it explores the parameter space, or if it gets stuck in local modes (that can be of low probability). In the latter case, one would see strong autocorrelation in the Markov Chains for individual paramters. Increasing \emph{Rnot} and/or \emph{Rnot\_{SI}} can help, but will make it harder to get precise estimates. There is thus a tradeoff between accuracy and mixing here, and often one will just have to run an analysis for many iterations and with a large thinning interval (e.g., >100k iterations with a thinning interval of >100). This should be done after finding reasonable parameters for Rnot on a shorter run, and then letting the final analysis run with long chains.
 
 For a combined analysis of stable isotopes and fatty acids, it is often useful to run the two datatypes separately to assure that good priors can be found for both datasets independently, and then combining them for a final analysis. The analysis type is chosen in the appropriate option in the function call.
 
@@ -110,10 +129,18 @@ For a combined analysis of stable isotopes and fatty acids, it is often useful t
 
 \subsubsection*{Stable Isotopes alone}
 
-Lets start with an analysis of the stable isotopes, estimating only global (population) level diets. We will use the default prior on the predator covariance matrix, and will adjust this prior subsequently. *WARNING* This might take a while depending on your resources, the size of the dataset and the parameters used for the MCMC. If you are not familiar with Markov Chain Monte Carlo, please take a minute to read up on it, there are lots of great explanations and summaries on the web.
+Lets start with an analysis of the stable isotopes, estimating only global (population) level diets. We will use the default prior on the predator covariance matrix, and will adjust this prior subsequently. *WARNING* This might take a while depending on your resources, the size of the dataset and the parameters used for the MCMC.
 
 <<Analysis of SI>>=
-Pop.SI <- run_MCMC(datas=dats.subset,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=0.1,plott=F,spawn=F)
+Pop.SI <- run_MCMC(datas = dats.subset,
+                   nIter = 50000,
+                   nBurnin = 10000,
+                   nChains = 3,
+                   nThin = 50,
+                   Data.Type = 'Stable.Isotopes',
+                   Analysis.Type = 'Population.proportions',
+                   Rnot_SI = 0.1,
+                   plott = F, spawn = F)
 @
 
 Plotting the MCMC is the easiest way to ensure that the sampler is mixing - meaning that the chain explores the posterior distribution of each parameter efficiently.
@@ -133,17 +160,26 @@ Based on the diagnostics, it seems that we're doing OK, but that the Stable Isot
 <<Summary SI>>=
 summary(Pop.SI)
 @
-<<Plot SI estiatmes,fig.width=7, fig.height=6>>=
+<<Plot SI estimates,fig.width=7, fig.height=6>>=
 plot(Pop.SI,save=F)
 @
 
-The credible intervals are very large for Prey items 1 and 2, and the correlation plot suggests that there is a reasonably strong posterior correlation between estimates of prey items 1 & 2.
+The credible intervals are very large for Prey items 1 and 2, and the correlation plot suggests that there is a reasonably strong posterior correlation between estimates of prey items 1 \& 2.
 
-Increasing the default prior Rnot\_SI on the predator covariance matrix sometimes leads to better mixing. We'll also run more iterations and set $spawn=T$ for this.
+Increasing the default prior Rnot\_{SI} on the predator covariance matrix sometimes leads to better mixing. We'll also run more iterations and set $spawn=T$ for this.
 
 <<2nd try SI>>=
-Pop.SI2 <- run_MCMC(datas=dats.subset,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Stable.Isotopes',Analysis.Type='Population.proportions',Rnot_SI=1,plott=F,spawn=T)
+Pop.SI2 <- run_MCMC(datas = dats.subset,
+                    nIter = 100000,
+                    nBurnin = 10000,
+                    nChains = 3,
+                    nThin = 100,
+                    Data.Type = 'Stable.Isotopes',
+                    Analysis.Type = 'Population.proportions',
+                    Rnot_SI = 1,
+                    plott = F, spawn = T)
 @
+
 
 <<MCMC output plot 2,fig.width=7>=
 MCMCplot(Pop.SI2)
@@ -156,10 +192,18 @@ Mixing doesn't seem to get much better, indicating that this is probably as good
 
 \subsubsection{Fatty Acids alone}
 
-We repeat this with Fatty Acids, again starting with the default prior. Note that $spawn=T$ this time to save some time by calling 3 R processes at once - a recommendation is to use the number of cores of the computer -1. (to know how many cores you have, get the multicore package and use multicore:::detectCores(), or look at the number of CPUs displayed in your system monitor (resmon on windows))
+We repeat this analysis with Fatty Acids, again starting with the default prior. Note that $spawn=T$ this time to save some time by calling 3 R processes at once - a recommendation is to use the number of cores of the computer -1. (to know how many cores you have, get the multicore package and use multicore:::detectCores(), or look at the number of CPUs displayed in your system monitor (resmon on windows))
 
 <<FAP Analysis>>=
-Pop.FA <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot = 0.2,plott=F,spawn=T)
+Pop.FA <- run_MCMC(datas = dats.subset,
+                   nIter = 10000,
+                   nBurnin = 1000,
+                   nChains = 3,
+                   nThin = 10,
+                   Data.Type = 'Fatty.Acid.Profiles',
+                   Analysis.Type = 'Population.proportions',
+                   Rnot = 0.2,
+                   plott = F, spawn = T)
 @
 
 <<FAP MCMCplot,fig.width=7>>=
@@ -172,10 +216,18 @@ Once again the mixing isn't great:
 diags(Pop.FA)
 @
 
-Again not too bad according to the diagnostics, although the chains should be run for longer (see Raftery-Lewis diagnostics ) - but lets try again with \Sexpr{Rnot = 1}
+Again not too bad according to the diagnostics, although the chains should be run for longer (see Raftery-Lewis diagnostics ) - but lets try again with \emph{Rnot = 1}
 
 <<FAP Analysis 2nd try>>=
-Pop.FA2 <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot = 1,plott=F,spawn=T)
+Pop.FA2 <- run_MCMC(datas = dats.subset,
+                    nIter = 10000,
+                    nBurnin = 1000,
+                    nChains = 3,
+                    nThin = 10,
+                    Data.Type = 'Fatty.Acid.Profiles',
+                    Analysis.Type = 'Population.proportions',
+                    Rnot = 1,
+                    plott = F, spawn = T)
 @
 
 <<FAP MCMC 2nd try,fig.width=7, fig.height=6>>=
@@ -186,10 +238,18 @@ MCMCplot(Pop.FA2)
 diags(Pop.FA2)
 @
 
-Looks very similar, so lets do a final run with 30k iterations as suggested by the $diags$ output and a thinning interval of 30 should be better. (Note that values suggested by the diagnostics may vary from one run to the next. Also note that we already ran 30k as we ran 3 parallel chains here...).
+Looks very similar, so we do a final run with 30k iterations as suggested by the $diags$ output and a thinning interval of 30 should be better. (Note that values suggested by the diagnostics may vary from one run to the next. Also note that we already ran 30k as we ran 3 parallel chains here...).
 
 <<FAP 3rd>>=
-Pop.FA3 <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Population.proportions',Rnot = 1,plott=F,spawn=T)
+Pop.FA3 <- run_MCMC(datas = dats.subset,
+                    nIter = 30000,
+                    nBurnin = 1000,
+                    nChains = 3,
+                    nThin = 30,
+                    Data.Type = 'Fatty.Acid.Profiles',
+                    Analysis.Type = 'Population.proportions',
+                    Rnot = 1,
+                    plott = F, spawn = T)
 @
 
 <<MCMC FAP 3rd,fig.width=7, fig.height=6>>=
@@ -199,17 +259,30 @@ MCMCplot(Pop.FA3)
 <<Diagnostics and Summary FAP 3rd>>=
 diags(Pop.FA3)
 summary(Pop.FA3)
+@ 
 
 <<plot pop propr FAP 3rd,fig.width=7, fig.height=6>>=
 plot(Pop.FA3,save=F)
 @
 
-There is still substantial uncertainty about the diet proportions: it looks as though Prey 1 is a dominant source, but the credible intervals are large. Let's try combining stable isotopes and fatty acids:
+There is still substantial uncertainty about the diet proportions: it
+looks as though Prey 1 is a dominant source, but the credible
+intervals are large. Combining stable isotopes and fatty acids to see
+if there is a gain in information:
 
 \subsubsection{Combining fatty acids and stable isotopes}
 
 <<Combined Analysis>>=
-Pop.Combined <- run_MCMC(datas=dats.subset,nIter=30000,nBurnin=1000,nChains=3,nThin=30,Data.Type='Combined.Analysis',Analysis.Type='Population.proportions',Rnot = 1,Rnot_SI=1,plott=F,spawn=T)
+Pop.Combined <- run_MCMC(datas = dats.subset,
+                         nIter = 30000,
+                         nBurnin = 1000,
+                         nChains = 3,
+                         nThin = 30,
+                         Data.Type = 'Combined.Analysis',
+                         Analysis.Type = 'Population.proportions',
+                         Rnot = 1,
+                         Rnot_SI = 1,
+                         plott = F, spawn = T)
 @
 
 <<MCMCout Comb1,fig.width=7>>=
@@ -229,20 +302,23 @@ The combined analysis reduces uncertainty slightly, especially for source 3, but
 
 To compare the three approaches explicitly, we can use \emph{multiplot}. For \emph{multiplot} the three results need to be combined in a list:
 
-<<Comparing markers,fig.width=7, fig.height=6>>=
+<<Comparing markers,fig.width=8>>=
 Pop.list <- list(Stable.Isotopes = Pop.SI2, Fatty.Acids = Pop.FA3, Combined = Pop.Combined)
 
 multiplot(Pop.list,save=F)
 @
 
-The original data was simulated to include groups of predators with rather different proportions (visible in the dataplots above). Lets have a look at the proportions that were used to simulate the dataset:
+The original data was simulated to include groups of predators with
+rather different proportions (visible in the dataplots above). Taking
+a look at the proportions that were used to simulate the dataset:
 
-<<Comapring with simulated proportions>>=
+<<Comparing with simulated proportions>>=
 proportions.path <- system.file("extdata", "Simdata_props.csv", package="fastinR")
 proportions <- read.csv(proportions.path,header=F,row.names=1)
 
 colnames(proportions) <- unique(dats$prey.ix)
 
+# show simualted proportions
 proportions
 # overall mean proportions
 colMeans(proportions)
@@ -259,7 +335,16 @@ We now need to deal with one extra prior to be set: the prior for the variance o
 \subsubsection{From Fatty Acids}
 
 <<Ind fatty acids>>=
-Ind.FA <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Fatty.Acid.Profiles',Analysis.Type='Individual.proportions',Rnot=1,even=1,plott=F,spawn=T)
+Ind.FA <- run_MCMC(datas = dats.subset,
+                   nIter = 10000,
+                   nBurnin = 1000,
+                   nChains = 3,
+                   nThin = 10,
+                   Data.Type = 'Fatty.Acid.Profiles',
+                   Analysis.Type = 'Individual.proportions',
+                   Rnot = 1,
+                   even = 1,
+                   plott=F,spawn=T)
 @
 
 We won't show the output of the next commands anymore since it is far too long. The commands are the same as for a population proportion analysis:
@@ -276,12 +361,21 @@ summary(Ind.FA)
 plot(Ind.FA,save=F)
 @
 
-Despite this MCMC run being an order of magnitude too short, we can see that the grouped pattern emerges quite clearly in the last plot. Nevertheless, posterior correlations remain for prey items 1&2 remain strong (we'll soon see why!). First, let's see if the grouping becomes more pronounced with the inclusion of stable isotopes:
+Despite this MCMC run being an order of magnitude too short, we can see that the grouped pattern emerges quite clearly in the last plot. Nevertheless, posterior correlations remain for prey items 1\&2 remain strong (we'll soon see why!). First, let's see if the grouping becomes more pronounced with the inclusion of stable isotopes:
 
 \subsubsection{Combined analysis}
 
 <<Combined Ind Props>>=
-Ind.Combined <- run_MCMC(datas=dats.subset,nIter=10000,nBurnin=1000,nChains=3,nThin=10,Data.Type='Combined.Analysis',Analysis.Type='Individual.proportions',Rnot=1,Rnot_SI=1,even=2,plott=F,spawn=T)
+Ind.Combined <- run_MCMC(datas = dats.subset,
+                         nIter = 10000,
+                         nBurnin = 1000,
+                         nChains = 3,
+                         nThin = 10,
+                         Data.Type = 'Combined.Analysis',
+                         Analysis.Type = 'Individual.proportions',
+                         Rnot = 1, Rnot_SI = 1,
+                         even=2,
+                         plott=F,spawn=T)
 @
 Again skipping diagnostics output:
 
@@ -306,10 +400,20 @@ While the patterns here offer great insights into individual diet proportions, t
 We now need to add covariates in the form of group membership. The reasoning and procedure is the same for continuous covariates (e.g., size). To add the covariates, we use the \emph{add\_Covs}constructor:
 
 <<load group data and run grouped analysis>>=
-group.path <- system.file("extdata", "Simdata_groups.csv", package="fastinR")
+group.path <- system.file("extdata", "Simdata_Groups.csv", package="fastinR")
 Covs <- add_Covs(Groups=group.path)
 
-Cov.Combined <- run_MCMC(datas=dats.subset,Covs=Covs,nIter=100000,nBurnin=10000,nChains=3,nThin=100,Data.Type='Combined.Analysis',Analysis.Type='Analysis.with.Covariates',Rnot=1,Rnot_SI=1,even=2,plott=F,spawn=T)
+Cov.Combined <- run_MCMC(datas = dats.subset,
+                         Covs = Covs,
+                         nIter = 100000,
+                         nBurnin = 10000,
+                         nChains = 3,
+                         nThin = 100, 
+                         Data.Type = 'Combined.Analysis',
+                         Analysis.Type = 'Analysis.with.Covariates',
+                         Rnot = 1, Rnot_SI = 1,
+                         even = 2,
+                         plott = F,spawn = T)
 @
 
 <<eval=FALSE>>=
@@ -324,6 +428,6 @@ summary(Cov.Combined)
 plot(Cov.Combined,save=F)
 @
 
-We can now clearly see the difference between the two group's diet proportions!
+We can now clearly see the difference between the two group's diet proportions.
 
 \end{document}

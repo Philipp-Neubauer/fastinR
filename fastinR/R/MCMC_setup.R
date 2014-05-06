@@ -152,7 +152,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   for (i in 1:nChains){
     outfile <- paste('MCout',i,'.Rdata',sep='')
     
-    cmd <- paste("Rscript -e 'library(fastinR,quietly=T,verbose=F);options(warn=-1);res",i,"<- fastinR:::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save.image(file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
+    cmd <- paste("Rscript -e 'options(warn=-1);library(fastinR,quietly=T,verbose=F);res<- fastinR:::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save(res,file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
     
    system(cmd,wait=F)
           
@@ -162,14 +162,16 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   while(length(grep('MCout',dir()))<nChains | sum(file.info(dir()[grep('MCout',dir())])$mtime >  orgtime)<nChains) {Sys.sleep(3);cat('+')}
   
   
-  res <- eval(parse(text=eval(load('MCout1.Rdata'))))
+  results <- list()
   
-  if (nChains>1) {
-    for(i in 2:nChains)
-      res[[i]] <- eval(parse(text=eval(load(paste('MCout',i,'.Rdata',sep='')))))[[1]]
+  if (nChains>=1) {
+    for(i in 1:nChains){
+      load(paste('MCout',i,'.Rdata',sep=''))
+      results[[i]] <- res[[1]]
+    }
   }
   
-  return(res)
+  return(results)
   
 }
 
