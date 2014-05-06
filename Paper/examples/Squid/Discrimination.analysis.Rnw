@@ -1,14 +1,17 @@
 \documentclass{article}
+\usepackage{authblk}%
 
 \title{Discrimination Analysis}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 \maketitle
+
+\author{Philipp Neubauer}
+\affil{Dragonfly Science,\\PO Box 27535, Wellington 6141, New Zealand}%
 
 \section*{Preamble}
 
-This document details the estiamtion procedure for stable isotope dicrimination and fatty acid conversion coefficients. The data used is from Stowasser et al 2006 (JEMBE 333: 97–114), and is available as .csv files in the same folder as this document. We group all fish together as we don't know the proportions of individual fish species that were fed in the treatment. The uncertainty in estiamted dicromination coefficients will reflect any variability in species specific coefficients, so will mainly just introduce additional uncertainty in the final analysis.
+This document details the estiamtion procedure for stable isotope dicrimination and fatty acid conversion coefficients. The data used is from Stowasser et al 2006 (JEMBE 333: 97--114), and is available as .csv files in the same folder as this document. We group all fish together as we don't know the proportions of individual fish species that were fed in the treatment. The uncertainty in estiamted dicromination coefficients will reflect any variability in species specific coefficients, so will mainly just introduce additional uncertainty in the final analysis.
 
 NOTE: The fatty acid analysis takes a long time to run (possibbly several hours, depending on CPU speed and number of cores). Please factor this in when considering to repeat/modify this analysis.
 
@@ -93,7 +96,7 @@ beta.tau.prior <- c(beta.tau.prior.C,beta.tau.prior.N)
 
 We simply set the prior mean for the prey mean to the sample mean, but leave the variance vague so as to not force the mean.
 
-<<prior prey mean,tidy=FALSE>>=
+<<prior prey mean,tidy=TRUE>>=
 require(dplyr)
 # predator mean priors
 prior.mu <- data.frame(feed = prey.type,prey) %.% 
@@ -108,7 +111,7 @@ prior.mu <- as.matrix(prior.mu[,2:3])
 
 This is all put into the appropriate format for jags, and off we go...
 
-<<run JAGS,tidy=FALSE>>=
+<<run JAGS,tidy=TRUE>>=
 input <- list(prey=prey,
               pred=pred,
               n.preys.samps=n.preys.samps,
@@ -124,7 +127,10 @@ input <- list(prey=prey,
 
 require(rjags)
 
-DM <- jags.model('Discrim.model.SI.R',n.chains=3,inits = list(mu=prior.mu,beta.not=bnot.prior,beta.reg=beta.prior),data=input)
+DM <- jags.model('Discrim.model.SI.R',
+                 n.chains = 3,
+                 inits = list(mu=prior.mu,beta.not=bnot.prior,beta.reg=beta.prior),
+                 data=input)
 
 update(DM,10000)
 

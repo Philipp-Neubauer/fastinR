@@ -69,6 +69,7 @@ dataplot <- function(datas=NULL){
 #' @S3method plot cov_props
 #' @param x MCMC output from \code{\link{run_MCMC}}, containing diet proportion MCMC chains
 #' @param save Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file.
+#' @param types A string to select the type of plot, either 'Cor' to look at posterior correlations and/or 'Post' to get a representation of the posterior, as speciefied in density. 
 #' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead.
 #' @details If plots are saved they are not drawn at the same time. That may change in the future...
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
@@ -78,7 +79,10 @@ NULL
 
 #' @method plot pop_props
 #' @export
-plot.pop_props <- function(x,save="fastinR_MCMC_",density=T,...){
+plot.pop_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
+  
+  require(ggplot2)
+  require(grid)
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -100,30 +104,30 @@ plot.pop_props <- function(x,save="fastinR_MCMC_",density=T,...){
   outs <- as.data.frame(outs)
   colnames(outs) <- preya.names
   
-  
-  if (sava==1) {
-    pdf(paste(save,"correlations.pdf",sep=''))
-  } else {
-          if (!is.function(options()$device) & GUI==T & GUI==T){
-            if (names(dev.cur())=="RStudioGD"){
-              # try to open a new platform-appropriate plot window
-              if (.Platform$OS.type=='windows'){
-                windows()
-              } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
-              { 
-                quartz(width=5,height=5)
-              } else {  # must be unix
-                x11()
-              }
-              
-            }
+  if(any(types=='cor')){
+    if (sava==1) {
+      pdf(paste(save,"correlations.pdf",sep=''))
+    } else {
+      if (!is.function(options()$device) & GUI==T & GUI==T){
+        if (names(dev.cur())=="RStudioGD"){
+          # try to open a new platform-appropriate plot window
+          if (.Platform$OS.type=='windows'){
+            windows()
+          } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+          { 
+            quartz(width=5,height=5)
+          } else {  # must be unix
+            x11()
           }
+          
+        }
+      }
+    }
+    plot(outs,main='Correlation of proportion estimates')
+    if (sava==1) dev.off()
   }
-plot(outs,main='Correlation of proportion estimates')
-if (sava==1) dev.off()
 
-
-if(density==F){
+if(any(types=='post') & density==F){
   mp=reshape::melt.data.frame(outs)
   if (sava==1){pdf(paste(save,"pop_proportions.pdf",sep=''))}else{par(ask=T)}
   rpp = bwplot(variable~value,data=mp,xlim=c(0,1),xlab=list(label=expression("Posterior distribution of diet proportions"),cex=1)
@@ -139,7 +143,7 @@ if(density==F){
   panel.abline(h=seq(1.5,ncol(outs),1),col=1,lty=2)
   trellis.unfocus()
   if (sava==1) dev.off()
-} else {
+} else if(any(types=='post') & density==T) {
   
   xx<-reshape::melt.data.frame(outs)
   
@@ -201,8 +205,8 @@ if(density==F){
             legend.title=element_blank(),
             axis.ticks = element_line(colour=1),
             axis.text = element_text(colour=1,size = rel(0.8)),
-            axis.title = element_text(size = rel(1)))+
-      geom_rug(alpha=0.1)
+            axis.title = element_text(size = rel(1)))#+
+      #geom_rug(alpha=0.1)
     
     f
   }
@@ -218,7 +222,10 @@ if(density==F){
 
 #' @method plot ind_props
 #' @export
-plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
+plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
+  
+  require(ggplot2)
+  require(grid)
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -242,29 +249,31 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
   popix <- grep('pop',colnames(outs))
   names(outs)[popix] <- preya.names
   
-  if (sava==1)  {
-    pdf(paste(save,"correlations.pdf",sep=''))
-  } else {
-          if (!is.function(options()$device) & GUI==T){
-            if (names(dev.cur())=="RStudioGD"){
-              # try to open a new platform-appropriate plot window
-              if (.Platform$OS.type=='windows'){
-                windows()
-              } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
-              { 
-                quartz(width=5,height=5)
-              } else {  # must be unix
-                x11()
-              }
-              
-            }
+  if(any(types=='cor')){
+    if (sava==1)  {
+      pdf(paste(save,"correlations.pdf",sep=''))
+    } else {
+      if (!is.function(options()$device) & GUI==T){
+        if (names(dev.cur())=="RStudioGD"){
+          # try to open a new platform-appropriate plot window
+          if (.Platform$OS.type=='windows'){
+            windows()
+          } else if(length(grep(R.version$platform,pattern='apple'))>0)  # is it mac?
+          { 
+            quartz(width=5,height=5)
+          } else {  # must be unix
+            x11()
           }
+          
+        }
+      }
+    }
+    plot(outs[,popix],main='Correlation of proportion estimates')
+    if (sava==1) dev.off()
   }
-  plot(outs[,popix],main='Correlation of proportion estimates')
-  if (sava==1) dev.off()
   
   # population proportions
-  if(density==F){
+  if(any(types=='post') & density==F){
     # draw popualtion posteriors
     mp=reshape::melt.data.frame(outs[,popix])
     if (sava==1){pdf(paste(save,"pop_proportions.pdf",sep=''))}else{par(ask=T)}
@@ -282,8 +291,7 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
     trellis.unfocus()
     if (sava==1) dev.off()
     
-  } else
-  {
+  } else if(any(types=='post') & density==T)  {
     multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
       
       
@@ -345,8 +353,8 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
               legend.title=element_blank(),
               axis.ticks = element_line(colour=1),
               axis.text = element_text(colour=1,size = rel(0.8)),
-              axis.title = element_text(size = rel(1)))+
-        geom_rug(alpha=0.1)
+              axis.title = element_text(size = rel(1)))#+
+        #geom_rug(alpha=0.1)
       
       f
     }
@@ -368,7 +376,7 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
   indix <- rep(orders,each=n.preys)+c(0,n.preds*1:(n.preys-1))+max(popix)
   indix2 <- order(names(outs[,indix]))
   
-  if(density==F){
+  if(any(types=='post') & density==F){
     mp=reshape::melt.data.frame(outs[,indix])
     
     if (sava==1){pdf(paste(save,"ind_proportions.pdf",sep=''))}else{par(ask=T)}
@@ -390,7 +398,7 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
     trellis.unfocus()
     if (sava==1) dev.off()
     
-  } else {
+  } else if(any(types=='post') & density==T) {
     
     colnames(outs) <-NA
     outr <- data.frame()
@@ -436,8 +444,8 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
               legend.title=element_blank(),
               axis.ticks = element_line(colour=1),
               axis.text = element_text(colour=1,size = rel(0.8)),
-              axis.title = element_text(size = rel(1)))+
-        geom_rug(alpha=0.1)
+              axis.title = element_text(size = rel(1)))#+
+        #geom_rug(alpha=0.1)
       
       return(f)
     }
@@ -485,7 +493,10 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,...){
 
 #' @method plot cov_props
 #' @export
-plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
+plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
+  
+  require(ggplot2)
+  require(grid)
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
    
@@ -523,6 +534,9 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
   
   this.eff <- outs[,popix[1:(nGr*n.preys)]]
   k=1
+  for (n in 1:nGr) {colnames(this.eff)[k:(k+n.preys-1)] <- sprintf(paste('Group',n,'/ %s'),preya.names); k=k+n.preys}
+  
+  if(any(types=='cor')){
   if (sava==1)  {
     pdf(paste(save,"correlations.pdf",sep=''))
   } else {
@@ -541,12 +555,11 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
             }
           }
   }
-  for (n in 1:nGr) {colnames(this.eff)[k:(k+n.preys-1)] <- sprintf(paste('Group',n,'/ %s'),preya.names); k=k+n.preys}
   plot( this.eff,main='Correlation of proportion estimates')
   if (sava==1) dev.off()
-  
+  }
   # population proportions
-  if(density==F){
+  if(any(types=='post') & density==F){
     # draw popualtion posteriors
     mp=reshape::melt.data.frame(this.eff)
     if (sava==1){pdf(paste(save,"pop_proportions.pdf",sep=''))}else{par(ask=T)}
@@ -563,7 +576,7 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
     panel.abline(h=seq(n.preys+0.5,ncol(this.eff),n.preys),col=1,lty=2)
     trellis.unfocus()
     if (sava==1) dev.off()
-  } else
+  } else if(any(types=='post') & density==T)
   {
     multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
       
@@ -626,8 +639,8 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
               legend.title=element_blank(),
               axis.ticks = element_line(colour=1),
               axis.text = element_text(colour=1,size = rel(0.8)),
-              axis.title = element_text(size = rel(1)))+
-        geom_rug(alpha=0.1)
+              axis.title = element_text(size = rel(1)))#+
+        #geom_rug(alpha=0.1)
       
       f
     }
@@ -652,7 +665,7 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
   indix <- rep(orders,each=n.preys)+c(0,n.preds*1:(n.preys-1))+max(popix)
   indix2 <- order(names(outs[,indix]))
   
-  if(density==F){
+  if(any(types=='post') & density==F){
     mp=reshape::melt.data.frame(outs[,indix])
     if (sava==1){pdf(paste(save,"ind_proportions.pdf",sep=''))}else{par(ask=T)}
     rpp = bwplot(variable~value,data=mp,xlim=c(0,1),xlab=list(label=expression("Posterior distribution of individual diet proportions"),cex=1),auto.key = list(text=preya.names, points = F,
@@ -675,7 +688,7 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
     trellis.unfocus()
     if (sava==1) dev.off()
     
-  } else {
+  } else if(any(types=='post') & density==T){
     
     colnames(outs) <-NA
     outr <- data.frame()
@@ -719,8 +732,8 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
               legend.title=element_blank(),
               axis.ticks = element_line(colour=1),
               axis.text = element_text(colour=1,size = rel(0.8)),
-              axis.title = element_text(size = rel(1)))+
-        geom_rug(alpha=0.1)
+              axis.title = element_text(size = rel(1)))#+
+        #geom_rug(alpha=0.1)
       
       return(f)
     }
@@ -772,14 +785,17 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,...){
 #' @title Plot density or denstrip plots from multiple MCMC runs
 #' @description A density/denstrip plot produced for multiple MCMC runs from \code{\link{run_MCMC}}. Useful to compare across runs with different data subsets or data types. The analyses needs to be of the same type, for now only Analysis.Type = Population.Proportions in \code{\link{run_MCMC}} works.
 #' @param MCMCouts A (named) list of objects produced by  \code{\link{run_MCMC}}
-#' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead. 
+#' @param types A string to select the type of plot, either 'strip' for a density strip (needs denstrip package), and/or 'violin' for a violin plot and 'density' for dnesity plots (both use ggplot2). 
 #' @param save Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file. 
 #' @details If plots are saved they are not drawn at the same time.
 #' @references Neubauer.P. and Jensen, O.P. (in prep) 
 #' @author Philipp Neubauer
 #' @seealso \code{\link{run_MCMC}},\code{\link{diags}}
 #' @export
-multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
+multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T,types = c('violin','strip','density')){
+  
+  require(ggplot2)
+  require(grid)
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -811,7 +827,7 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
   preya.names <- (MCMCouts[[1]]$prey.names)
   n.preys <- length(preya.names)
     
-  if(density==F){
+  if(any(types=='strip')){
     
     outs <- {}
     for (i in 1:length(MCMCouts)){
@@ -849,9 +865,9 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
     panel.abline(h=seq(n.preys+0.5,ncol(outs),n.preys),col=1,lty=2)
     trellis.unfocus()
     if (sava==1) dev.off()
-  } else 
-    {
-    
+  }
+  if(any(types=='density')){
+    par(ask=T)
     if(is.null(names(MCMCouts))){MCnames <- sprintf(paste('MCMC %s'),1:length(MCMCouts))}else{MCnames <-names(MCMCouts)}
     
     outs <- data.frame()
@@ -901,8 +917,8 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
               legend.title=element_blank(),
               axis.ticks = element_line(colour=1),
               axis.text = element_text(colour=1,size = rel(0.8)),
-              axis.title = element_text(size = rel(1)))+
-        geom_rug(alpha=0.1)
+              axis.title = element_text(size = rel(1)))#+
+        #geom_rug(alpha=0.1)
       
       return(f)
     }
@@ -946,8 +962,9 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
     if(sava==T) pdf(paste(save,"_densities.pdf",sep=''))
     multiplot(plotlist=g,cols=2)
     if(sava==T) dev.off()
-    
-    par(ask=T)
+  }
+  if(any(types=='violin')){
+  par(ask=T)
     
     ggs_double_violin <- function(D,num_cat,between_cat,within_cat,x.title,y.title,trans=NULL,breaks=NULL,ylims=NA,scallab=NULL){
       
@@ -1009,7 +1026,23 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T){
       m
     }
     
+  if(is.null(names(MCMCouts))){MCnames <- sprintf(paste('MCMC %s'),1:length(MCMCouts))}else{MCnames <-names(MCMCouts)}
+  
+  outs <- data.frame()
+  for (i in 1:length(MCMCouts)){
     
+    x <- MCMCouts[[i]]
+    outa={}
+    for (k in 1:x$nChains){
+      outp <- matrix(unlist(x[[k]]),ncol=ncol(x[[1]]),byrow=F)
+      outa <- rbind(outa,outp)
+    }
+    outs <- rbind(outs,cbind(rep(i,nrow(outa)),(outa)))
+  }
+  
+  outs[,1] <- as.factor(outs[,1])
+  attr(outs[,1],'levels') <- MCnames
+  
     names(outs)[2:(n.preys+1)] <- preya.names
     xx<-reshape::melt.data.frame(outs)
     

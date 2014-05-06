@@ -1,11 +1,21 @@
 \documentclass{article}
 
+\usepackage{authblk}%
+
 \title{Specifying prey fat content distributions for Squid diet analysis}
 
 \begin{document}
+
+\author{Philipp Neubauer}
+\affil{Dragonfly Science,\\PO Box 27535, Wellington 6141, New Zealand}%
+
 \maketitle
 
+
 << Grab sample means and sd from paper>>=
+library(knitr)
+options(replace.assign=TRUE,width=50)
+
 Silverside <- 2.27
 Silverside.sd <- 1.02 
 
@@ -32,6 +42,8 @@ fish.ln.means = log(fish.means)-fish.ln.vars/2
 hist(rlnorm(10000,meanlog=fish.ln.means[1],sdlog=sqrt(fish.ln.vars[1])),30,xlab='Fat content',main='')
 @
 
+Doing the same for shrimp
+
 <<same for shrimp>>=
 shrimp.mean <- 2.43
 shrimp.var <- 0.66^2
@@ -43,6 +55,8 @@ shrimp.ln.mean = log(shrimp.mean)-shrimp.ln.var/2
 <<histogram for shrimp,fig.width=7, fig.height=6>>=
 hist(rlnorm(10000,meanlog=shrimp.ln.mean,sdlog=sqrt(shrimp.ln.var)),30,xlab='Fat content',main='')
 @
+
+Write results to file:
 
 <<write to file>>=
 fat.cont <- rbind(cbind(fish.ln.means,fish.ln.vars),c(shrimp.ln.mean,shrimp.ln.var))
