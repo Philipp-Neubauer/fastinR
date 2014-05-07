@@ -82,6 +82,20 @@ cdist <- function (mat) {
   return(dista)
 }
 
+#' Ilr basis calucaltion
+#' @param D Dimension of the composition
+#' @return The base for isometric transform
+#' @export 
+ilr_base <- function(D) {
+  ilrb=matrix(0,D-1,D)
+  for(i in 1:(D-1)){
+    for (j in 1:(D-i+1)){
+      ilrb[i,j] <- ifelse(i<=(D-j),sqrt(1/((D-i)*(D-i+1))),-sqrt((D-i)/(D-i+1)))
+    }
+  }
+  
+  return(ilrb)
+}
 
 #' Geometric mean of a vector or columns of a dataframe
 #' 

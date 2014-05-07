@@ -1,6 +1,6 @@
-#' Plot Non-metric multidimensional scaling (NMDS) or (clr transformed) diet data
+#' Plot Non-metric multidimensional scaling (NMDS) or (ilr transformed) diet data
 #' 
-#' Diet data produced by \code{\link{add_FA}} and/or \code{\link{add_FA}} is projected onto 2 dimesions using NMDS, where Fatty Acid data is first clr transformed and then concatenated with SI data to produce the plot.
+#' Diet data produced by \code{\link{add_FA}} and/or \code{\link{add_FA}} is projected onto 2 dimesions using NMDS, where Fatty Acid data is first ilr transformed. When SI and FA data are present, then Euclidean distances of ilr(FA) and SI data are added to produce NMDS and the plot.
 #' @param datas Diet data produced by \code{\link{add_FA}} and/or \code{\link{add_SI}}
 #' @seealso \code{\link{add_FA}},\code{\link{add_SI}},\code{\link{select_vars}},\code{\link{var_select_plot}},\code{\link{run_MCMC}}
 #' @author Philipp Neubauer
@@ -35,7 +35,7 @@ dataplot <- function(datas=NULL){
   
   names(preya)  <- names(preda)
   
-  dista <- dist(rbind(preya,preda))
+  dista <-  dist(apply(rbind(preya,preda),1,function(x) x%*%t(ilr_base(length(x)))))
   if (!is.null(preya.SI)) dista = sqrt(dista^2 + dista.SI^2)
   mds <- metaMDS(dista,trymax=100)
   

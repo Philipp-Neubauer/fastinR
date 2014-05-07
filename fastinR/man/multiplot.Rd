@@ -2,14 +2,17 @@
 \alias{multiplot}
 \title{Plot density or denstrip plots from multiple MCMC runs}
 \usage{
-multiplot(MCMCouts, save = "fastinR_Multiplot", density = T)
+multiplot(MCMCouts, save = "fastinR_Multiplot", density = T,
+  types = c("violin", "strip", "density"))
 }
 \arguments{
   \item{MCMCouts}{A (named) list of objects produced by
   \code{\link{run_MCMC}}}
 
-  \item{density}{If TRUE (default), density plots are
-  drawn, if FALSE, denstrip plots drawn instead.}
+  \item{types}{A string to select the type of plot, either
+  'strip' for a density strip (needs denstrip package),
+  and/or 'violin' for a violin plot and 'density' for
+  dnesity plots (both use ggplot2).}
 
   \item{save}{Either a string to be used as prefix for
   saved plots, or FALSE for disabling saving to file.}
