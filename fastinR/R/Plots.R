@@ -19,25 +19,38 @@ dataplot <- function(datas=NULL){
   preya <- {};preya.SI <- {}
   preda <- {};preda.SI <- {}
   if(!is.null(datas$datas.FA$preys)) {
-    preya=cbind(preya,clr(datas$datas.FA$preys*((datas$datas.FA$mean_c/datas$datas.FA$tau_c)[datas$prey.ix,])))
-    preda=cbind(preda,clr(datas$datas.FA$preds.FA))     
+    attach(datas$datas.FA,warn.conflicts=F)
+    
+    #prey
+    preys.clr <- clr(preys*((mean_c/tau_c)[datas$prey.ix,]))
+    preys.ilr <- t(apply(preys.clr,1,function(x) x%*%t(ilr_base(length(x)))))
+    
+    preya=cbind(preya,preys.ilr)
+    
+    # predators
+    preds.clr <- clr(preds.FA)
+    preds.ilr <- t(apply(preds.clr,1,function(x) x%*%t(ilr_base(length(x)))))
+    preda=cbind(preda,preds.ilr)     
   }
   if(!is.null(datas$datas.SI$preys.SI)) {
+    attach(datas$datas.SI,warn.conflicts=F)
     if (ifelse(!is.null(datas$prey.ix),all(datas$prey.ix == datas$prey.ix.SI),TRUE)) {
-      preya=cbind(preya,as.matrix(datas$datas.SI$preys.SI+datas$datas.SI$mean_cs[datas$prey.ix.SI,]))
-      preda=cbind(preda,as.matrix(datas$datas.SI$preds.SI))
+      preya=cbind(preya,as.matrix(preys.SI+mean_cs[datas$prey.ix.SI,]))
+      preda=cbind(preda,as.matrix(preds.SI))
     } else {
-      preya.SI=cbind(preya.SI,as.matrix(datas$datas.SI$preys.SI+datas$datas.SI$mean_cs[datas$prey.ix.SI,]))
-      preda.SI=cbind(preda.SI,as.matrix(datas$datas.SI$preds.SI))
+      preya.SI=cbind(preya.SI,as.matrix(preys.SI+mean_cs[datas$prey.ix.SI,]))
+      preda.SI=cbind(preda.SI,as.matrix(preds.SI))
       dista.SI <- dist(rbind(preya.SI,preda.SI))
     }
   }  
   
+  
   names(preya)  <- names(preda)
   
-  dista <-  dist(apply(rbind(preya,preda),1,function(x) x%*%t(ilr_base(length(x)))))
+  dista <-  dist(rbind(preya,preda))
+  
   if (!is.null(preya.SI)) dista = sqrt(dista^2 + dista.SI^2)
-  mds <- metaMDS(dista,trymax=100)
+  
   
   externalDevice<-FALSE
   if (!is.function(options()$device) & GUI==T){
@@ -55,10 +68,19 @@ dataplot <- function(datas=NULL){
     }
   }
   
+  # do MDS if more than two variable
+  if(!is.null(datas$datas.FA$preys) | datas$datas.SI$isos>2){
+  
+    mds <- metaMDS(dista,trymax=100)
   pl <- plot(mds,type='n')
   points(pl,'sites',pch=cbind(as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(16,datas$n.preds)),col=cbind(1+as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(1,datas$n.preds)))
   legend('topleft',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
-  
+  } else {
+    
+    plot(rbind(preya,preda),type='n')
+    points(rbind(preya,preda),pch=cbind(as.numeric(factor(datas$prey.ix.SI,levels=unique(datas$prey.ix.SI))),rep(16,datas$n.preds)),col=cbind(1+as.numeric(factor(datas$prey.ix.SI,levels=unique(datas$prey.ix.SI))),rep(1,datas$n.preds)))
+    legend('topleft',c('Predators',unique(datas$prey.ix.SI)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
+  }
 }
 
 #' @name plot
