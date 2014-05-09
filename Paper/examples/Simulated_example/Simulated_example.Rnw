@@ -465,37 +465,35 @@ Lastly, the prey separation is ok for prey species 1, 3 \& 4 but prey species 2 
 
 For all three examples, we'll use all 10 simualted FAs to make sure that the resutls are not biased by variable selection. We can run the MCMC directly:
 
-select_vars(even_good)
-
 <<MCMC for >>=
-even.good.mcmc <- run_MCMC(datas = eg,
-                    nIter = 10000,
-                    nBurnin = 1000,
+even.good.mcmc <- run_MCMC(datas = even_good,
+                    nIter = 100000,
+                    nBurnin = 5000,
                     nChains = 3,
-                    nThin = 10,
+                    nThin = 100,
                     Data.Type = 'Fatty.Acid.Profiles',
-                    Analysis.Type = 'Individual.proportions',
-                    Rnot = 1,
+                    Analysis.Type = 'Population.proportions',
+                    Rnot = 2,
                     plott = F, spawn = T)
 
 uneven.good.mcmc <- run_MCMC(datas = uneven_good,
-                    nIter = 10000,
-                    nBurnin = 1000,
+                    nIter = 100000,
+                    nBurnin = 5000,
                     nChains = 3,
-                    nThin = 10,
+                    nThin = 100,
                     Data.Type = 'Fatty.Acid.Profiles',
                     Analysis.Type = 'Population.proportions',
-                    Rnot = 10,
+                    Rnot = 2,
                     plott = F, spawn = T)
 
 even.bad.mcmc <- run_MCMC(datas = even_bad,
-                    nIter = 10000,
-                    nBurnin = 1000,
+                    nIter = 100000,
+                    nBurnin = 5000,
                     nChains = 3,
-                    nThin = 10,
+                    nThin = 100,
                     Data.Type = 'Fatty.Acid.Profiles',
                     Analysis.Type = 'Population.proportions',
-                    Rnot = 1,
+                    Rnot = 2,
                     plott = F, spawn = T)
 @
 
@@ -503,20 +501,21 @@ Checking the MCMC:
 
 <<Look at MCMC,eval=FALSE>>=
 MCMCplot(even.good.mcmc)
+MCMCplot(uneven.good.mcmc)
+MCMCplot(even.bad.mcmc)
 
 @
 
 <<eval=FALSE>>=
-MCMCplot(uneven.good.mcmc)
-
-diags(Cov.Combined)
-
 summary(even.good.mcmc)
 summary(uneven.good.mcmc)
+summary(even.bad.mcmc)
 @
 
 <<Plot combined grouped analysis>>=
+plot(even.good.mcmc,save=F,types='post')
 plot(uneven.good.mcmc,save=F,types='post')
+plot(even.bad.mcmc,save=F,types='post')
 @
 
 \end{document}
