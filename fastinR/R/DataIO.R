@@ -76,7 +76,7 @@ add_Covs <- function(Groups='',Covariates=''){
 #' Files must be in .csv format.
 #'             
 #' @param SI.predators A data frame or a path to a csv file with the predator index/names (first column) and Stable Isotopes (1 row per predator), with Stable Isotope named across the first row.
-#' @param SI.preys A data frame or a path to a csv file with the prey names/sample id (first column) and fatty acid profiles (1 row pey prey item), with Stable Isotope named across the first row. Samples from the same species should have the same prey name/sample id.
+#' @param SI.preys A data frame or a path to a csv file with the prey names/sample id (first column) and SI measurements (1 row pey prey item), with Stable Isotope named across the first row. Samples from the same species should have the same prey name/sample id.
 #' @param Frac.Coeffs.mean A data frame or a path to a csv file with the prey specific additive fractionation coefficient means: Prey names (first column) and an n x P matrix for n preys and P Stable Isotopes
 #' @param Frac.Coeffs.var A data frame or a path to a csv file with the prey specific fractionation coefficient variances, dimensions as for the means
 #' @param FC.mean optional - if no prey specific fractionation coefficiants are supplied via Frac.Coeffs.mean, FC mean can provide either a global (single) mean coefficient or fatty acid specific mean coefficients using R's c(FA_1,FA_2,...) notation for ALL fatty acids.

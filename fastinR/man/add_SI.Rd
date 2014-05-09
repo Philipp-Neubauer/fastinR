@@ -12,9 +12,9 @@ add_SI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
   across the first row.}
 
   \item{SI.preys}{A data frame or a path to a csv file with
-  the prey names/sample id (first column) and fatty acid
-  profiles (1 row pey prey item), with Stable Isotope named
-  across the first row. Samples from the same species
+  the prey names/sample id (first column) and SI
+  measurements (1 row pey prey item), with Stable Isotope
+  named across the first row. Samples from the same species
   should have the same prey name/sample id.}
 
   \item{Frac.Coeffs.mean}{A data frame or a path to a csv
