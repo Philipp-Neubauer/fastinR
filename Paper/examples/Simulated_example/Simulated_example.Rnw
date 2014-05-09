@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{hyperref}   
+\usepackage{multirow}    
 \usepackage{authblk}%
 \hypersetup{pdfpagelayout=SinglePage}
 
@@ -30,7 +31,7 @@ library(fastinR,warn.conflicts=F)
 
 \section{Introduction}
 
-We start with a very simple simulated example. It is possible to simulate relevant data using the built in simulation GUI, which is called from the command line once fastinR has been loaded. Plese type ?simulation to obtain help on simulating your own 'dataset'. Note, however, that the recommended way to interact with the package is the command line - the GUI is somewhat unstable and has a mind of its own (see warnings in gui help files). 
+We start with a very simple simulated example. It is possible to simulate relevant data using the built in simulation GUI, which is called from the command line once fastinR has been loaded. Plese type ?simulation to obtain help on simulating your own 'dataset'. Note, however, that the recommended way to interact with the package is the command line - the GUI is somewhat unstable and has a mind of its own (see warnings in GUI help files). 
 
 \section{Loading data from files}
 
@@ -91,12 +92,12 @@ dataplot(dats)
 The grooming step in this case corresponds to selecting relevant variables for the analysis. In practice, one could measure lots of Fatty Acids, and researchers often choose arbitrary cutoff points in proportions to reduce the dataset. However, even Fatty Acids occurring in low proportions may be useful for source discrimination and diet estimation if they introduce systematic differences between sources (prey items). 
 The \emph{select\_vars} function provides a graphical way to choose a
 subset of Fatty Acids according to their contribution to prey
-separation and reduction in colinearity in the prey matrix. Using
+separation and reduction in co-linearity in the prey matrix. Using
 \emph{select\_vars} in the simulated example shows that only really 2
 Fatty Acids contribute to source separation - the cumulative
 separation displayed in the console converges to one after adding the
 two most important fatty acid proportions: all remaining FAs only add
-to colinearity in the source matrix. We choose Fatty Acid no 3,2 and 6
+to co-linearity in the source matrix. We choose Fatty Acid no 3,2 and 6
 for analysis (the second function call does this directly without prompting the user, by giving the index of the fatty acids to choose).
 
 <<eval=FALSE>>=
@@ -122,9 +123,9 @@ Apart from a rotation, the overall configuration should be similar.
 
 \section{Bayesian Analysis}
 
-The actual analysis usues Markov Chain Monte Carlo to estimate posterior distributions for diet parameters. Estiamtion can be performed locally (in the active R session) or in a distributed way, using as many R sessions as Markov Chains. A good strategy is usually to run a few chains locally for short runs, and then run 3 or more  chains in parallel in a distributed way once a satisfactory set of priors, thinning interval etc has been found (setting the number of chains to a maximum of n-1 cores on your CPU is a good idea to not hog ALL resources). The \emph{run\_MCMC} functions sets up the MCMC runs and takes \emph{spawn = T} or \emph{spawn = F} as parameter to run chains in R slave processes or locally, respectively.
+The actual analysis uses Markov Chain Monte Carlo to estimate posterior distributions for diet parameters. Estimation can be performed locally (in the active R session) or in a distributed way, using as many R sessions as Markov Chains. A good strategy is usually to run a few chains locally for short runs, and then run 3 or more  chains in parallel in a distributed way once a satisfactory set of priors, thinning interval etc has been found (setting the number of chains to a maximum of n-1 cores on your CPU is a good idea to not hog ALL resources). The \emph{run\_MCMC} functions sets up the MCMC runs and takes \emph{spawn = T} or \emph{spawn = F} as parameter to run chains in R slave processes or locally, respectively.
 
-The Rnot parameter sets the prior scale for the predator logistic normal covariance matrix, and will often determine how well the chain mixes, that is, how well it explores the parameter space, or if it gets stuck in local modes (that can be of low probability). In the latter case, one would see strong autocorrelation in the Markov Chains for individual paramters. Increasing \emph{Rnot} and/or \emph{Rnot\_{SI}} can help, but will make it harder to get precise estimates. There is thus a tradeoff between accuracy and mixing here, and often one will just have to run an analysis for many iterations and with a large thinning interval (e.g., >100k iterations with a thinning interval of >100). This should be done after finding reasonable parameters for Rnot on a shorter run, and then letting the final analysis run with long chains.
+The Rnot parameter sets the prior scale for the predator logistic normal covariance matrix, and will often determine how well the chain mixes, that is, how well it explores the parameter space, or if it gets stuck in local modes (that can be of low probability). In the latter case, one would see strong auto-correlation in the Markov Chains for individual parameters. Increasing \emph{Rnot} and/or \emph{Rnot\_{SI}} can help, but will make it harder to get precise estimates. There is thus a trade-off between accuracy and mixing here, and often one will just have to run an analysis for many iterations and with a large thinning interval (e.g., >100k iterations with a thinning interval of >100). This should be done after finding reasonable parameters for Rnot on a shorter run, and then letting the final analysis run with long chains.
 
 For a combined analysis of stable isotopes and fatty acids, it is often useful to run the two datatypes separately to assure that good priors can be found for both datasets independently, and then combining them for a final analysis. The analysis type is chosen in the appropriate option in the function call.
 
@@ -152,7 +153,7 @@ Plotting the MCMC is the easiest way to ensure that the sampler is mixing - mean
 MCMCplot(Pop.SI)
 @
 
-The mixing isn't great, meaning that some autocorrelation is evident in the Markov Chain time series in left-hand plots. The $diags$ function gives more information, displaying two types of diagnostics in the console.:
+The mixing isn't great, meaning that some auto-correlation is evident in the Markov Chain time series in left-hand plots. The $diags$ function gives more information, displaying two types of diagnostics in the console.:
 
 <<Diagnostics SI,eval=FALSE>>=
 diags(Pop.SI)
@@ -435,62 +436,123 @@ We can now clearly see the difference between the two group's diet proportions.
 
 \section{Sensitivity illustration}
 
-This section illustrates the model sensitivity to source separation and diet eveness. The package has simualted datasets for this illustration, names for their diet eveness (even vs uneven) and source separation (good vs bad). These can be loaded with:
+This section illustrates the model sensitivity to source separation and diet evenness. The package has simulated datasets for this illustration, names for their diet evenness (even vs uneven) and source separation (good vs bad). These can be loaded with:
 
 <<load sensitivity files>>=
-data(even_good)
-data(even_bad)
-data(uneven_good)
+data(sensitivity)
 @
 
-To visualise, as above, 
+To visualize, as above, 
 
-<<plot sensitivity datasets 1>=
+<<plot sensitivity datasets 1>>=
 dataplot(even_good)
 @
 
 This is an exaggerated example of well separated diets and relatively even diet proportions in predators. Consequently, the model should estimate diet proportions accurately. 
 
-<<plot sensitivity datasets 2>=
+A table to compare against plots:
+
+<<table prelim>>=
+
+rg <- rbind(colMeans(good_prop),apply(good_prop,2,range))
+ru <- rbind(colMeans(uneven_prop),apply(uneven_prop,2,range))
+rb <- rbind(colMeans(bad_prop),apply(bad_prop,2,range))
+
+colnames(rg) <- sprintf('Prey %d',1:4)
+colnames(ru) <- sprintf('Prey %d',1:4)
+colnames(rb) <- sprintf('Prey %d',1:4)
+
+@
+
+
+\begin{table}
+\centering
+  \small{
+  \caption{Simulated diet proportions for a simulation with even diet proportions and good resolution of diet items}
+    \begin{tabular}{lrrr}
+    \newline
+    & Mean \pi & Min \pi & Max \pi \\
+    \hline
+    <<table good,results='asis',echo=FALSE>>=
+library(xtable)
+      print(xtable(t(rg)),only.contents=TRUE, include.colnames=F, include.rownames=T,hline.after=NULL)
+    @
+  \end{tabular}
+}
+\end{table}
+
+<<plot sensitivity datasets 2>>=
 dataplot(uneven_good)
 @
 
-Here, prey separation is good, but diets are skewed towards prey 1 \& 2. 
+Here, prey separation is good, but diets are skewed towards prey 2. 
 
-<<plot sensitivity datasets 3>=
+\begin{table}
+\centering
+  \small{
+  \caption{Simulated diet proportions for a simulation with uneven diet proportions and good resolution of diet items}
+    \begin{tabular}{lrrr}
+    \newline
+    & Mean \pi & Min \pi & Max \pi \\
+    \hline
+    <<table uneven,results='asis',echo=FALSE>>=
+library(xtable)
+      print(xtable(t(ru)),only.contents=TRUE, include.colnames=F, include.rownames=T,hline.after=NULL)
+    @
+  \end{tabular}
+}
+\end{table}
+
+<<plot sensitivity datasets 3>>=
 dataplot(even_bad)
 @
 
 Lastly, the prey separation is ok for prey species 1, 3 \& 4 but prey species 2 has highly variable FA signatures leading to a wide distribution of Prey 2 signatures on the NMDS plot.
 
-For all three examples, we'll use all 10 simualted FAs to make sure that the resutls are not biased by variable selection. We can run the MCMC directly:
+\begin{table}
+\centering
+  \small{
+  \caption{Simulated diet proportions for a simulation with somewhat even diet proportions and bad resolution of diet items}
+    \begin{tabular}{lrrr}
+    \newline
+    & Mean \pi & Min \pi & Max \pi \\
+    \hline
+    <<table bad,results='asis',echo=FALSE>>=
+library(xtable)
+      print(xtable(t(rb)),only.contents=TRUE, include.colnames=F, include.rownames=T,hline.after=NULL)
+    @
+  \end{tabular}
+}
+\end{table}
 
-<<MCMC for >>=
+For all three examples, we'll use all 10 simulated FAs to make sure that the results are not biased by variable selection. We can run the MCMC directly:
+
+<<MCMC for all simulations>>=
 even.good.mcmc <- run_MCMC(datas = even_good,
-                    nIter = 100000,
+                    nIter = 30000,
                     nBurnin = 5000,
                     nChains = 3,
-                    nThin = 100,
+                    nThin = 30,
                     Data.Type = 'Fatty.Acid.Profiles',
                     Analysis.Type = 'Population.proportions',
                     Rnot = 2,
                     plott = F, spawn = T)
 
 uneven.good.mcmc <- run_MCMC(datas = uneven_good,
-                    nIter = 100000,
+                    nIter = 30000,
                     nBurnin = 5000,
                     nChains = 3,
-                    nThin = 100,
+                    nThin = 30,
                     Data.Type = 'Fatty.Acid.Profiles',
                     Analysis.Type = 'Population.proportions',
                     Rnot = 2,
                     plott = F, spawn = T)
 
 even.bad.mcmc <- run_MCMC(datas = even_bad,
-                    nIter = 100000,
+                    nIter = 30000,
                     nBurnin = 5000,
                     nChains = 3,
-                    nThin = 100,
+                    nThin = 30,
                     Data.Type = 'Fatty.Acid.Profiles',
                     Analysis.Type = 'Population.proportions',
                     Rnot = 2,
@@ -512,10 +574,9 @@ summary(uneven.good.mcmc)
 summary(even.bad.mcmc)
 @
 
-<<Plot combined grouped analysis>>=
+<<Plot scenarios>>=
 plot(even.good.mcmc,save=F,types='post')
 plot(uneven.good.mcmc,save=F,types='post')
 plot(even.bad.mcmc,save=F,types='post')
 @
-
 \end{document}
