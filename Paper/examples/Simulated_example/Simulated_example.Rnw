@@ -471,7 +471,7 @@ colnames(rb) <- sprintf('Prey %d',1:4)
   \caption{Simulated diet proportions for a simulation with even diet proportions and good resolution of diet items}
     \begin{tabular}{lrrr}
     \newline
-    & Mean \pi & Min \pi & Max \pi \\
+    & Mean $\pi$ & Min $\pi$ & Max $\pi$ \\
     \hline
     <<table good,results='asis',echo=FALSE>>=
 library(xtable)
@@ -493,7 +493,7 @@ Here, prey separation is good, but diets are skewed towards prey 2.
   \caption{Simulated diet proportions for a simulation with uneven diet proportions and good resolution of diet items}
     \begin{tabular}{lrrr}
     \newline
-    & Mean \pi & Min \pi & Max \pi \\
+    & Mean $\pi$ & Min $\pi$ & Max $\pi$ \\
     \hline
     <<table uneven,results='asis',echo=FALSE>>=
 library(xtable)
@@ -515,7 +515,7 @@ Lastly, the prey separation is ok for prey species 1, 3 \& 4 but prey species 2 
   \caption{Simulated diet proportions for a simulation with somewhat even diet proportions and bad resolution of diet items}
     \begin{tabular}{lrrr}
     \newline
-    & Mean \pi & Min \pi & Max \pi \\
+    & Mean $\pi$ & Min $\pi$ & Max $\pi$ \\
     \hline
     <<table bad,results='asis',echo=FALSE>>=
 library(xtable)
@@ -525,7 +525,7 @@ library(xtable)
 }
 \end{table}
 
-For all three examples, we'll use all 10 simulated FAs to make sure that the results are not biased by variable selection. We can run the MCMC directly:
+For all three examples, we'll use all 10 simulated FAs to make sure that the results are not affected by variable selection. We can run the MCMC directly:
 
 <<MCMC for all simulations>>=
 even.good.mcmc <- run_MCMC(datas = even_good,
@@ -573,6 +573,8 @@ summary(even.good.mcmc)
 summary(uneven.good.mcmc)
 summary(even.bad.mcmc)
 @
+
+The first simulation of idealised data shows that the model clearly recovers the variability and magnitude of population diet proportions. Even for uneven diet proportions, the model performs well, with posteriors reflecting simualted diets. For the last case with low resolution, the posteriors are wide and substantial uncertaitny thus reflects the inability to making clear statements about diet proportions.
 
 <<Plot scenarios>>=
 plot(even.good.mcmc,save=F,types='post')
