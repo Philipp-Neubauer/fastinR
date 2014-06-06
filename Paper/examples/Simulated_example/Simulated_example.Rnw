@@ -7,10 +7,11 @@
 \title{Simulated example: Estimating diet proportions form fatty acids and stable isotopes}
 
 \begin{document}
-\maketitle
 
 \author{Philipp Neubauer}
 \affil{Dragonfly Science,\\PO Box 27535, Wellington 6141, New Zealand}%
+
+\maketitle
 
 \section{Preamble}
 
@@ -192,7 +193,7 @@ MCMCplot(Pop.SI2)
 diags(Pop.SI2)
 @
 
-Mixing doesn't seem to get much better, indicating that this may be good as it gets with stable isotopes alone.
+Mixing nly improves marginally, indicating that this may be good as it gets with stable isotopes alone.
 
 \subsubsection{Fatty Acids alone}
 
