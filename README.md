@@ -47,6 +47,6 @@ Minor
 More Substantial
 *************
 
- - the fully BAyesian approach mean strong constraints on the number of FA x prey x predator that can be run. The Empirical Bayes approach used in most SI models should mitigate this (at a price, of course). First priority...
+ - the fully Bayesian approach mean strong constraints on the number of FA x prey x predator that can be run. The Empirical Bayes approach used in most SI models should mitigate this (at a price, of course). First priority...
  - the default prior setup works ok in some cases but needs lots of manual tweaking in others. Better default options should be possible, but will require further work.
  - The jags backend is very inefficient for data with lots of dimensions (```predators*preys*fatty acids```), a custom backend would probably be better but would be significantly more work
