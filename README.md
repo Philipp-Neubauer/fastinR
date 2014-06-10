@@ -38,14 +38,14 @@ Current Limitations
 -------------------
 
 Minor
-=======
+**********
 
  - plotting SI in dataplot function should just give SI as axes if n<=2 isotopes. 
  - multiplot only works for population proportion settings, not when estiamting individual proportions.
  - the violin multiplot only works for lists of length 3 (i.e, for comparing all three methods - SI, FA and combined). Should be useful in other circumstances too, so needs to be generalised.
  
 More Substantial
-==================
+*************
 
  - the fully BAyesian approach mean strong constraints on the number of FA x prey x predator that can be run. The Empirical Bayes approach used in most SI models should mitigate this (at a price, of course). First priority...
  - the default prior setup works ok in some cases but needs lots of manual tweaking in others. Better default options should be possible, but will require further work.
