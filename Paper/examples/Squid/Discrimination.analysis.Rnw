@@ -4,10 +4,11 @@
 \title{Discrimination Analysis}
 
 \begin{document}
-\maketitle
 
 \author{Philipp Neubauer}
 \affil{Dragonfly Science,\\PO Box 27535, Wellington 6141, New Zealand}%
+
+\maketitle
 
 \section*{Preamble}
 
