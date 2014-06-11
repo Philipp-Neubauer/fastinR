@@ -29,6 +29,11 @@ opts_chunk$set(tidy=FALSE,fig.path='figure/', fig.align='center',dev = "pdf")
 options(replace.assign=TRUE,width=50)
 
 library(fastinR)
+
+load("~/Dropbox/Projects_private_files/Fatty_Acid_model/Paper_notes_and_writing/main_text/April28.RData")
+rm(plot)
+rm(multiplot)
+
 @
 
 \section{Data import}
