@@ -9,7 +9,7 @@
   saved plots, or FALSE for disabling saving to file.}
 
   \item{types}{A string to select the type of plot, either
-  'Cor' to look at posterior correlations and/or 'Post' to
+  'cor' to look at posterior correlations and/or 'post' to
   get a representation of the posterior, as speciefied in
   density.}
 
