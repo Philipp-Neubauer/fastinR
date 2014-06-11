@@ -7,7 +7,6 @@
 *.png
 *.tar.gz
 *#*
-*.Rdata
 FASTIN-R.Rproj
 .log
 .gz
