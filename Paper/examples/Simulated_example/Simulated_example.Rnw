@@ -32,7 +32,7 @@ library(fastinR,warn.conflicts=F)
 
 \section{Introduction}
 
-We start with a very simple simulated example. It is possible to simulate relevant data using the built in simulation GUI, which is called from the command line once fastinR has been loaded. Plese type ?simulation to obtain help on simulating your own 'dataset'. Note, however, that the recommended way to interact with the package is the command line - the GUI is somewhat unstable and has a mind of its own (see warnings in GUI help files). 
+We start with a very simple simulated example. It is possible to simulate relevant data using the built in simulation GUI, which is called from the command line once fastinR has been loaded. Please type ?simulation to obtain help on simulating your own 'dataset'. Note, however, that the recommended way to interact with the package is the command line - the GUI is somewhat unstable and has a mind of its own (see warnings in GUI help files). 
 
 \section{Loading data from files}
 
@@ -107,7 +107,7 @@ dats.subset <- select_vars(dats)
 
 or
 
-<<subsetting FAP>>=
+<<sub-setting FAP>>=
 dats.subset <- select_vars(dats,c(3,2,6))
 
 # inspecting
@@ -128,7 +128,7 @@ The actual analysis uses Markov Chain Monte Carlo to estimate posterior distribu
 
 The Rnot parameter sets the prior scale for the predator logistic normal covariance matrix, and will often determine how well the chain mixes, that is, how well it explores the parameter space, or if it gets stuck in local modes (that can be of low probability). In the latter case, one would see strong auto-correlation in the Markov Chains for individual parameters. Increasing \emph{Rnot} and/or \emph{Rnot\_{SI}} can help, but will make it harder to get precise estimates. There is thus a trade-off between accuracy and mixing here, and often one will just have to run an analysis for many iterations and with a large thinning interval (e.g., >100k iterations with a thinning interval of >100). This should be done after finding reasonable parameters for Rnot on a shorter run, and then letting the final analysis run with long chains.
 
-For a combined analysis of stable isotopes and fatty acids, it is often useful to run the two datatypes separately to assure that good priors can be found for both datasets independently, and then combining them for a final analysis. The analysis type is chosen in the appropriate option in the function call.
+For a combined analysis of stable isotopes and fatty acids, it is often useful to run the two data types separately to assure that good priors can be found for both datasets independently, and then combining them for a final analysis. The analysis type is chosen in the appropriate option in the function call.
 
 \subsection{Estimating population proportions}
 
@@ -193,7 +193,7 @@ MCMCplot(Pop.SI2)
 diags(Pop.SI2)
 @
 
-Mixing nly improves marginally, indicating that this may be good as it gets with stable isotopes alone.
+Mixing only improves marginally, indicating that this may be good as it gets with stable isotopes alone.
 
 \subsubsection{Fatty Acids alone}
 
@@ -239,7 +239,7 @@ Pop.FA2 <- run_MCMC(datas = dats.subset,
 MCMCplot(Pop.FA2)
 @
 
-<<dignostics FAP 2nd try,eval=FALSE>>=
+<<diagnostics FAP 2nd try,eval=FALSE>>=
 diags(Pop.FA2)
 @
 
@@ -508,7 +508,7 @@ library(xtable)
 dataplot(even_bad)
 @
 
-Lastly, the prey separation is ok for prey species 1, 3 \& 4 but prey species 2 has highly variable FA signatures leading to a wide distribution of Prey 2 signatures on the NMDS plot.
+Lastly, the prey separation is OK for prey species 1, 3 \& 4 but prey species 2 has highly variable FA signatures leading to a wide distribution of Prey 2 signatures on the NMDS plot.
 
 \begin{table}
 \centering
@@ -575,7 +575,7 @@ summary(uneven.good.mcmc)
 summary(even.bad.mcmc)
 @
 
-The first simulation of idealised data shows that the model clearly recovers the variability and magnitude of population diet proportions. Even for uneven diet proportions, the model performs well, with posteriors reflecting simualted diets. For the last case with low resolution, the posteriors are wide and substantial uncertaitny thus reflects the inability to making clear statements about diet proportions.
+The first simulation of idealised data shows that the model clearly recovers the variability and magnitude of population diet proportions. Even for uneven diet proportions, the model performs well, with posteriors reflecting simulated diets. For the last case with low resolution, the posteriors are wide and substantial uncertainty thus reflects the inability to making clear statements about diet proportions.
 
 <<Plot scenarios>>=
 plot(even.good.mcmc,save=F,types='post')
