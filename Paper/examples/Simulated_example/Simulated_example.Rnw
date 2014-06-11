@@ -166,7 +166,7 @@ Based on the diagnostics, it seems that we're doing OK, but that the Stable Isot
 <<Summary SI,eval=FALSE>>=
 summary(Pop.SI)
 @
-<<Plot SI estimates,fig.height=5,fig.cap='Posterior distributions for diet proportions from SI'>>=
+<<Plot SI estimates,fig.height=5,fig.cap='Posterior distributions for diet proportions from SI',out.width='0.75\\textwidth'>>=
 plot(Pop.SI,save=F)
 @
 
@@ -363,7 +363,7 @@ diags(Ind.FA)
 summary(Ind.FA)
 @
 
-<<Plot Ind proportions from FAP,fig.height=5,fig.cap='Posterior distributions for individual diet proportions from the FAP analysis',out.width='0.75\\textwidth'>>=
+<<Plot Ind proportions from FAP,fig.cap='Posterior distributions for individual diet proportions from the FAP analysis'>>=
 plot(Ind.FA,save=F,type='post')
 @
 
@@ -393,7 +393,7 @@ diags(Ind.Combined)
 summary(Ind.Combined)
 @
 
-<<Ind plot combined,fig.height=5,fig.cap='Posterior distributions for individual diet proportions from the combined analysis',out.width='0.75\\textwidth'>>=
+<<Ind plot combined,fig.cap='Posterior distributions for individual diet proportions from the combined analysis'>>=
 plot(Ind.Combined,save=F,types='post')
 @
 
@@ -430,7 +430,7 @@ diags(Cov.Combined)
 summary(Cov.Combined)
 @
 
-<<Plot combined grouped analysis,fig.height=5,fig.cap='Posterior distributions for individual and group diet proportions from the combined analysis',out.width='0.75\\textwidth'>>=
+<<Plot combined grouped analysis,fig.cap='Posterior distributions for individual and group diet proportions from the combined analysis'>>=
 plot(Cov.Combined,save=F,types='post')
 @
 
