@@ -11,13 +11,16 @@
 
 \section*{Preamble}
 
-This document details the estiamtion procedure for stable isotope dicrimination and fatty acid conversion coefficients. The data used is from Stowasser et al 2006 (JEMBE 333: 97--114), and is available as .csv files in the same folder as this document. We group all fish together as we don't know the proportions of individual fish species that were fed in the treatment. The uncertainty in estiamted dicromination coefficients will reflect any variability in species specific coefficients, so will mainly just introduce additional uncertainty in the final analysis.
+This document details the estimation procedure for stable isotope
+discrimination and fatty acid conversion coefficients. The data used
+is from Stowasser et al 2006 (JEMBE 333: 97--114), and is available as
+.csv files in the same folder as this document on github. We group all fish together as we don't know the proportions of individual fish species that were fed in the treatment. The uncertainty in estimated discrimination coefficients will reflect any variability in species specific coefficients, so will mainly just introduce additional uncertainty in the final analysis.
 
-NOTE: The fatty acid analysis takes a long time to run (possibbly several hours, depending on CPU speed and number of cores). Please factor this in when considering to repeat/modify this analysis.
+NOTE: The fatty acid analysis takes a long time to run (possibly several hours, depending on CPU speed and number of cores). Please factor this in when considering to repeat/modify this analysis.
 
-\section*{Stable Isotope discimination}
+\section*{Stable Isotope discrimination}
 
-Start with estiamting SI discrimination based on fish and crustacean only diets. First we read the .csv files with raw data:
+Start with estimating SI discrimination based on fish and crustacean only diets. First we read the .csv files with raw data:
 
 \subsection*{Data grooming}
 
@@ -147,7 +150,7 @@ plot(samps,ask=T) # need to run this outside of compilation
 summary(samps)
 @
 
-It seems that despite the informative priors, the posterior for both beta.not[2] and beta.reg[2] (coeffs for $\Delta N$) are higher and lower, repsectively, in their posterior median than their respective priors. The high intercept leads to $\Delta N$ discrimination coefficients that are both high and similar in magnitude for both prey species, indicating that this may be linked to the tissue type or to the predator. For $\Delta C$ the posterior medians are close to the respective prior means. Estiamted $\Delta C$ discrimination is positive for both species.
+It seems that despite the informative priors, the posterior for both beta.not[2] and beta.reg[2] (coeffs for $\Delta N$) are higher and lower, respectively, in their posterior median than their respective priors. The high intercept leads to $\Delta N$ discrimination coefficients that are both high and similar in magnitude for both prey species, indicating that this may be linked to the tissue type or to the predator. For $\Delta C$ the posterior medians are close to the respective prior means. Estimated $\Delta C$ discrimination is positive for both species.
 
 <<output to file>>=
 # get estiamted discrimintation from all chains:
@@ -221,11 +224,11 @@ pred=alr(pred.table.FA)
 # feed type index
 feed.type <- pred.table.FA[,1]
 FAs <- colnames(pred.table.FA)
-# use only samples taht were fed on single diet for >=20days
+# use only samples that were fed on single diet for >=20days
 feed.type[which(regexpr('F',rownames(pred.table.FA))==1)[9:15]] <- 1
-# take ouyt an early sample
+# take out an early sample
 feed.type[which(regexpr('C',rownames(pred.table.FA))==1)[c(6:8,10:13)]] <- 2
-# use only fish and crustations diets, rest will be assessed
+# use only fish and crustaceans diets, rest will be assessed
 idx <- which(feed.type %in% c(1,2))
 feed.type <- as.integer(feed.type[idx])
 
@@ -269,7 +272,7 @@ samps.FA <- coda.samples(DM,c('beta.reg'),n.iter=1e5,thin=100)
 
 @
 
-Again, we examine the output for auto-correlation and convergence. Seems ok, despite the 'long tails'.
+Again, we examine the output for auto-correlation and convergence. Seems OK, despite the 'long tails'.
 
 <<examine output, eval=FALSE>>=
 plot(samps.FA,ask=T)
@@ -295,7 +298,7 @@ shrimp.cc.samples <- r.samps[,seq(2,2*n.fats,2)]
 fish.cc <- colMeans(fish.cc.samples)
 shrimp.cc <- colMeans(shrimp.cc.samples)
 
-#combine and write to file, repeat for 3 fish species in fianl analysis
+#combine and write to file, repeat for 3 fish species in final analysis
 ccs <- rbind(fish.cc,fish.cc,fish.cc,shrimp.cc)
 rownames(ccs) <- unique(prey.ix)[-4]
 colnames(ccs) <- colnames(pred.table.FA)
@@ -311,6 +314,6 @@ colnames(ccs.var) <- colnames(pred.table.FA)
 write.csv(ccs.var,file='cc_FA_var.csv')
 @
 
-All done!
+All done.
 
 \end{document}
