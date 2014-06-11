@@ -25,6 +25,7 @@ library(ggplot2)
 
 opts_chunk$set(fig.path='figure/', fig.align='center',dev = "pdf")
 options(replace.assign=TRUE,width=50,tidy=FALSE)
+options(warn=-1)
 @
 <<load fastinR>>=
 library(fastinR,warn.conflicts=F)
@@ -59,7 +60,7 @@ dats <- add_SI(SI.predators = SI.predators,
 
 We can now visualize the data on a plot like so:
 
-<<NMDS,fig.width=7, fig.height=6>>=
+<<NMDS,fig.width=7, fig.height=6,fig.cap='SI for simualted data',out.width='0.75\\textwidth'>>=
 dataplot(dats)
 @
 
@@ -84,7 +85,7 @@ dats <- add_FA(FA.predators = FAP.predators,
 
 Plotting the joint dataset:
 
-<<plot FAP data on NMDS,fig.width=7, fig.height=6>>=
+<<plot FAP data on NMDS,fig.width=7, fig.height=6,fig.cap='Combined dataset projected using NMDS',out.width='0.75\\textwidth'>>=
 dataplot(dats)
 @
 
@@ -116,7 +117,7 @@ dats.subset$datas.FA$n.fats
 
 The data object \emph{dats} is now ready for analysis, we can plot the dataset with it's new subset of fatty acids as before:
 
-<<plot FAP subset on NMDS,fig.width=7, fig.height=6>>=
+<<plot FAP subset on NMDS,fig.width=7, fig.height=6,fig.cap='FA subset projected by NMDS',out.width='0.75\\textwidth'>>=
 dataplot(dats.subset)
 @
 
@@ -150,7 +151,7 @@ Pop.SI <- run_MCMC(datas = dats.subset,
 
 Plotting the MCMC is the easiest way to ensure that the sampler is mixing - meaning that the chain explores the posterior distribution of each parameter efficiently.
 
-<<Plot Markov Chains and Densities>>=
+<<Plot Markov Chains and Densities,fig.cap='MCMC traces showing 3 individual Markov Chains (colours)',out.width='0.75\\textwidth'>>=
 MCMCplot(Pop.SI)
 @
 
@@ -165,7 +166,7 @@ Based on the diagnostics, it seems that we're doing OK, but that the Stable Isot
 <<Summary SI,eval=FALSE>>=
 summary(Pop.SI)
 @
-<<Plot SI estimates>>=
+<<Plot SI estimates,fig.height=5,fig.cap='Posterior distributions for diet proportions from SI'>>=
 plot(Pop.SI,save=F)
 @
 
@@ -186,7 +187,7 @@ Pop.SI2 <- run_MCMC(datas = dats.subset,
 @
 
 
-<<MCMC output plot 2>>=
+<<MCMC output plot 2,fig.cap='MCMC traces for second run with SI showing 3 individual Markov Chains (colours)',out.width='0.75\\textwidth'>>=
 MCMCplot(Pop.SI2)
 @
 <<diagnostics 2nd run,eval=FALSE>>=
@@ -211,7 +212,7 @@ Pop.FA <- run_MCMC(datas = dats.subset,
                    plott = F, spawn = T)
 @
 
-<<FAP MCMCplot>>=
+<<FAP MCMCplot,fig.cap='MCMC traces from FAP analysis showing 3 individual Markov Chains (colours)',out.width='0.75\\textwidth', fig.height=6>>=
 MCMCplot(Pop.FA)
 @
 
@@ -235,7 +236,7 @@ Pop.FA2 <- run_MCMC(datas = dats.subset,
                     plott = F, spawn = T)
 @
 
-<<FAP MCMC 2nd try,fig.width=7, fig.height=6>>=
+<<FAP MCMC 2nd try,fig.cap='MCMC traces from the second run of the FAP analysis showing 3 individual Markov Chains (colours)',out.width='0.75\\textwidth', fig.height=6>>=
 MCMCplot(Pop.FA2)
 @
 
@@ -257,7 +258,7 @@ Pop.FA3 <- run_MCMC(datas = dats.subset,
                     plott = F, spawn = T)
 @
 
-<<MCMC FAP 3rd>>=
+<<MCMC FAP 3rd,fig.cap='MCMC traces from the third run of the FAP analysis showing 3 individual Markov Chains (colours)',out.width='0.75\\textwidth', fig.height=6>>=
 MCMCplot(Pop.FA3)
 @
 
@@ -266,7 +267,7 @@ diags(Pop.FA3)
 summary(Pop.FA3)
 @ 
 
-<<plot pop propr FAP 3rd>>=
+<<plot pop propr FAP 3rd,fig.height=5,fig.cap='Posterior distributions for diet proportions from the FAP analysis',out.width='0.75\\textwidth'>>=
 plot(Pop.FA3,save=F)
 @
 
@@ -299,7 +300,7 @@ diags(Pop.Combined)
 summary(Pop.Combined)
 @
 
-<<plot combined output>>=
+<<plot combined output,fig.height=5,fig.cap='Posterior distributions for diet proportions from the combined analysis',out.width='0.75\\textwidth'>>=
 plot(Pop.Combined,save=F,types='post')
 @
 
@@ -307,7 +308,7 @@ The combined analysis reduces uncertainty slightly, especially for source 3, but
 
 To compare the three approaches explicitly, we can use \emph{multiplot}. For \emph{multiplot} the three results need to be combined in a list:
 
-<<Comparing markers>>=
+<<Comparing markers,fig.cap='Comparing posterior distributions for diet proportions',out.width='1\\textwidth'>>=
 Pop.list <- list(Stable.Isotopes = Pop.SI2, Fatty.Acids = Pop.FA3, Combined = Pop.Combined)
 
 multiplot(Pop.list,save=F,types='violin')
@@ -362,7 +363,7 @@ diags(Ind.FA)
 summary(Ind.FA)
 @
 
-<<Plot Ind proportions from FAP>>=
+<<Plot Ind proportions from FAP,fig.height=5,fig.cap='Posterior distributions for individual diet proportions from the FAP analysis',out.width='0.75\\textwidth'>>=
 plot(Ind.FA,save=F,type='post')
 @
 
@@ -392,7 +393,7 @@ diags(Ind.Combined)
 summary(Ind.Combined)
 @
 
-<<Ind plot combined>>=
+<<Ind plot combined,fig.height=5,fig.cap='Posterior distributions for individual diet proportions from the combined analysis',out.width='0.75\\textwidth'>>=
 plot(Ind.Combined,save=F,types='post')
 @
 
@@ -429,7 +430,7 @@ diags(Cov.Combined)
 summary(Cov.Combined)
 @
 
-<<Plot combined grouped analysis>>=
+<<Plot combined grouped analysis,fig.height=5,fig.cap='Posterior distributions for individual and group diet proportions from the combined analysis',out.width='0.75\\textwidth'>>=
 plot(Cov.Combined,save=F,types='post')
 @
 
@@ -445,7 +446,7 @@ data(sensitivity)
 
 To visualize, as above, 
 
-<<plot sensitivity datasets 1>>=
+<<plot sensitivity datasets 1,fig.height=5,fig.cap='FAP from simulation with even diet proportions and good resolution of diet items projected by NMDS',out.width='0.75\\textwidth'>>=
 dataplot(even_good)
 @
 
@@ -482,7 +483,7 @@ library(xtable)
 }
 \end{table}
 
-<<plot sensitivity datasets 2>>=
+<<plot sensitivity datasets 2,fig.height=5,fig.cap='FAP from simulation with uneven diet proportions and good resolution of diet items projected by NMDS',out.width='0.75\\textwidth'>>=
 dataplot(uneven_good)
 @
 
@@ -504,7 +505,7 @@ library(xtable)
 }
 \end{table}
 
-<<plot sensitivity datasets 3>>=
+<<plot sensitivity datasets 3,fig.height=5,fig.cap='FAP from simulation with somewhat even diet proportions and bad resolution of diet items projected by NMDS',out.width='0.75\\textwidth'>>=
 dataplot(even_bad)
 @
 
@@ -577,7 +578,7 @@ summary(even.bad.mcmc)
 
 The first simulation of idealised data shows that the model clearly recovers the variability and magnitude of population diet proportions. Even for uneven diet proportions, the model performs well, with posteriors reflecting simulated diets. For the last case with low resolution, the posteriors are wide and substantial uncertainty thus reflects the inability to making clear statements about diet proportions.
 
-<<Plot scenarios>>=
+<<Plot scenarios,fig.height=5,fig.cap='FAP from sensitivity simulations',out.width='0.75\\textwidth'>>=
 plot(even.good.mcmc,save=F,types='post')
 plot(uneven.good.mcmc,save=F,types='post')
 plot(even.bad.mcmc,save=F,types='post')
