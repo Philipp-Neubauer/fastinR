@@ -124,7 +124,7 @@ squid.data.treat <- add_FA(FA.predators=pred.table.treat,
 
 Plotting the new dataset in MDS-scaled space:
 
-<<NMDS plot of both treatments,fig.height=5,fig.width=5>>=
+<<NMDS plot of both treatments,fig.height=5,fig.width=5,fig.cap='FA projected by NMDS',out.width='0.75\\textwidth'>>=
 dataplot(squid.data.treat)
 @
 
@@ -148,7 +148,7 @@ squid.subset.treat <- select_vars(squid.data.treat,
 
 To confirm that we haven't lost too much resolution, we plot the subset in NMDS space:
 
-<<NMDS plot of FAP subset,fig.height=5,fig.width=5>>=
+<<NMDS plot of FAP subset,fig.height=5,fig.width=5,fig.cap='FA subset projected by NMDS',out.width='0.75\\textwidth'>>=
 dataplot(squid.subset.treat)
 @
 
@@ -184,7 +184,7 @@ summary(Squid.SC.analysis)
 
 The summaries show that the posterior distributions are wide for all potential diet items. Nevertheless, as all diagnostics suggest that the chains converged, and the results are in agreement with our expectation, we can now plot the results:
 
-<<Plotting the diet proportions,fig.height=4,fig.width=6>>=
+<<Plotting the diet proportions,fig.height=4,fig.width=6,out.width='0.75\\textwidth',fig.cap='Posterior distributions for diet proportions from FAP markers'>>=
 plot(Squid.SC.analysis,save=F,types='post')
 @
 
@@ -221,7 +221,7 @@ squid.subset.treat.SC.comb <- add_SI(SI.predators=pred.table,
 
 Looking at a plot of SI alone
 
-<<SI plot,fig.height=4,fig.width=6>>=
+<<SI plot,fig.height=4,fig.width=6,fig.cap='Squid SI',out.width='0.75\\textwidth'>>=
 
 SID <- squid.subset.treat.comb
 asf <- function(x,l) as.numeric(factor(x,levels=l))
@@ -252,7 +252,7 @@ legend('bottomleft',
 
 Checking the NMDS plot to see what the combined set looks like:
 
-<<Combined NMDS,fig.height=5,fig.width=5>>=
+<<Combined NMDS,fig.height=5,fig.width=5,fig.cap='NMDS projection of combined markers',out.width='0.75\\textwidth'>>=
 dataplot(squid.subset.treat.SC.comb)
 @
 
@@ -284,7 +284,7 @@ summary(Squid.SC.SI.analysis)
 
 This looks OK, but would need longer chains and more sub-sampling for a real analysis. The summaries show that the posterior distributions are again very wide, with a 95\% density interval of ~4\% to 96\% for shrimp, despite a posterior median that suggests a diet consisting predominantly of shrimp.
 
-<<SI results,fig.height=4,fig.width=6>>=
+<<SI results,fig.height=4,fig.width=6,fig.cap='Posterior distributions for diet proportions from SI markers',out.width='0.75\\textwidth'>>=
 plot(Squid.SC.SI.analysis,save=F,types='post')
 @
 
@@ -317,13 +317,13 @@ summary(Squid.SC.comb.analysis)
 
 Estimates of diet proportion from all three chains converge to consistent values, with a posterior median of ~87\% shrimp, and a 95\% interval of ~67\% - 96.5\%. Plotting the final combined proportions:
 
-<<Combined proportions plot,fig.height=4,fig.width=6>>=
+<<Combined proportions plot,fig.height=4,fig.width=6,fig.cap='Posterior distributions for diet proportions from combined markers',out.width='0.75\\textwidth'>>=
 plot(Squid.SC.comb.analysis,save=F,types='post')
 @
 
 We can directly compare population level proportions using the \emph{multiplot} function.
 
-<<Marker Comparison,fig.width=12>>=
+<<Marker Comparison,fig.width=12,out.width='1\\textwidth',fig.cap='Comparison of posterior distributions for diet proportions from FA, SI and combined markers'>>=
 # combining individual elements to a named list
 Pop.list <- list(
   Stable.Isotopes = Squid.SC.SI.analysis, 
@@ -370,7 +370,7 @@ summary(Squid.SC.analysis.alt)
 
 The summary suggests that we can get tighter confidence intervals by including more informative FAs. Plotting this gives:
 
-<<Plotting the new diet proportions,fig.height=4,fig.width=6>>=
+<<Plotting the new diet proportions,fig.height=4,fig.width=6,fig.cap='Posterior distributions for diet proportions from FA markers with larger FA subset',out.width='0.75\\textwidth'>>=
 plot(Squid.SC.analysis.alt,save=F,types='post')
 
 @
@@ -412,7 +412,7 @@ summary(Squid.SC.comb.analysis.alt)
 
 We can again compare population level proportions between approaches using the \emph{multiplot} function.
 
-<<Marker Comparison pt2,fig.width=12>>=
+<<Marker Comparison pt2,fig.width=12,fig.cap='Comparison of posterior distributions for diet proportions from FA and combined markers',out.width='1\\textwidth'>>=
 # combining individual elements to a named list
 Pop.list.alt <- list(
   Fatty.Acids = Squid.SC.analysis.alt,
@@ -426,7 +426,7 @@ The answer of narrower intervals and lower uncertainty when combining markers fo
 
 \subsection{Analysing individual diet proportions}
 
-<<Individual estiamtes for Shrimp treatment,results='hide',eval=FALSE>>=
+<<Individual estimates for Shrimp treatment,results='hide',eval=FALSE>>=
 
 Squid.SC.analysis.ind <- run_MCMC(datas=squid.subset.treat.SC.comb,
                                   nIter=600000,
@@ -452,7 +452,7 @@ summary(Squid.SC.analysis.ind)
 
 Estimates of population level diet proportion converge to a posterior median of ~90\% shrimp, and a 95\% credible interval of ~42\% - 99\%. Individual estimates are very similar (not surprisingly...). Plotting the final combined proportions:
 
-<<Individual proportions plot,fig.width=10>>=
+<<Individual proportions plot,fig.width=10,fig.cap='Population and individual posterior distributions of diet proportions from combined markers',out.width='0.75\\textwidth'>>=
 plot(Squid.SC.analysis.ind,save=F,types='post')
 @
 
@@ -483,7 +483,7 @@ MCMCplot(Squid.SF.analysis)
 summary(Squid.SF.analysis)
 @
 
-<<SF plot,fig.height=4,fig.width=6>>=
+<<SF plot,fig.height=4,fig.width=6,fig.cap='Posterior distributions of diet proportions for SF treatment Squid from FA markers',out.width='0.75\\textwidth'>>=
 plot(Squid.SF.analysis,save=F)
 @
 
@@ -543,7 +543,7 @@ summary(Squid.SF.comb.analysis)
 
 Estimates of diet proportion from all three chains converge to consistent values, with higher proportions for fish than for shrimp, but still considerable uncertainty for all potential diets:
 
-<<Combined SF proportions plot,fig.height=4,fig.width=6>>=
+<<Combined SF proportions plot,fig.height=4,fig.width=6,fig.cap='Posterior distributions of diet proportions for SF treatment squid from combined markers',out.width='0.75\\textwidth'>>=
 plot(Squid.SF.comb.analysis,save=F,types='post')
 @
 
@@ -556,7 +556,7 @@ plot(Squid.fish.com,save=F)
 
 We can again directly compare population level proportions using the \emph{multiplot} function.
 
-<<Marker Comparison SF,fig.width=12>>=
+<<Marker Comparison SF,fig.width=12,fig.cap='Posterior distributions of diet proportions for SF treatment squid from combined markers, grouping fish species post MCMC',out.width='0.75\\textwidth'>>=
 # combining individual elements to a named list
 Pop.list.SF <- list(
   Fatty.Acids = Squid.SF.analysis,
@@ -624,7 +624,7 @@ summary(Squid.treat.analysis.comb)
 
 The group level contrasts in the summary suggest that we cannot reliably tell if for SC treatment squid the ratio of fish to grass shrimp consumed is significantly lower than for SF treatment squid. This is due to uncertainty for the contribution of individual fish species at the SF treatment level.   
 
-<<Grouped plot,fig.width=10>>=
+<<Grouped plot,fig.width=10,fig.cap='Posterior distributions at the popualtion level for feeding groups and at the individual level for individual squid from all treatments using combined markers',out.width='0.75\\textwidth'>>=
 plot(Squid.treat.analysis.comb,save=F,types = 'post')
 @
 
