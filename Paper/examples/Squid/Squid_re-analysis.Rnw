@@ -31,11 +31,15 @@ options(replace.assign=TRUE,width=50)
 
 options(warn=-1)
 
-library(fastinR)
+
 
 load("~/Dropbox/Projects_private_files/Fatty_Acid_model/Paper_notes_and_writing/main_text/April28.RData")
-rm(plot)
+rm(plot.pop_props)
+rm(plot.ind_props)
+rm(plot.cov_props)
 rm(multiplot)
+
+library(fastinR)
 
 @
 
