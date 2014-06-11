@@ -141,7 +141,7 @@ samps <- coda.samples(DM,c('pred.discr','beta.reg','beta.not','mu'),n.iter=1e5,t
 
 @
 
-All done, checking output visually for adequacy (convergence, lack of strong autocorrelation in the Markov Chains) , extract estiamted coefficients for each preys species and isotope and put the resulting matrix into the right format.
+All done, checking output visually for adequacy (convergence, lack of strong autocorrelation in the Markov Chains) , extract estimated coefficients for each preys species and isotope and put the resulting matrix into the right format.
 
 <<output, eval=FALSE>>=
 plot(samps,ask=T) # need to run this outside of compilation
@@ -153,7 +153,7 @@ summary(samps)
 It seems that despite the informative priors, the posterior for both beta.not[2] and beta.reg[2] (coeffs for $\Delta N$) are higher and lower, respectively, in their posterior median than their respective priors. The high intercept leads to $\Delta N$ discrimination coefficients that are both high and similar in magnitude for both prey species, indicating that this may be linked to the tissue type or to the predator. For $\Delta C$ the posterior medians are close to the respective prior means. Estimated $\Delta C$ discrimination is positive for both species.
 
 <<output to file>>=
-# get estiamted discrimintation from all chains:
+# get estimated discrimination from all chains:
 ix <- grep('pred.discr',colnames(samps[[1]]))
 
 #combine chains
@@ -288,7 +288,7 @@ summary(samps.FA)
 And process the output for the diet analysis.
 
 <<write out>>=
-# get estimated discrimintation from all chains:
+# get estimated discrimination from all chains:
 r.samps <- do.call('rbind',samps.FA)
 dim(r.samps)
 
