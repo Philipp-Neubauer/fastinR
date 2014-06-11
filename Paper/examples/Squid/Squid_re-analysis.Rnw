@@ -24,9 +24,12 @@ We initially estimated prey specific discrimination in stable isotopes following
 <<echo=FALSE,results='hide'>>=
 library(knitr)
 library(vegan)
+library(ggplot2)
 
-opts_chunk$set(tidy=FALSE,fig.path='figure/', fig.align='center',dev = "pdf")
+opts_chunk$set(warning=FALSE,message=FALSE,tidy=FALSE,fig.path='figure/', fig.align='center',dev = "pdf")
 options(replace.assign=TRUE,width=50)
+
+options(warn=-1)
 
 library(fastinR)
 
@@ -193,7 +196,7 @@ The posterior suggests a purely shrimp based diet.
 \subsection{Adding SI}
 
 <<Reading data,results='hide'>>=
-detach("package:dplyr", unload=TRUE)
+
 require(dplyr)
 prey.table <- read.csv('Prey_SI.csv',header=T,stringsAsFactors=F)
 pred.table <- read.csv('Predator_SI.csv',header=T,
