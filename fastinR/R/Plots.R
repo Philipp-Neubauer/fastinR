@@ -91,7 +91,7 @@ dataplot <- function(datas=NULL){
 #' @S3method plot cov_props
 #' @param x MCMC output from \code{\link{run_MCMC}}, containing diet proportion MCMC chains
 #' @param save Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file.
-#' @param types A string to select the type of plot, either 'Cor' to look at posterior correlations and/or 'Post' to get a representation of the posterior, as speciefied in density. 
+#' @param types A string to select the type of plot, either 'cor' to look at posterior correlations and/or 'post' to get a representation of the posterior, as speciefied in density. 
 #' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead.
 #' @details If plots are saved they are not drawn at the same time. That may change in the future...
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
