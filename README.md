@@ -1,7 +1,7 @@
 fastinR
 ========
 
-Fatty Acids and Stable Isotopes in R
+Fatty Acids and Stable Isotopes in R - pre-print @ [peerj](https://peerj.com/preprints/413/)
 
 Disclaimer
 ----------
