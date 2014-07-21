@@ -204,11 +204,13 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
   
   if(length(datas)<=1){
     datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix.SI=preys.ix.SI,datas.FA=NULL,datas.SI=datas.SI,even=NULL)
-  } else {
+    class(datas) <- 'Stable_Isotopes'
+    } else {
     datas$datas.SI = datas.SI
     datas$n.preys = n.preys
     datas$n.preds = n.preds
     datas$prey.ix.SI = preys.ix.SI
+    class(datas) <- 'Combined_Markers'
   }
   
   ifelse(GUI,guiSet('datas',datas),return(datas))
@@ -398,11 +400,13 @@ if (length(datas$datas.SI)>1){
   
   if(length(datas)<=1){
     datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix=preys.ix,datas.FA=datas.FA,datas.SI=NULL,even=NULL)
-  } else {
+    class(datas) <- 'Fatty_Acid_Profiles'
+    } else {
     datas$datas.FA = datas.FA
     datas$n.preys = n.preys
     datas$n.preds=n.preds
     datas$prey.ix=preys.ix
+    class(datas) <- 'Combined_Markers'
   }
   ifelse(GUI,guiSet('datas',datas),return(datas))
 }
