@@ -7,17 +7,17 @@ Imports:
 Suggests:
     denstrip,fgui,tcltk
 Title: Fatty Acids and Stable Isotopes in R
-Version: 0.3
-Date: 2014-01-13
+Version: 0.4
+Date: 2014-07-2
 Author: Philipp Neubauer
 Maintainer: Philipp Neubauer <neubauer.phil@gmail.com>
-Description: This packages provides gui facilities to perfom Bayesian estiamtion
+Description: This packages provides functions to perfom Bayesian estiamtion
     of diet proportions based on fatty acid profiles, stable isotopes and
     their combination. Bayesian estiamtion is currently performed using
-    the R package rjags to call JAGS from R. The package can handle
+    the R package rjags to call JAGS from R. JAGS needs to be installed outside of R. The package can handle
     covariates and grouped (e.g., regional) data as predictors of diet
     proportions, and will estiamte both individual and popualtion level diet
-    protportions. Facilities for simulating, plotting and extracting/writing
+    proportions. Facilities for simulating, plotting and extracting/writing
     summary statistics to file are provided as well.
-License: GPL (>= 2)
+License: MIT
 URL: https://github.com/Philipp-Neubauer/fastinR
