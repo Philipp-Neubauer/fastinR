@@ -149,17 +149,17 @@ summary.cov_props <- function(object,...){
 }
 
 #' @S3method print pop_props
-print.pop_props <- function(datas = NULL,...){
+print.pop_props <- function(x, ...){
   summary(datas)
 }
 
 #' @S3method print ind_props
-print.ind_props <- function(datas = NULL){
+print.ind_props <- function(x, ...){
   summary(datas)
 }
 
 
 #' @S3method print cov_props
-print.cov_props <- function(datas = NULL){
+print.cov_props <- function(x, ...){
   summary(datas)
 }

@@ -7,7 +7,7 @@
 
 \item{save}{Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file.}
 
-\item{types}{A string to select the type of plot, either 'cor' to look at posterior correlations and/or 'post' to get a representation of the posterior, as speciefied in density.}
+\item{types}{A string to select the type of plot, either 'cor' to look at posterior correlations and/or 'post' to get a representation of the posterior, as specified in density.}
 
 \item{density}{If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead.}
 }

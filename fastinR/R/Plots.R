@@ -91,7 +91,7 @@ dataplot <- function(datas=NULL){
 #' @S3method plot cov_props
 #' @param x MCMC output from \code{\link{run_MCMC}}, containing diet proportion MCMC chains
 #' @param save Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file.
-#' @param types A string to select the type of plot, either 'cor' to look at posterior correlations and/or 'post' to get a representation of the posterior, as speciefied in density. 
+#' @param types A string to select the type of plot, either 'cor' to look at posterior correlations and/or 'post' to get a representation of the posterior, as specified in density. 
 #' @param density If TRUE (default), density plots are drawn, if FALSE, denstrip plots drawn instead.
 #' @details If plots are saved they are not drawn at the same time. That may change in the future...
 #' @references Neubauer.P. and Jensen, O.P. (in prep)
@@ -103,8 +103,8 @@ NULL
 #' @export
 plot.pop_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
   
-  require(ggplot2)
-  require(grid)
+  
+  
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -246,8 +246,8 @@ if(any(types=='post') & density==F){
 #' @export
 plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
   
-  require(ggplot2)
-  require(grid)
+  
+  
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -517,8 +517,8 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','pos
 #' @export
 plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
   
-  require(ggplot2)
-  require(grid)
+  
+  
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
    
@@ -814,10 +814,10 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','pos
 #' @author Philipp Neubauer
 #' @seealso \code{\link{run_MCMC}},\code{\link{diags}}
 #' @export
-multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T,types = c('violin','strip','density')){
+multiplot <- function(MCMCouts,save="fastinR_Multiplot",types = c('violin','strip','density')){
   
-  require(ggplot2)
-  require(grid)
+  
+  
   
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
   
@@ -990,7 +990,7 @@ multiplot <- function(MCMCouts,save="fastinR_Multiplot",density=T,types = c('vio
     
     ggs_double_violin <- function(D,num_cat,between_cat,within_cat,x.title,y.title,trans=NULL,breaks=NULL,ylims=NA,scallab=NULL){
       
-      require(ggplot2)
+      
       
       cbPalette <-c( "#ADD8E6","#87CEEB","#6495ED",  "#4169E1")
       num <- which(names(D)== substitute(num_cat))

@@ -3,7 +3,8 @@ Type: Package
 Depends:
     rjags
 Imports:
-    fgui,MCMCpack,reshape,vegan,lattice,MASS,ggplot2,grid
+    fgui,MCMCpack,reshape,vegan,lattice,MASS,ggplot2,grid,
+    robCompositions
 Suggests:
     denstrip,tcltk,testthat
 Title: Fatty Acids and Stable Isotopes in R
@@ -19,5 +20,5 @@ Description: This packages provides functions to perfom Bayesian estiamtion of
     predictors of diet proportions, and will estiamte both individual and
     popualtion level diet proportions. Facilities for simulating, plotting and
     extracting/writing summary statistics to file are provided as well.
-License: MIT
+License: MIT + file LICENSE
 URL: https://github.com/Philipp-Neubauer/fastinR

@@ -1,6 +1,13 @@
 bibentry("Article",
-         title = "Estiamting diet proportions from fatty acid compositions and stable isotopes: the FASTIN package",
-         author = person("Philipp Neubauer"),
+         title = "Bayesian estimation of predator diet composition from fatty acids and stable isotopes",
+         author = c(person("Philipp", "Neubauer"),
+                    person("Olaf P", "Jensen")),
          year   = 2014,
-         journal ="TBA"
+         month = 6,  
+         volume = 2,
+         pages = "e413v1",
+         journal = "PeerJ PrePrints",
+         issn = "2167-9843",
+         url = "http://dx.doi.org/10.7287/peerj.preprints.413v1",
+         doi = "10.7287/peerj.preprints.413v1"
 )

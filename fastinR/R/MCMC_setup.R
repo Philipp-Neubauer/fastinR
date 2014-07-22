@@ -67,10 +67,10 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
       if(any(is.na(Covs)) & Analysis.Type == 'Analysis.with.Covariates') {
         stop('analysis with covariates selected, but no covariates entered.')
       } else {
-        jagsdata <- fastinR:::.delist(datas,Covs)
+        jagsdata <- .delist(datas,Covs)
       }
     } else {
-      jagsdata <- fastinR:::.delist(datas)
+      jagsdata <- .delist(datas)
     }   
     
     save(jagsdata,file='jagsdata.Rdata')
@@ -82,9 +82,9 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     )
     
     if(spawn==T | spawn == 1) {
-    res <- fastinR:::.spawn(sysfile,nChains,nBurnin,nIter,nThin)
+    res <- .spawn(sysfile,nChains,nBurnin,nIter,nThin)
     } else {
-      res <- fastinR:::.localrun(jagsdata,sysfile,nChains,nBurnin,nIter,nThin)
+      res <- .localrun(jagsdata,sysfile,nChains,nBurnin,nIter,nThin)
     }
     
     
@@ -123,7 +123,8 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   }
 }
 
-# this is called in the slave processes to run jags
+# This is called internally in the slave processes to run jags
+#' @export
 .jagger <- function(sysfile,nBurnin,nIter,nThin,i){
   options(warn=-1)
   load('jagsdata.Rdata')
@@ -152,7 +153,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   for (i in 1:nChains){
     outfile <- paste('MCout',i,'.Rdata',sep='')
     
-    cmd <- paste("Rscript -e 'options(warn=-1);library(fastinR,quietly=T,verbose=F);res<- fastinR:::.jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save(res,file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
+    cmd <- paste("Rscript -e 'options(warn=-1);library(fastinR,quietly=T,verbose=F);res<- .jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save(res,file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
     
    system(cmd,wait=F)
           
@@ -179,7 +180,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 #' @export
 .localrun <- function(jagsdata,sysfile,nChains,nBurnin,nIter,nThin){
   
-  JM <- jags.model(file=sysfile,data=jagsdata,n.chain=nChains)
+  JM <- jags.model(file=sysfile,data=jagsdata,n.chains=nChains)
   cat('\n','proceeding to burn-in phase','\n')
   update(JM,n.iter=nBurnin)
   cat('\n','sampling from parameter distributions','\n')

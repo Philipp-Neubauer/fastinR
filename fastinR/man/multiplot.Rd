@@ -3,8 +3,8 @@
 \alias{multiplot}
 \title{Plot density or denstrip plots from multiple MCMC runs}
 \usage{
-multiplot(MCMCouts, save = "fastinR_Multiplot", density = T,
-  types = c("violin", "strip", "density"))
+multiplot(MCMCouts, save = "fastinR_Multiplot", types = c("violin", "strip",
+  "density"))
 }
 \arguments{
 \item{MCMCouts}{A (named) list of objects produced by  \code{\link{run_MCMC}}}

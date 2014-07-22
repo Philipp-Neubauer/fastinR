@@ -17,6 +17,11 @@ test_that('SI import works correctly with files',{
 
 test_that('SI import works correctly with FC supplied directly',{
   
+  SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="fastinR")
+  SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="fastinR")
+  Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="fastinR")
+  Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="fastinR")
+    
   dats <- add_SI(SI.predators=SI.predators,SI.preys=SI.preys,FC.mean=c(1,1),FC.var=c(2,2))
   expect_is(dats,'Stable_Isotopes')
   expect_is(dats$datas.SI,'list')
@@ -46,6 +51,12 @@ test_that('FA import works correctly with all files',{
 
 test_that('FA import works correctly with CC not from file',{
    
+  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
+  
   dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,CC.mean=1,CC.var=2)
   expect_is(dats,'Fatty_Acid_Profiles')
   expect_is(dats$datas.FA,'list')
@@ -58,6 +69,12 @@ test_that('FA import works correctly with CC not from file',{
 })
   
 test_that('FA import works correctly CC and FC not from file',{
+  
+  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
   
   dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,CC.mean=1,CC.var=2,FC.mean=2,FC.var=2)
   expect_is(dats,'Fatty_Acid_Profiles')
@@ -74,6 +91,19 @@ test_that('FA import works correctly CC and FC not from file',{
 
 test_that('Combining imports works correctly',{
   
+  SI.predators <- system.file("extdata", "Simdata_SI_preds.csv", package="fastinR")
+  SI.preys <- system.file("extdata", "Simdata_SI_preys.csv", package="fastinR")
+  Frac.Coeffs.mean <- system.file("extdata", "Simdata_SI_fc_means.csv", package="fastinR")
+  Frac.Coeffs.var <- system.file("extdata", "Simdata_SI_fc_var.csv", package="fastinR")
+  
+  
+  FA.predators <- system.file("extdata", "Simdata_FA_preds.csv", package="fastinR")
+  FA.preys <- system.file("extdata", "Simdata_FA_preys.csv", package="fastinR")
+  Conv.Coeffs.mean <- system.file("extdata", "Simdata_FA_cc_means.csv", package="fastinR")
+  Conv.Coeffs.var <- system.file("extdata", "Simdata_FA_cc_var.csv", package="fastinR")
+  fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
+  
+  dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,CC.mean=1,CC.var=2,FC.mean=2,FC.var=2)
   dats <- add_SI(SI.predators=SI.predators,SI.preys=SI.preys,Frac.Coeffs.mean=Frac.Coeffs.mean,Frac.Coeffs.var=Frac.Coeffs.var,datas=dats)
   expect_is(dats,'Combined_Markers')
   expect_is(dats$datas.FA,'list')
