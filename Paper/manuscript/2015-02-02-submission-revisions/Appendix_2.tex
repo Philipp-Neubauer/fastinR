@@ -48,7 +48,7 @@
 Given the data transformations applied in our model, choosing a large
 number of fatty acids (FAs) becomes computationally
 prohibitive. This is in part due to the fully Bayesian implementation,
-and en empirical Bayes method could provide more flexibility in the
+and an empirical Bayes method could provide more flexibility in the
 future. Although model complexity scales with the number of FAs,
 individual predators and prey species, transformation of FAs disproportionately affect computation time. It is thus inevitable to
 choose an appropriate subset of FAs for diet analysis. When FA
@@ -71,10 +71,10 @@ specifically use Constrained Analysis of Principal Coordinates
 metric, and use compositional distance as a distance metric for
 ordination \cite{aitchison_logratio_2000}. For each FA $f$, we sum over
 the product of the FA contribution to the ordination axes and the
-axes’ respective eigenvalues: $A_f = \sum_{a=1}^{n-1} \lambda_a
+axes’ respective eigenvalues: $\alpha_f = \sum_{a=1}^{n-1} \lambda_a
 c_{f,a}$, where $a$ indexes individual ordination axes, and $c_{f,a}$ is the
-contribution of FA p$f$ to axis $a$. Each $A_f$ then contributes a
-proportion $p$ to $A=\sum_f A_f$, and we can sort $A_f$ and choose a
+contribution of FA $f$ to axis $a$. Each $\alpha_f$ then contributes a
+proportion $p$ to $A=\sum_f \alpha_f$, and we can order the $\alpha_f$ by their contribution to $A$ and choose a
 number of variables that contribute to a cumulative proportion $P$ of the
 cumulative separation $A$.
 
