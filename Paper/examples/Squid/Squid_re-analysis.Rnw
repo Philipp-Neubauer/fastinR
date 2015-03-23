@@ -230,17 +230,18 @@ mix <- match(SID$prey.ix.SI,
              rownames(SID$datas.SI$mean_cs))
 
 par(mar=rep(5,4))
-plot(SID$datas.SI$preys.SI + SID$datas.SI$mean_cs[mix,],
+plot(SID$datas.SI$preys.SI,
      col = c(rep('#dd4626ff',sum(SID$prey.ix.SI != "Grass shrimp")),
              rep('#2a7fffff',sum(SID$prey.ix.SI == "Grass shrimp"))),
      pch = asf(SID$prey.ix.SI,
                  l = unique(SID$prey.ix.SI)),
-     ylim = c(9,14),
+     ylim = c(3.5,14),
      xlim= c(-25,-14),
      ylab = expression(paste(delta^{15}, "N (\u2030)")), 
      xlab = expression(paste(delta^{13}, "C (\u2030)")))
 
 points(SID$datas.SI$preds.SI,col=1,pch=16)
+points(SID$datas.SI$preds.SI,col=c('#2a7fffff','#2a7fffff','#dd4626ff','#2a7fffff','#2a7fffff','#2a7fffff'),cex=1.1, lwd=2)
 
 legend('bottomleft',
        legend = c('Squid',rownames(SID$datas.SI$mean_cs)),
