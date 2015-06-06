@@ -263,8 +263,14 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   } else {
     preys = FA.preys
   }
+  
+  if (any(preys<0) | any(predators<0)){
+    stop('Fatty acid values must all be greater than 0. Please replace zeros with a small number or use a more advanced heuristic or statistic to figure out an appopriate value.')
+    }
+  
   n.preds <- dim(predators)[1]
   preys.ix <- as.character(preys[,1])
+  
   
   #if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
   
