@@ -2,11 +2,14 @@
 #' 
 #' Diet data produced by \code{\link{add_FA}} and/or \code{\link{add_SI}} is projected onto 2 dimesions using NMDS, where Fatty Acid data is first ilr transformed. When SI and FA data are present, then Euclidean distances of ilr(FA) and SI data are added to produce NMDS and the plot.
 #' @param datas Diet data produced by \code{\link{add_FA}} and/or \code{\link{add_SI}}
+#' @param trymax The maximum number of NMDS starting points.
+#' @param keep Logical - Should the MDS results be kept for future plotting? Avoids re-running the metaMDS.
+#' @param new_plot Logical - Should the NMDS be re-run? Defautls to true - if a previous NMDS plot was saved with the keep option, this option allows this plot to be re-drawn.
 #' @seealso \code{\link{add_FA}},\code{\link{add_SI}},\code{\link{select_vars}},\code{\link{var_select_plot}},\code{\link{run_MCMC}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
 #' @export
-dataplot <- function(datas=NULL){
+dataplot <- function(datas=NULL,trymax=100,keep=T,new_plot=T){
   options(warn=-1)
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -71,7 +74,14 @@ dataplot <- function(datas=NULL){
   # do MDS if more than two variable #what to do if more that two SI?
   if(!is.null(datas$datas.FA$preys)){
   
-    mds <- metaMDS(dista,trymax=100)
+  if(new_plot){
+    if(keep){
+      mds <<- metaMDS(dista,trymax=trymax)
+    } else {
+      mds <- metaMDS(dista,trymax=trymax)
+    }
+  }
+  
   pl <- plot(mds,type='n')
   points(pl,'sites',pch=cbind(as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(16,datas$n.preds)),col=cbind(1+as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(1,datas$n.preds)))
   legend('topleft',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
