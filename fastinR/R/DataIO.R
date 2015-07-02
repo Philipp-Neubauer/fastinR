@@ -264,12 +264,7 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
     preys = FA.preys
   }
   
-  if (any(preys<0) | any(predators<0)){
-    stop('Fatty acid values must all be greater than 0. Please replace zeros with a small number or use a more advanced heuristic or statistic to figure out an appopriate value.')
-    }
-  
   n.preds <- dim(predators)[1]
-  preys.ix <- as.character(preys[,1])
   
   
   #if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
@@ -279,6 +274,9 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   if (GUI) guiSet('prey.names',preys.names )
   
   preys = preys[,-1]
+  if (any(preys<0) | any(predators<0)){
+    stop('Fatty acid values must all be greater than 0. Please replace zeros with a small number or use a more advanced heuristic or statistic to figure out an appopriate value.')
+  }
   
   n.fats = ncol(predators)
   m.fats = n.fats-1
@@ -291,8 +289,10 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   {     
     mean_c = read.csv(Conv.Coeffs.mean,header=T,row.names=1)
     var_c  = read.csv(Conv.Coeffs.var,header=T,row.names=1)
-    stopifnot(dim(mean_c)[1]==n.preys & dim(mean_c)[2]==n.fats)
-    stopifnot(dim(var_c)[1]==n.preys & dim(var_c)[2]==n.fats)
+    if(dim(mean_c)[1]!=n.preys) stop('Number of prey in Conv.Coeffs.mean does not equal number of prey in FA.preys.')
+    if(dim(mean_c)[2]!=n.fats) stop('Number of fatty acids in Conv.Coeffs.mean does not equal number of fatty acids in FA.predators.')
+    if(dim(var_c)[1]!=n.preys) stop('Number of prey in Conv.Coeffs.var does not equal number of prey in FA.preys.')
+    if(dim(var_c)[2]!=n.fats) stop('Number of fatty acids in Conv.Coeffs.var does not equal number of fatty acids in FA.predators.')
   } else if (nchar(Conv.Coeffs.mean)==0 & nchar(Conv.Coeffs.var)==0)
   { 
     if(length(CC.mean)==n.fats){
@@ -367,6 +367,8 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   R <- array(,c(m.fats,m.fats,n.preys))
   ni<-rep(NA,n.preys)
   for (i in 1:n.preys){
+    if(sum(preys.ix==unique(preys.ix)[i]) < 2) 
+      stop(paste("There must be at least two of each kind of prey: There is only", sum(preys.ix==unique(preys.ix)[i]), unique(preys.ix)[i], "."))
     ni[i] <- max(n.fats+1,sum(preys.ix==unique(preys.ix)[i])-1)
     R[,,i]=cov(alr(preys[preys.ix==unique(preys.ix)[i],]))*ni[i]
   }
