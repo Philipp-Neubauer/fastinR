@@ -265,7 +265,7 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   }
   
   n.preds <- dim(predators)[1]
-  
+  preys.ix <- as.character(preys[,1])
   
   #if(length(datas)>1) stopifnot(preys.ix==datas$prey.ix)
   
