@@ -1,7 +1,7 @@
 fastinR
 ========
 
-Fatty Acids and Stable Isotopes in R - pre-print @ [peerj](https://peerj.com/preprints/413/)
+Fatty Acids and Stable Isotopes in R - the pubslished papaer is available @ [peerj](https://peerj.com/articles/920/)
 
 Disclaimer
 ----------
@@ -23,16 +23,18 @@ Please install development versions of the package directly from github using
 install_github("philipp-neubauer/fastinR/fastinR")
 ```
 
-You can also [clone the package](https://help.github.com/articles/fork-a-repo) and [install from source](http://stackoverflow.com/questions/1474081/how-do-i-install-an-r-package-from-source). This is the preferred way to contribute to code development.
+You can also [fork and clone the package](https://help.github.com/articles/fork-a-repo) and [install from source](http://stackoverflow.com/questions/1474081/how-do-i-install-an-r-package-from-source). This is the preferred way to contribute to code development.
 
 Compiled versions will be released at some point too...
 
 Running
 -------
 
-Calling ```fastinR_GUI()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastinR_GUI()```. Standalone functions are available for all options and are documented.
+Calling ```fastinR_GUI()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastinR_GUI()```. NOTE that the GUI is depricated and will no longer be maintained - the TCL/TK GUI interface is far too much of a pain to work with to make maintennance worth anyone's while. That said, it should work in general, but might produce some obscure messages and such.
 
-A tutorial using simulated data is available [here](http://figshare.com/articles/Estimating_diet_proportions_from_fatty_acids_and_stable_isotopes_the_fastinR_package/900392) 
+Standalone functions are available for all options and are documented.
+
+A tutorial using simulated data accompanies the original paper [as supplement 1](https://peerj.com/articles/920/#supp-1), and code for all analyses perfomed for the paper are [available from peerJ as well](https://peerj.com/articles/920/#supplemental-information).
 
 Current Limitations
 -------------------
