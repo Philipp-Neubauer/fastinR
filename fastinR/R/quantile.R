@@ -35,6 +35,7 @@ quantile.ind_props <- function(object,...){
       ind.res <- apply(MCMCout[,indix[seq(k,(n.p-1)*np+k,np)]],2,function(x){quantile(x,c(0.025,0.5,0.975))})
       ind.res <- cbind.data.frame(pred=rep(a, n.prey), prey=prey.names, 
                                   chain=rep(l, n.prey), t(ind.res))
+      rownames(ind.res) <- paste0(rownames(ind.res), l) #add chain to row name to avoid duplicate rownames
       res <- rbind.data.frame(res, ind.res)
       rm(ind.res)
     } # for a
