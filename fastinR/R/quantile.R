@@ -3,7 +3,6 @@
 # for each chain.  
 # The first n.prey rows in each chain refer to the population; 
 # subsequent rows refer to individual predators
-object <- ind.siandfa.pelagicfishandcephalopods
 quantile.ind_props <- function(object,...){
   
   prey.names <- object$prey.names
@@ -42,8 +41,6 @@ quantile.ind_props <- function(object,...){
   } #for l
   return(res)
 } #function
-
-object <- readRDS("~/Dropbox/Rutgers-Dropbox/Magdalena Bay not shared/Talia code (graphs and stats)/MagBay analysis/data-to import/data for fastin/pop_siandfa.RDS")
 
 #' @S3method quantile pop_props
 # Returns data frame with one row for each pop/prey combination, for each chain.  
