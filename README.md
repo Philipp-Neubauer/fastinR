@@ -1,6 +1,9 @@
 fastinR
 ========
 
+[![DOI](https://zenodo.org/badge/16589/Philipp-Neubauer/fastinR.svg)](https://zenodo.org/badge/latestdoi/16589/Philipp-Neubauer/fastinR)
+
+
 Fatty Acids and Stable Isotopes in R - the published paper is available @ [peerj](https://peerj.com/articles/920/)
 
 Disclaimer
