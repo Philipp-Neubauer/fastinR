@@ -124,7 +124,7 @@ summary.cov_props <- function(object,...){
         this.eff <- res[,(k+1):(k+n.preys)]
         for (n in 1:ncol(this.eff)) colnames(this.eff)[n] <- paste(prey.names[n])
         
-        cat('\n','\n','\n',"Posterior percentiles for",'\n',"diet proportions of group ",i,'\n',
+        cat('\n','\n','\n',"Posterior percentiles for",'\n',"diet proportions of group ",grnames[i],'\n',
             '(at mean values of continuous co-variates)','\n','\n')
         print(this.eff)
         k=k+(n.preys)
