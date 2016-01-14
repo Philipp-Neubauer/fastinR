@@ -552,10 +552,13 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','pos
   colnames(outs) <- colnames(x[[1]])
   
   
-  cidx <- apply(Covs,2,function(x){any(x!=0 & x!=1)})
-  #number of groups and covariates
   nGr <- sum(cidx==F)
+  nCs <- sum(cidx)    
+  Csidx <- which(cidx)
   Gridx <- which(cidx==F)
+    
+  covnames <- colnames(Covs[Csidx])
+  grnames <- colnames(Covs[Gridx])
   
   popix <- grep('pop',colnames(outs))
   n.preys <- length(popix)/nGr
@@ -566,7 +569,7 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','pos
   
   this.eff <- outs[,popix[1:(nGr*n.preys)]]
   k=1
-  for (n in 1:nGr) {colnames(this.eff)[k:(k+n.preys-1)] <- sprintf(paste('Group',n,'/ %s'),preya.names); k=k+n.preys}
+  for (n in 1:nGr) {colnames(this.eff)[k:(k+n.preys-1)] <- sprintf(paste('Group',grnames[n],'/ %s'),preya.names); k=k+n.preys}
   
   if(any(types=='cor')){
   if (sava==1)  {
