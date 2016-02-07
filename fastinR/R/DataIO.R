@@ -143,8 +143,13 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
     stop('The mean AND variances of FCs for each isotope need to be supplied')
   } else if (nchar(Frac.Coeffs.mean)>0 & nchar(Frac.Coeffs.var)>0)
   {     
-    mean_cs = read.csv(Frac.Coeffs.mean,header=T,row.names=1)
-    var_cs  = read.csv(Frac.Coeffs.var,header=T,row.names=1)
+    if(is.character(SI.predators)) {
+      mean_cs = read.csv(Frac.Coeffs.mean,header=T,row.names=1)
+      var_cs  = read.csv(Frac.Coeffs.var,header=T,row.names=1)
+    } else { 
+      mean_cs = Frac.Coeffs.mean
+      var_cs = Frac.Coeffs.var  
+    }
     stopifnot(dim(mean_cs)[1]==n.preys & dim(mean_cs)[2]==isos)
     stopifnot(dim(var_cs)[1]==n.preys & dim(var_cs)[2]==isos)
   } else if (nchar(Frac.Coeffs.mean)==0 & nchar(Frac.Coeffs.var)==0)
