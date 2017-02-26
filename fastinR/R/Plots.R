@@ -527,9 +527,6 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','pos
 #' @export
 plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
   
-  
-  
-  
   if(save!=F){sava <- menu(title='save plots?',choices = c('yes','no'),graphics=T)}else{sava=0}
    
   # check gui
@@ -551,14 +548,15 @@ plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','pos
   
   colnames(outs) <- colnames(x[[1]])
   
-  
+  cidx <- apply(Covs,2,function(x){any(x!=0 & x!=1)})  	
+  #number of groups and covariates
   nGr <- sum(cidx==F)
   nCs <- sum(cidx)    
   Csidx <- which(cidx)
   Gridx <- which(cidx==F)
     
-  covnames <- colnames(Covs[Csidx])
-  grnames <- colnames(Covs[Gridx])
+  covnames <- colnames(Covs)[Csidx]
+  grnames <- colnames(Covs)[Gridx]
   
   popix <- grep('pop',colnames(outs))
   n.preys <- length(popix)/nGr
