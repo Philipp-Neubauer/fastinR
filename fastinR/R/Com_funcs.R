@@ -75,7 +75,8 @@ cdist <- function (mat) {
   dists <- matrix(, dims[1], dims[1])
   for (i in 1:(dims[1] - 1)) {
     for (j in (i + 1):dims[1]) {
-      dists[j, i] <- robCompositions::aDist(mat[i,],mat[j,])
+      dists[j, i] <- robCompositions::aDist(matrix(mat[i,], nrow = 1),
+                                            matrix(mat[j,], nrow=1))
     }
   }
   dista <- as.dist(dists)
