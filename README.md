@@ -8,7 +8,7 @@ Fatty Acids and Stable Isotopes in R - the published paper is available @ [peerj
 
 Disclaimer
 ----------
-This repository is still in development and will be updated frequently to eliminate bugs and add improvements. Please [file an issue](https://github.com/Philipp-Neubauer/fastinR/issues?milestone=1&state=open) if you find a bug or have a suggestion, that way it is visible to other users/contributors and progress on the bug/issue can be traced.
+This repository is still in development and will be updated **in**frequently to eliminate bugs and add improvements. Please [file an issue](https://github.com/Philipp-Neubauer/fastinR/issues?milestone=1&state=open) if you find a bug or have a suggestion, that way it is visible to other users/contributors and progress on the bug/issue can be traced.
 
 Install
 -------
@@ -33,7 +33,7 @@ Compiled versions will be released at some point too...
 Running
 -------
 
-Calling ```fastinR_GUI()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastinR_GUI()```. NOTE that the GUI is depricated and will no longer be maintained - the TCL/TK GUI interface is far too much of a pain to work with to make maintennance worth anyone's while. That said, it should work in general, but might produce some obscure messages and such.
+Calling ```fastinR_GUI()``` opens a gui that lets the user input relevant data and choose analysis options. Calling ```simulation()``` will open a gui to simulate data that can be input through the ```fastinR_GUI()```. NOTE that the GUI is depricated and will no longer be maintained - the TCL/TK GUI interface is far too much of a pain to work with to make maintenance worth anyone's while. That said, it should work in general, but might produce some obscure messages and such.
 
 Standalone functions are available for all options and are documented.
 
