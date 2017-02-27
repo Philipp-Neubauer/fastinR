@@ -149,8 +149,8 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
     stopifnot(dim(var_cs)[1]==n.preys & dim(var_cs)[2]==isos)
   } else if (nchar(Frac.Coeffs.mean)==0 & nchar(Frac.Coeffs.var)==0)
   {
-    mean_cs = matrix(FC.mean,isos,n.preys,byrow=T)
-    var_cs = matrix(FC.var,isos,n.preys,byrow=T)
+    mean_cs = matrix(FC.mean,ncol=isos,nrow=n.preys,byrow=T, dimnames = list(unique(preys.ix.SI), NULL))
+    var_cs = matrix(FC.var,ncol=isos,nrow=n.preys,byrow=T, dimnames = list(unique(preys.ix.SI), NULL))
   }
   
   # prey means and vars
@@ -299,8 +299,8 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
       mean_c = matrix(CC.mean,n.preys,n.fats,byrow=T)
       var_c =matrix(CC.var,n.preys,n.fats,byrow=T)
     } else {
-      mean_c = matrix(CC.mean,n.preys,n.fats)
-      var_c =matrix(CC.var,n.preys,n.fats)
+      mean_c = matrix(CC.mean,n.preys,n.fats, dimnames = list(unique(preys.ix), NULL))
+      var_c =matrix(CC.var,n.preys,n.fats, dimnames = list(unique(preys.ix), NULL))
     }
     
   } else
