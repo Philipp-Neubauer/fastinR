@@ -177,20 +177,28 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 }
 
 # run MCMC locally
+#' @import rstan
 #' @export
 .localrun <- function(jagsdata,sysfile,nChains,nBurnin,nIter,nThin){
   
-  JM <- jags.model(file=sysfile,data=jagsdata,n.chains=nChains)
-  cat('\n','proceeding to burn-in phase','\n')
-  update(JM,n.iter=nBurnin)
-  cat('\n','sampling from parameter distributions','\n')
-  if(length(grep('Ind',sysfile))>0){
-    res<- coda.samples(model=JM,variable.names=c('prop','pop.prop'),n.iter=nIter,thin=nThin)
+   if(length(grep('Ind',sysfile))>0){
+    variable.names=c('prop','pop.prop')
   } else if(length(grep('Cov',sysfile))>0) {
-    res<- coda.samples(model=JM,variable.names=c('prop','pop.prop','beta'),n.iter=nIter,thin=nThin)    
+    variable.names=c('prop','pop.prop','beta')   
   } else {
-    res<- coda.samples(model=JM,variable.names='prop',n.iter=nIter,thin=nThin)
+    variable.names='prop'
   }
+  
+  JM <- stan(file=sysfile,
+             pars = variable.names,
+             chains = nChains, 
+             warmup = nBurnin,
+             thin =nThin,
+             iter =nIter,
+             data=jagsdata)
+  res <- As.mcmc.list(JM)
+  
+  
   return(res)
 }
 
@@ -263,49 +271,50 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
   
   options(warn=-1)
   
-  n.preys =datas$n.preys
-  m.preys =datas$n.preys-1
-  n.preds =datas$n.preds
+  n_preys =datas$n.preys
+  m_preys =datas$n.preys-1
+  n_preds =datas$n.preds
   eveness =datas$even
   if (!is.null(Covs)) {
-    n.covs = ncol(Covs)
-    ind = c(0,rep(1,n.covs-1))
-    Covs = Covs[,1:n.covs]
+    n_covs = ncol(Covs)
+    ind = c(0,rep(1,n_covs-1))
+    Covs = Covs[,1:n_covs]
   }
   
   jagsdata <- list(
-    n.fats =datas$datas.FA$n.fats,
+    n_fats =datas$datas.FA$n.fats,
     R =datas$datas.FA$R,
     fc_mean =datas$datas.FA$fc_mean,
     fc_tau =datas$datas.FA$fc_tau,
     mean_c = data.frame(datas$datas.FA$mean_c),
     tau_coeffs =datas$datas.FA$tau_c,
     Rnot =datas$datas.FA$Rnot,
-    m.fats =datas$datas.FA$m.fats,
+    m_fats =datas$datas.FA$m.fats,
     ni =datas$datas.FA$ni,
     preds = data.frame(datas$datas.FA$preds),
     preys = data.frame(datas$datas.FA$preys),
-    prey.ix = as.numeric(factor(datas$prey.ix,levels = unique(datas$prey.ix))),
-    n.prey.samps = length(datas$prey.ix),
-    prey.ix.SI = as.numeric(factor(datas$prey.ix.SI,levels = unique(datas$prey.ix.SI))),
-    n.prey.samps.SI = length(datas$prey.ix.SI),
+    prey_ix = as.numeric(factor(datas$prey.ix,levels = unique(datas$prey.ix))),
+    n_prey_samps = length(datas$prey.ix),
+    prey_ix_SI = as.numeric(factor(datas$prey.ix.SI,levels = unique(datas$prey.ix.SI))),
+    n_prey_samps_SI = length(datas$prey.ix.SI),
     preym =datas$datas.FA$preym,   
-    n.preys =datas$n.preys,
-    m.preys =datas$n.preys-1,
-    n.preds =datas$n.preds,
-    n.covs = ncol(Covs),
+    n_preys =datas$n.preys,
+    m_preys =datas$n.preys-1,
+    n_preds =datas$n.preds,
+    n_covs = ncol(Covs),
     isos =datas$datas.SI$isos,
     R_SI =datas$datas.SI$R.SI,
-    mean_cs = data.frame(datas$datas.SI$mean_cs),
-    tau_cs =datas$datas.SI$tau_cs,
+    mean_cs = as.matrix(datas$datas.SI$mean_cs),
+    sigma_cs =as.matrix(1/datas$datas.SI$tau_cs),
     Rnot_SI =datas$datas.SI$Rnot.SI,
-    ni.SI =datas$datas.SI$ni.SI,
-    preds.SI = data.frame(datas$datas.SI$preds.SI),
-    preys.SI = data.frame(datas$datas.SI$preys.SI),
-    preym.SI =datas$datas.SI$preym.SI,
-    S = diag(eveness,m.preys),
-    SS = diag(1,m.preys),
-    zeros = rep(0,m.preys),
+    ni_SI =datas$datas.SI$ni.SI,
+    preds_SI = as.matrix(datas$datas.SI$preds.SI),
+    preys_SI = as.matrix(datas$datas.SI$preys.SI),
+    preym_SI =datas$datas.SI$preym.SI,
+    S = diag(eveness,m_preys),
+    SS = diag(1,m_preys),
+    zeros = rep(0,m_preys),
+    alpha = rep(1,n_preys),
     Covs = if(!is.null(Covs)) Covs,
     ind = if(!is.null(Covs)) ind
   )
