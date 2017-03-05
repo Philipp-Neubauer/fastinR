@@ -1,4 +1,4 @@
-#' @S3method summary pop_props
+#' @export
 summary.pop_props <- function(object,...){
     
   prey.names <- object$prey.names
@@ -17,7 +17,7 @@ summary.pop_props <- function(object,...){
     print(res)
   }
 }
-#' @S3method summary ind_props
+#' @export
 summary.ind_props <- function(object,...){
     
   prey.names <- object$prey.names
@@ -56,7 +56,7 @@ summary.ind_props <- function(object,...){
     }   
   }
 }
-#' @S3method summary cov_props
+#' @export
 summary.cov_props <- function(object,...){
   
   prey.names <- object$prey.names
@@ -148,18 +148,18 @@ summary.cov_props <- function(object,...){
   }
 }
 
-#' @S3method print pop_props
+#' @export
 print.pop_props <- function(x, ...){
   summary(datas)
 }
 
-#' @S3method print ind_props
+#' @export
 print.ind_props <- function(x, ...){
   summary(datas)
 }
 
 
-#' @S3method print cov_props
+#' @export
 print.cov_props <- function(x, ...){
   summary(datas)
 }

@@ -96,9 +96,7 @@ dataplot <- function(datas=NULL,trymax=100,keep=T,new_plot=T){
 #' @name plot
 #' @title Plot density or denstrip plots of posterior diet proportions
 #' @description A pairwise plot to inspect correlations between prey items in the MCMC estiamtion, and a density/denstrip plot of diet proportion posterior distributions. To be run with output from \code{\link{run_MCMC}}
-#' @S3method plot pop_props
-#' @S3method plot cov_props
-#' @S3method plot cov_props
+#' @export
 #' @param x MCMC output from \code{\link{run_MCMC}}, containing diet proportion MCMC chains
 #' @param save Either a string to be used as prefix for saved plots, or FALSE for disabling saving to file.
 #' @param types A string to select the type of plot, either 'cor' to look at posterior correlations and/or 'post' to get a representation of the posterior, as specified in density. 
@@ -109,7 +107,6 @@ dataplot <- function(datas=NULL,trymax=100,keep=T,new_plot=T){
 #' @seealso \code{\link{run_MCMC}},\code{\link{diags}}
 NULL
 
-#' @method plot pop_props
 #' @export
 plot.pop_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
   
@@ -252,7 +249,6 @@ if(any(types=='post') & density==F){
 # turn off external device if using one
 }
 
-#' @method plot ind_props
 #' @export
 plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
   
@@ -522,8 +518,6 @@ plot.ind_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','pos
     if(sava==1) dev.off()
   }
 }
-
-#' @method plot cov_props
 #' @export
 plot.cov_props <- function(x,save="fastinR_MCMC_",density=T,types = c('cor','post'),...){
   

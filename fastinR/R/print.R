@@ -1,4 +1,4 @@
-#' @S3method print Fatty_Acid_Profiles
+#' @export
 print.Fatty_Acid_Profiles <- function(x, ...){
    cat('Fatty Acid profile data with:','\n')
    cat(x$n.preds,' Predators','\n')
@@ -6,7 +6,7 @@ print.Fatty_Acid_Profiles <- function(x, ...){
    cat('Profiles containing ',x$datas.FA$n.fats,' Fatty Acids','\n')
 }
 
-#' @S3method print Stable_Isotopes
+#' @export
 print.Stable_Isotopes <- function(x, ...){
   cat('Stable Isotope data with:','\n')
   cat(x$n.preds,' Predators','\n')
@@ -15,7 +15,7 @@ print.Stable_Isotopes <- function(x, ...){
 }
 
 
-#' @S3method print Combined_Markers
+#' @export
 print.Combined_Markers <- function(x, ...){
   cat('Combined marker data with:','\n')
   cat(x$n.preds,' Predators','\n')
