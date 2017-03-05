@@ -139,8 +139,8 @@ Lets start with an analysis of the stable isotopes, estimating only global (popu
 
 <<Analysis of SI>>=
 Pop.SI <- run_MCMC(datas = dats.subset,
-                   nIter = 20000,
-                   nBurnin = 10000,
+                   nIter = 1000,
+                   nBurnin = 500,
                    nChains = 3,
                    nThin = 20,
                    Data.Type = 'Stable.Isotopes',
@@ -309,9 +309,9 @@ The combined analysis reduces uncertainty slightly, especially for source 3, but
 To compare the three approaches explicitly, we can use \emph{multiplot}. For \emph{multiplot} the three results need to be combined in a list:
 
 <<Comparing markers,fig.cap='Comparing posterior distributions for diet proportions',out.width='1\\textwidth'>>=
-Pop.list <- list(Stable.Isotopes = Pop.SI2, Fatty.Acids = Pop.FA3, Combined = Pop.Combined)
+Pop.list <- list(Stable.Isotopes = Pop.SI, Fatty.Acids = Pop.FA, Combined = Pop.Combined)
 
-multiplot(Pop.list,save=F,types='violin')
+multiplot(Pop.list,save=F)
 @
 
 The original data was simulated to include groups of predators with

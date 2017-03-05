@@ -16,7 +16,7 @@
 .Poppropanalysis.SI <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.prop.analysis.SI.stan",sep='')
+  sysfile <- 'Pop_prop_analysis_SI'
   
   return(sysfile)
 }

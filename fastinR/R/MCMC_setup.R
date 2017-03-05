@@ -124,7 +124,6 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 }
 
 # This is called internally in the slave processes to run jags
-#' @export
 .jagger <- function(sysfile,nBurnin,nIter,nThin,i){
   options(warn=-1)
   load('jagsdata.Rdata')
@@ -178,8 +177,9 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 
 # run MCMC locally
 #' @import rstan
-#' @export
 .localrun <- function(jagsdata,sysfile,nChains,nBurnin,nIter,nThin){
+  rstan_options(auto_write = TRUE)
+  options(mc.cores = parallel::detectCores())
   
    if(length(grep('Ind',sysfile))>0){
     variable.names=c('prop','pop.prop')
@@ -189,7 +189,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     variable.names='prop'
   }
   
-  JM <- stan(file=sysfile,
+  JM <- sampling(stanmodels[[sysfile]],
              pars = variable.names,
              chains = nChains, 
              warmup = nBurnin,

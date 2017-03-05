@@ -1,4 +1,4 @@
-#' @S3method quantiles ind_props
+#' @export
 # Returns data frame with one row for each predator/prey combination, 
 # for each chain.  
 # The first n.prey rows in each chain refer to the population; 
@@ -42,7 +42,7 @@ quantile.ind_props <- function(object,...){
   return(res)
 } #function
 
-#' @S3method quantile pop_props
+#' @export
 # Returns data frame with one row for each pop/prey combination, for each chain.  
 quantile.pop_props <- function(object,...){
   

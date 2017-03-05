@@ -10,4 +10,5 @@
 #' @docType package
 #' @name fastinR-package
 #' @aliases fastinR
+#' @useDynLib fastinR, .registration = TRUE 
 NULL
