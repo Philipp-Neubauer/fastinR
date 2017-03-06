@@ -14,6 +14,7 @@ env:
     - CXX_OLEVEL=2 CXX=clang++
 
 before_install:
+  - cd fastinR
   - mkdir -p ~/.R/
   - echo "CXX = `R CMD config CXX`" >> ~/.R/Makevars
   - echo "CXXFLAGS = `R CMD config CXXFLAGS` -pedantic -g0" >> ~/.R/Makevars 
@@ -24,15 +25,15 @@ before_install:
 
 script: 
   - |
-    travis_wait R CMD build fastinR/fastinR
-    travis_wait 60 R CMD check fastinR/fastinR*tar.gz
+    travis_wait R CMD build .
+    travis_wait 60 R CMD check fastinR*tar.gz
 
 after_script:
-  - tar -ztvf fastinR/fastinR_*.tar.gz
+  - tar -ztvf fastinR_*.tar.gz
   - echo ${NOT_CRAN}
 
 after_success:
   - travis_wait 60 tar -C .. -xf $PKG_TARBALL
 
 after_failure:
-  - cat fastinR/fastinR.Rcheck/00*
+  - cat fastinR.Rcheck/00*
