@@ -24,7 +24,7 @@ before_install:
 
 script: 
   - |
-    travis_wait R CMD build fastinR/.
+    travis_wait R CMD build fastinR/
     travis_wait 60 R CMD check fastinR/fastinR*tar.gz
 
 after_script:
