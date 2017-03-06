@@ -25,14 +25,14 @@ before_install:
 script: 
   - |
     travis_wait R CMD build .
-    travis_wait 60 R CMD check anRpackage*tar.gz
+    travis_wait 60 R CMD check fastinR*tar.gz
 
 after_script:
-  - tar -ztvf anRpackage_*.tar.gz
+  - tar -ztvf fastinR_*.tar.gz
   - echo ${NOT_CRAN}
 
 after_success:
   - travis_wait 40 tar -C .. -xf $PKG_TARBALL
 
 after_failure:
-  - cat anRpackage.Rcheck/00*
+  - cat fastinR.Rcheck/00*
