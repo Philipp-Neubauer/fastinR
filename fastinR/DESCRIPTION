@@ -1,9 +1,9 @@
 Package: fastinR
 Type: Package
-Imports: rstan, rjags, fgui,rstantools,methods, stats, Rcpp (>= 0.12.9),MCMCpack,reshape,vegan,lattice,MASS,ggplot2,grid,
+Imports: rstan, rstantools,methods, stats, Rcpp (>= 0.12.9),MCMCpack,reshape,vegan,lattice,MASS,ggplot2,grid,
     robCompositions, coda
 LinkingTo: StanHeaders (>= 2.14.0.1), rstan (>= 2.14.1), BH (>= 1.62.0.1), Rcpp (>= 0.12.9), RcppEigen (>= 0.3.2.9.0)
-Suggests: denstrip,tcltk,testthat
+Suggests: denstrip,testthat
 Title: Fatty Acids and Stable Isotopes in R
 Version: 0.5
 Date: 2017-03-06

@@ -6,7 +6,7 @@
 #' @importFrom MCMCpack rdirichlet
 #' @importFrom reshape melt.data.frame
 #' @importFrom robCompositions aDist
-#' @import vegan fgui tcltk lattice MASS ggplot2 grid rjags
+#' @import vegan lattice MASS ggplot2 grid
 #' @docType package
 #' @name fastinR-package
 #' @aliases fastinR
