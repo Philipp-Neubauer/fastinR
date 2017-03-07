@@ -150,16 +150,16 @@ summary.cov_props <- function(object,...){
 
 #' @export
 print.pop_props <- function(x, ...){
-  summary(datas)
+  summary(x)
 }
 
 #' @export
 print.ind_props <- function(x, ...){
-  summary(datas)
+  summary(x)
 }
 
 
 #' @export
 print.cov_props <- function(x, ...){
-  summary(datas)
+  summary(x)
 }

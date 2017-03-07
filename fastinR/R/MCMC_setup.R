@@ -196,7 +196,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
              thin =nThin,
              iter =nIter,
              data=jagsdata)
-  res <- As.mcmc.list(JM)
+  res <- As.mcmc.list(JM,pars=variable.names)
   
   
   return(res)
@@ -212,6 +212,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 #' @seealso \code{\link{run_MCMC}}
 #' @author Philipp Neubauer
 #' @references Neubauer,.P. and Jensen, O.P. (in prep)
+#' @import coda
 #' @export
 diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
   
