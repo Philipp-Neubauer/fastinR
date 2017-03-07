@@ -30,7 +30,7 @@ test_that('SI import works correctly with FC supplied directly',{
   expect_false(any(is.na(dats$datas.SI$preym.SI)))
   expect_true(all(dats$datas.SI$mean_cs==1))
   expect_true(all(dats$datas.SI$tau_cs==0.5))
-  expect_true(all(dim(dats$datas.SI$mean_cs)[1]==2))
+  expect_true(all(dim(dats$datas.SI$mean_cs)==c(3,2)))
 })
 
 test_that('FA import works correctly with all files',{

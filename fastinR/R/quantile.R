@@ -1,8 +1,11 @@
+#' @name quantile
+#' Returns data frame with one row for each predator/prey combination, for each chain.  
+# 
+#' @description The first n.prey rows in each chain refer to the population; 
+#' subsequent rows refer to individual predators
 #' @export
-# Returns data frame with one row for each predator/prey combination, 
-# for each chain.  
-# The first n.prey rows in each chain refer to the population; 
-# subsequent rows refer to individual predators
+
+#' @export
 quantile.ind_props <- function(object,...){
   
   prey.names <- object$prey.names
