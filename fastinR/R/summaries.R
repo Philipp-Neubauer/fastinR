@@ -150,16 +150,16 @@ summary.cov_props <- function(object,...){
 
 #' @S3method print pop_props
 print.pop_props <- function(x, ...){
-  summary(datas)
+  summary(x)
 }
 
 #' @S3method print ind_props
 print.ind_props <- function(x, ...){
-  summary(datas)
+  summary(x)
 }
 
 
 #' @S3method print cov_props
 print.cov_props <- function(x, ...){
-  summary(datas)
+  summary(x)
 }
