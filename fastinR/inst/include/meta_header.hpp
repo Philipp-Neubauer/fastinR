@@ -1,0 +1,3 @@
+#ifndef FASTINR__META_HEADER_HPP
+#define FASTINR__META_HEADER_HPP
+#endif
