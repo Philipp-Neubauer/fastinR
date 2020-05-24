@@ -6,9 +6,19 @@
     
 Files must be in .csv format.}
 \usage{
-add_FA(FA.predators = NULL, FA.preys = NULL, fat.conts = "",
-  Conv.Coeffs.mean = "", Conv.Coeffs.var = "", FC.mean = 1, FC.var = 1,
-  CC.mean = 1, CC.var = 1, datas = NULL, LN.par = F)
+add_FA(
+  FA.predators = NULL,
+  FA.preys = NULL,
+  fat.conts = "",
+  Conv.Coeffs.mean = "",
+  Conv.Coeffs.var = "",
+  FC.mean = 1,
+  FC.var = 1,
+  CC.mean = 1,
+  CC.var = 1,
+  datas = NULL,
+  LN.par = F
+)
 }
 \arguments{
 \item{FA.predators}{A data frame or a path to a csv file with the predator index/names (first column) and fatty acid profiles (1 row pey predator), with fatty acids named across the first row}

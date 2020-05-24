@@ -7,7 +7,7 @@
 .Poppropanalysis.FA <- function(datas)
 {
   
-  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.prop.analysis.FA.bugs",sep='')
+  sysfile <- 'Pop_prop_analysis_FA'
   return(sysfile)
   
 }

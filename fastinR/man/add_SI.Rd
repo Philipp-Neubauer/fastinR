@@ -6,8 +6,15 @@
     
 Files must be in .csv format.}
 \usage{
-add_SI(SI.predators = NULL, SI.preys = NULL, Frac.Coeffs.mean = "",
-  Frac.Coeffs.var = "", FC.mean = 1, FC.var = 1, datas = NULL)
+add_SI(
+  SI.predators = NULL,
+  SI.preys = NULL,
+  Frac.Coeffs.mean = "",
+  Frac.Coeffs.var = "",
+  FC.mean = 1,
+  FC.var = 1,
+  datas = NULL
+)
 }
 \arguments{
 \item{SI.predators}{A data frame or a path to a csv file with the predator index/names (first column) and Stable Isotopes (1 row per predator), with Stable Isotope named across the first row.}

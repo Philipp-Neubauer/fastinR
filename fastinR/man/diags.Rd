@@ -15,6 +15,9 @@ diags(MCMCout = NULL, accuracy = 0.01, proba = 0.95, quant = 0.025)
 
 \item{quant}{interval within which to estiamte the parameter}
 }
+\description{
+Raftery-Lewis and Gelman-Rubin diagnostics for MCMC chains from \code{\link{run_MCMC}}. Multiple chains are needed for the latter type of diagnostic.
+}
 \details{
 The function allows to diagnose if a given MCMC run was likely long enough to have produced reliable estiamtes. The number of iterations and a thinning interval are suggested - if these are significantly larger than the parameters used to produce MCMCout, then the chains should be re-run with the suggested parameters.
 }

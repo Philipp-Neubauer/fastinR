@@ -188,7 +188,8 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   } else {
     variable.names='prop'
   }
-  
+  #browser()
+  #stanmodels[[sysfile]]
   JM <- sampling(stanmodels[[sysfile]],
              pars = variable.names,
              chains = nChains, 

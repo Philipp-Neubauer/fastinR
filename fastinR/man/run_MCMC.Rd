@@ -4,10 +4,21 @@
 \alias{run_MCMC}
 \title{MCMC for diet proportions from FAtty acid and/or Stable Isotope data}
 \usage{
-run_MCMC(datas = NULL, Covs = NULL, nIter = 10000, nBurnin = 1000,
-  nChains = 1, nThin = 10, Data.Type = "Fatty.Acid.Profiles",
-  Analysis.Type = "Population.proportions", even = 0.5, Rnot = 0.2,
-  Rnot_SI = 1, plott = T, spawn = F)
+run_MCMC(
+  datas = NULL,
+  Covs = NULL,
+  nIter = 10000,
+  nBurnin = 1000,
+  nChains = 1,
+  nThin = 10,
+  Data.Type = "Fatty.Acid.Profiles",
+  Analysis.Type = "Population.proportions",
+  even = 0.5,
+  Rnot = 0.2,
+  Rnot_SI = 1,
+  plott = T,
+  spawn = F
+)
 }
 \arguments{
 \item{datas}{A data object as produced by \code{\link{add_FA}} and/or \code{\link{add_SI}}. While it is possible to construct the data objects (see examples on github), it is advisable to use the above mentioned functions for convenience.}

@@ -25,6 +25,7 @@ dataplot <- function(datas=NULL,trymax=100,keep=T,new_plot=T){
     attach(datas$datas.FA,warn.conflicts=F)
     
     #prey
+    #browser()
     preys.clr <- clr(preys*((mean_c/tau_c)[datas$prey.ix,]))
     preys.ilr <- t(apply(preys.clr,1,function(x) x%*%t(ilr_base(length(x)))))
     
@@ -76,20 +77,21 @@ dataplot <- function(datas=NULL,trymax=100,keep=T,new_plot=T){
   
   if(new_plot){
     if(keep){
-      mds <<- metaMDS(dista,trymax=trymax)
+      mds <<- metaMDS(dista,trymax=trymax,trace = 0)
     } else {
-      mds <- metaMDS(dista,trymax=trymax)
+      mds <- metaMDS(dista,trymax=trymax,trace = 0)
     }
   }
   
+  par(mar=c(4.1, 4.1, 4.1, 12.1), xpd=TRUE)
   pl <- plot(mds,type='n')
   points(pl,'sites',pch=cbind(as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(16,datas$n.preds)),col=cbind(1+as.numeric(factor(datas$prey.ix,levels=unique(datas$prey.ix))),rep(1,datas$n.preds)))
-  legend('topleft',c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
+  legend("topright", inset=c(-0.3,0),c('Predators',unique(datas$prey.ix)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
   } else {
     
     plot(rbind(preya,preda),type='n')
     points(rbind(preya,preda),pch=cbind(as.numeric(factor(datas$prey.ix.SI,levels=unique(datas$prey.ix.SI))),rep(16,datas$n.preds)),col=cbind(1+as.numeric(factor(datas$prey.ix.SI,levels=unique(datas$prey.ix.SI))),rep(1,datas$n.preds)))
-    legend('topleft',c('Predators',unique(datas$prey.ix.SI)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
+    legend('bottomleft',c('Predators',unique(datas$prey.ix.SI)),xpd=T,pch=c(16,1:datas$n.preys),col=c(1,2:(datas$n.preys+1)))
   }
 }
 

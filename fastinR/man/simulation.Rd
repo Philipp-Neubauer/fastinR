@@ -28,6 +28,9 @@ simulation()
             \item{*_Groups.csv}{Group membership for each predator}
             \item{*_Covariates.csv}{Covariate values for each predator}
 }
+\description{
+GUI: Simulate Fatty Acid profiles and Stable Isotope data
+}
 \details{
 Disclaimer: R gui facilities are somewhat unstable and have a mind of their own. Often unloading the package and re-loading it will fix glitches, but not always. Therefore, the command line is the suggested way to use the apckage.
 

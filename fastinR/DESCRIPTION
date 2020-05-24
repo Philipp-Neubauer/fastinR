@@ -20,4 +20,4 @@ Description: This packages provides functions to perfom Bayesian estiamtion of
 License: MIT + file LICENSE
 URL: https://github.com/Philipp-Neubauer/fastinR
 NeedsCompilation: yes
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
