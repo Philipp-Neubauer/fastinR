@@ -25,7 +25,7 @@
 .Poppropanalysis.combined <- function(datas)
 {
     
-  sysfile <- paste(system.file("exec",package = "fastinR"),"/Pop.prop.analysis.combined.bugs",sep='')
+  sysfile <- 'Pop_prop_analysis_combined'
   
   return(sysfile)
   

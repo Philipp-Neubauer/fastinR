@@ -26,14 +26,14 @@ data {
   vector[n_preys] fc_tau;
   vector[m_fats] preys[n_prey_samps];
   vector[m_fats] preym[n_preys];
-  vector[n_fats] mean_cs[n_preys];
+  vector[n_fats] mean_c[n_preys];
   vector[n_fats] tau_coeffs[n_preys];
   vector[m_fats] preds[n_preds];
 }
 parameters{
   vector[m_fats] prey_means[n_preys];
-  vector[n_fats] cs[n_preys];
-  real fc[n_preys];
+  vector<lower=0>[n_fats] cs[n_preys];
+  real<lower=0> fc[n_preys];
   vector[m_fats] cons_prey[n_preys];
   
   cholesky_factor_corr[m_fats] corr_prey[n_preys];
@@ -49,6 +49,7 @@ transformed parameters{
   matrix[m_fats,m_fats] pred_prec;
   simplex[n_preys] prop;
   matrix[n_fats,n_preys] prey;
+  simplex[n_fats] c_prey[n_preys];
   vector[m_fats] mu;
   
   prop = clo(props);
@@ -56,10 +57,10 @@ transformed parameters{
   for (j in 1:n_preys){
     
     prey_precs[j] = diag_pre_multiply(tau_prey[j], corr_prey[j]);
-    prey[,j] = fc[j] * cs[j] .* inv_alr(cons_prey[j], n_fats);
+    c_prey[j] = inv_alr(cons_prey[j], n_fats);
+    prey[,j] = fc[j] * cs[j] .* c_prey[j];
       // mixing for predator FA signature for likelihood
   }
-  //for (i in 1:m_fats){
   mu = alr(prey*prop, n_fats);
   
   pred_prec = diag_pre_multiply(tau_pred, corr_pred);
@@ -75,7 +76,7 @@ model{
   for (p in 1:n_preds) preds[p] ~ multi_normal_cholesky(mu,pred_prec);
 
   props ~ gamma(n_preys^-1,1);
-  fc ~ lognormal(fc_mean,fc_tau);   
+  fc ~ lognormal(fc_mean,sqrt(1.0./fc_tau));   
 
   for (j in 1:n_preys){
     
@@ -85,7 +86,7 @@ model{
     prey_means[j] ~ multi_normal_cholesky(preym[j], diag_pre_multiply(tau_mean, corr_mean));
     cons_prey[j] ~ multi_normal_cholesky(prey_means[j],prey_precs[j]);
 
-    cs[j] ~ gamma(mean_cs[j],tau_coeffs[j]);
+    cs[j] ~ gamma(mean_c[j],tau_coeffs[j]);
      
   }
 

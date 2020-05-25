@@ -38,7 +38,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   # have three types here: FA, SI and combined, then methods dispatch based on type of arg
   
   if(missing(datas)) {datas = guiGetSafe('datas');GUI = T} else {GUI = F}
-    
+  
   if(length(datas)<=1){warning('No data processed yet')} else {   
     
     datas$even <- even
@@ -82,7 +82,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     )
     
     if(spawn==T | spawn == 1) {
-    res <- .spawn(sysfile,nChains,nBurnin,nIter,nThin)
+      res <- .spawn(sysfile,nChains,nBurnin,nIter,nThin)
     } else {
       res <- .localrun(jagsdata,sysfile,nChains,nBurnin,nIter,nThin)
     }
@@ -107,7 +107,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
         
         try(plot(res,ask=T))
       }
-      }
+    }
     
     res <- c(res,nChains = nChains)
     res <- c(res,prey.names = list(unique(datas$prey.ix)))
@@ -145,7 +145,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
 
 #spawn slave processes to run separate chains - ultimately this should integrate with runjags
 .spawn <- function(sysfile,nChains,nBurnin,nIter,nThin){
-    
+  
   orgtime <- Sys.time()
   options(useFancyQuotes=F)
   # spawn seperate R slave processes for each chain and run jagger in them
@@ -154,10 +154,10 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
     
     cmd <- paste("Rscript -e 'options(warn=-1);library(fastinR,quietly=T,verbose=F);res<- .jagger(",dQuote(sysfile),",",eval(nBurnin),",",eval(nIter),",",eval(nThin),",",i,");save(res,file=",dQuote(outfile),");print(",dQuote("all done"),")'",sep='')
     
-   system(cmd,wait=F)
-          
-  }
+    system(cmd,wait=F)
     
+  }
+  
   while(!any(grep('MCout',dir()))){Sys.sleep(3);cat('+')}
   while(length(grep('MCout',dir()))<nChains | sum(file.info(dir()[grep('MCout',dir())])$mtime >  orgtime)<nChains) {Sys.sleep(3);cat('+')}
   
@@ -181,7 +181,7 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   rstan_options(auto_write = TRUE)
   options(mc.cores = parallel::detectCores())
   
-   if(length(grep('Ind',sysfile))>0){
+  if(length(grep('Ind',sysfile))>0){
     variable.names=c('prop','pop.prop')
   } else if(length(grep('Cov',sysfile))>0) {
     variable.names=c('prop','pop.prop','beta')   
@@ -191,12 +191,12 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   #browser()
   #stanmodels[[sysfile]]
   JM <- sampling(stanmodels[[sysfile]],
-             pars = variable.names,
-             chains = nChains, 
-             warmup = nBurnin,
-             thin =nThin,
-             iter =nIter,
-             data=jagsdata)
+                 pars = variable.names,
+                 chains = nChains, 
+                 warmup = nBurnin,
+                 thin =nThin,
+                 iter =nIter,
+                 data=jagsdata)
   res <- As.mcmc.list(JM,pars=variable.names)
   
   
@@ -223,15 +223,15 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
   MCMCout <- y
   
   # do RL diag
- 
+  
   cat('\n','\n')
   
   cat('#################################','\n')
- 
+  
   cat('Raftery-Lewis diagnostics','\n')
- 
+  
   cat('#################################','\n','\n')
-
+  
   class(MCMCout) <- 'mcmc.list'
   
   rd <- raftery.diag(MCMCout, q=quant, r=accuracy, s=proba)
@@ -244,7 +244,7 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     
   } else{
     rit <- max(unlist(lapply(rd,function(x){x$resmatrix[,2]})))
- 
+    
     thin <- max(unlist(lapply(rd,function(x){x$resmatrix[,4]})))
     
     cat('\n','Based on these diagnostics you should repeat the MCMC with ',rit,' iterations','\n','and a thinning interval of ',round(thin),' ,if these values are higher than the values','\n','used to produce these diagnostics','\n','\n')
@@ -257,15 +257,15 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     cat('\n','\n')
     
     cat('#################################','\n')
-   
+    
     cat('Gelman-Rubin diagnostics','\n')
-   
+    
     cat('#################################','\n','\n')
- 
+    
     print(gelman.diag(MCMCout,transform=T))
-   
+    
     cat('\n','Both univariate upper C.I. and multivariate psrf','\n','should be close to 1 if the chains converged','\n','\n','\n')
-  
+    
   }
 }
 
@@ -284,6 +284,23 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
   }
   
   jagsdata <- list(
+    
+    prey_ix = as.numeric(factor(datas$prey.ix,levels = unique(datas$prey.ix))),
+    n_prey_samps = length(datas$prey.ix),
+    n_preys =datas$n.preys,
+    m_preys =datas$n.preys-1,
+    n_preds =datas$n.preds,
+    n_covs = ncol(Covs),
+    
+    S = diag(eveness,m_preys),
+    SS = diag(1,m_preys),
+    zeros = rep(0,m_preys),
+    alpha = rep(1,n_preys),
+    Covs = if(!is.null(Covs)) Covs,
+    ind = if(!is.null(Covs)) ind
+  )
+  
+  if(!is.null(datas$datas.FA))    jagsdata <- c(jagsdata,list(
     n_fats =datas$datas.FA$n.fats,
     R =datas$datas.FA$R,
     fc_mean =datas$datas.FA$fc_mean,
@@ -295,15 +312,13 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     ni =datas$datas.FA$ni,
     preds = data.frame(datas$datas.FA$preds),
     preys = data.frame(datas$datas.FA$preys),
-    prey_ix = as.numeric(factor(datas$prey.ix,levels = unique(datas$prey.ix))),
-    n_prey_samps = length(datas$prey.ix),
+    preym =datas$datas.FA$preym)
+  )
+  
+  
+  if(!is.null(datas$datas.SI))    jagsdata <- c(jagsdata,list(
     prey_ix_SI = as.numeric(factor(datas$prey.ix.SI,levels = unique(datas$prey.ix.SI))),
     n_prey_samps_SI = length(datas$prey.ix.SI),
-    preym =datas$datas.FA$preym,   
-    n_preys =datas$n.preys,
-    m_preys =datas$n.preys-1,
-    n_preds =datas$n.preds,
-    n_covs = ncol(Covs),
     isos =datas$datas.SI$isos,
     R_SI =datas$datas.SI$R.SI,
     mean_cs = as.matrix(datas$datas.SI$mean_cs),
@@ -312,13 +327,7 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     ni_SI =datas$datas.SI$ni.SI,
     preds_SI = as.matrix(datas$datas.SI$preds.SI),
     preys_SI = as.matrix(datas$datas.SI$preys.SI),
-    preym_SI =datas$datas.SI$preym.SI,
-    S = diag(eveness,m_preys),
-    SS = diag(1,m_preys),
-    zeros = rep(0,m_preys),
-    alpha = rep(1,n_preys),
-    Covs = if(!is.null(Covs)) Covs,
-    ind = if(!is.null(Covs)) ind
+    preym_SI =datas$datas.SI$preym.SI)
   )
   
   return(jagsdata)
