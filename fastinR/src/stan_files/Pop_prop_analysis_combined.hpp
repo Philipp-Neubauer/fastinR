@@ -22,7 +22,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_Pop_prop_analysis_combined");
-    reader.add_event(157, 155, "end", "model_Pop_prop_analysis_combined");
+    reader.add_event(158, 156, "end", "model_Pop_prop_analysis_combined");
     return reader;
 }
 
@@ -39,7 +39,7 @@ clo(const Eigen::Matrix<T0__, Eigen::Dynamic, 1>& pp, std::ostream* pstream__) {
     int current_statement_begin__ = -1;
     try {
         current_statement_begin__ = 4;
-        return stan::math::promote_scalar<fun_return_scalar_t__>(divide(stan::math::exp(pp), sum(stan::math::exp(pp))));
+        return stan::math::promote_scalar<fun_return_scalar_t__>(divide(pp, sum(pp)));
     } catch (const std::exception& e) {
         stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
         // Next line prevents compiler griping about no return
@@ -1320,32 +1320,37 @@ public:
                             "assigning variable prey_precs");
                 current_statement_begin__ = 91;
                 stan::model::assign(c_prey, 
-                            stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
-                            inv_alr(get_base1(cons_prey, j, "cons_prey", 1), n_fats, pstream__), 
+                            stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_min_max(1, (n_fats - 1)), stan::model::nil_index_list())), 
+                            stan::math::exp(get_base1(cons_prey, j, "cons_prey", 1)), 
                             "assigning variable c_prey");
                 current_statement_begin__ = 92;
+                stan::model::assign(c_prey, 
+                            stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_uni(n_fats), stan::model::nil_index_list())), 
+                            1, 
+                            "assigning variable c_prey");
+                current_statement_begin__ = 93;
                 stan::model::assign(prey, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             elt_multiply(multiply(get_base1(fc, j, "fc", 1), get_base1(cs, j, "cs", 1)), get_base1(c_prey, j, "c_prey", 1)), 
                             "assigning variable prey");
-                current_statement_begin__ = 95;
+                current_statement_begin__ = 96;
                 stan::model::assign(prey_precs_SI, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
                             diag_pre_multiply(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), get_base1(corr_prey_SI, j, "corr_prey_SI", 1)), 
                             "assigning variable prey_precs_SI");
-                current_statement_begin__ = 96;
+                current_statement_begin__ = 97;
                 stan::model::assign(prey_SI, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             add(get_base1(cc, j, "cc", 1), get_base1(cons_prey_SI, j, "cons_prey_SI", 1)), 
                             "assigning variable prey_SI");
             }
-            current_statement_begin__ = 100;
-            stan::math::assign(mu_SI, multiply(prey_SI, prop));
             current_statement_begin__ = 101;
+            stan::math::assign(mu_SI, multiply(prey_SI, prop));
+            current_statement_begin__ = 102;
             stan::math::assign(pred_prec_SI, diag_pre_multiply(tau_pred_SI, corr_pred_SI));
-            current_statement_begin__ = 103;
-            stan::math::assign(mu, alr(multiply(prey, prop), n_fats, pstream__));
             current_statement_begin__ = 104;
+            stan::math::assign(mu, alr(multiply(prey, prop), n_fats, pstream__));
+            current_statement_begin__ = 105;
             stan::math::assign(pred_prec, diag_pre_multiply(tau_pred, corr_pred));
 
             // validate transformed parameters
@@ -1403,11 +1408,6 @@ public:
                     }
                 }
             }
-            size_t c_prey_i_0_max__ = n_preys;
-            for (size_t i_0__ = 0; i_0__ < c_prey_i_0_max__; ++i_0__) {
-                stan::math::check_simplex(function__, "c_prey[i_0__]", c_prey[i_0__]);
-            }
-
             current_statement_begin__ = 76;
             size_t mu_j_1_max__ = m_fats;
             for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
@@ -1479,68 +1479,68 @@ public:
 
             // model body
 
-            current_statement_begin__ = 110;
+            current_statement_begin__ = 111;
             for (int ps = 1; ps <= n_prey_samps; ++ps) {
-                current_statement_begin__ = 110;
+                current_statement_begin__ = 111;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preys, ps, "preys", 1), get_base1(prey_means, get_base1(prey_ix, ps, "prey_ix", 1), "prey_means", 1), get_base1(prey_precs, get_base1(prey_ix, ps, "prey_ix", 1), "prey_precs", 1)));
             }
-            current_statement_begin__ = 111;
+            current_statement_begin__ = 112;
             for (int ps = 1; ps <= n_prey_samps_SI; ++ps) {
-                current_statement_begin__ = 111;
+                current_statement_begin__ = 112;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preys_SI, ps, "preys_SI", 1), get_base1(prey_means_SI, get_base1(prey_ix_SI, ps, "prey_ix_SI", 1), "prey_means_SI", 1), get_base1(prey_precs_SI, get_base1(prey_ix_SI, ps, "prey_ix_SI", 1), "prey_precs_SI", 1)));
             }
-            current_statement_begin__ = 114;
+            current_statement_begin__ = 115;
             for (int p = 1; p <= n_preds; ++p) {
 
-                current_statement_begin__ = 115;
-                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preds, p, "preds", 1), mu, pred_prec));
                 current_statement_begin__ = 116;
+                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preds, p, "preds", 1), mu, pred_prec));
+                current_statement_begin__ = 117;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preds_SI, p, "preds_SI", 1), mu_SI, pred_prec_SI));
             }
-            current_statement_begin__ = 119;
-            lp_accum__.add(gamma_log<propto__>(props, pow(n_preys, -(1)), 1));
             current_statement_begin__ = 120;
+            lp_accum__.add(gamma_log<propto__>(props, 1.5, 1));
+            current_statement_begin__ = 121;
             lp_accum__.add(lognormal_log<propto__>(fc, fc_mean, stan::math::sqrt(elt_divide(1.0, fc_tau))));
-            current_statement_begin__ = 122;
+            current_statement_begin__ = 123;
             for (int j = 1; j <= n_preys; ++j) {
 
-                current_statement_begin__ = 124;
-                lp_accum__.add(cauchy_log<propto__>(get_base1(tau_prey, j, "tau_prey", 1), 0, 10));
                 current_statement_begin__ = 125;
-                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey, j, "corr_prey", 1), 1));
-                current_statement_begin__ = 127;
-                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means, j, "prey_means", 1), get_base1(preym, j, "preym", 1), diag_pre_multiply(tau_mean, corr_mean)));
+                lp_accum__.add(normal_log<propto__>(get_base1(tau_prey, j, "tau_prey", 1), 0, 10));
+                current_statement_begin__ = 126;
+                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey, j, "corr_prey", 1), 3));
                 current_statement_begin__ = 128;
+                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means, j, "prey_means", 1), get_base1(preym, j, "preym", 1), diag_pre_multiply(tau_mean, corr_mean)));
+                current_statement_begin__ = 129;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(cons_prey, j, "cons_prey", 1), get_base1(prey_means, j, "prey_means", 1), get_base1(prey_precs, j, "prey_precs", 1)));
-                current_statement_begin__ = 130;
+                current_statement_begin__ = 131;
                 lp_accum__.add(gamma_log<propto__>(get_base1(cs, j, "cs", 1), get_base1(mean_c, j, "mean_c", 1), get_base1(tau_coeffs, j, "tau_coeffs", 1)));
-                current_statement_begin__ = 133;
-                lp_accum__.add(cauchy_log<propto__>(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), 0, 10));
                 current_statement_begin__ = 134;
-                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey_SI, j, "corr_prey_SI", 1), 1));
-                current_statement_begin__ = 136;
-                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means_SI, j, "prey_means_SI", 1), get_base1(preym_SI, j, "preym_SI", 1), diag_pre_multiply(tau_mean_SI, corr_mean_SI)));
+                lp_accum__.add(normal_log<propto__>(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), 0, 10));
+                current_statement_begin__ = 135;
+                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey_SI, j, "corr_prey_SI", 1), 3));
                 current_statement_begin__ = 137;
+                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means_SI, j, "prey_means_SI", 1), get_base1(preym_SI, j, "preym_SI", 1), diag_pre_multiply(tau_mean_SI, corr_mean_SI)));
+                current_statement_begin__ = 138;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(cons_prey_SI, j, "cons_prey_SI", 1), get_base1(prey_means_SI, j, "prey_means_SI", 1), get_base1(prey_precs_SI, j, "prey_precs_SI", 1)));
-                current_statement_begin__ = 139;
+                current_statement_begin__ = 140;
                 lp_accum__.add(normal_log<propto__>(get_base1(cc, j, "cc", 1), get_base1(mean_cs, j, "mean_cs", 1), get_base1(sigma_cs, j, "sigma_cs", 1)));
             }
-            current_statement_begin__ = 145;
-            lp_accum__.add(normal_log<propto__>(tau_pred, 0, 10));
             current_statement_begin__ = 146;
-            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_pred, 1));
+            lp_accum__.add(normal_log<propto__>(tau_pred, 0, 10));
             current_statement_begin__ = 147;
-            lp_accum__.add(normal_log<propto__>(tau_pred_SI, 0, 10));
+            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_pred, 3));
             current_statement_begin__ = 148;
-            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_pred_SI, 1));
-            current_statement_begin__ = 150;
-            lp_accum__.add(normal_log<propto__>(tau_mean, 0, 10));
+            lp_accum__.add(normal_log<propto__>(tau_pred_SI, 0, 10));
+            current_statement_begin__ = 149;
+            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_pred_SI, 3));
             current_statement_begin__ = 151;
-            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_mean, 1));
+            lp_accum__.add(normal_log<propto__>(tau_mean, 0, 10));
             current_statement_begin__ = 152;
-            lp_accum__.add(normal_log<propto__>(tau_mean_SI, 0, 10));
+            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_mean, 3));
             current_statement_begin__ = 153;
-            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_mean_SI, 1));
+            lp_accum__.add(normal_log<propto__>(tau_mean_SI, 0, 10));
+            current_statement_begin__ = 154;
+            lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_mean_SI, 3));
 
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -2052,44 +2052,43 @@ public:
                             "assigning variable prey_precs");
                 current_statement_begin__ = 91;
                 stan::model::assign(c_prey, 
-                            stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
-                            inv_alr(get_base1(cons_prey, j, "cons_prey", 1), n_fats, pstream__), 
+                            stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_min_max(1, (n_fats - 1)), stan::model::nil_index_list())), 
+                            stan::math::exp(get_base1(cons_prey, j, "cons_prey", 1)), 
                             "assigning variable c_prey");
                 current_statement_begin__ = 92;
+                stan::model::assign(c_prey, 
+                            stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_uni(n_fats), stan::model::nil_index_list())), 
+                            1, 
+                            "assigning variable c_prey");
+                current_statement_begin__ = 93;
                 stan::model::assign(prey, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             elt_multiply(multiply(get_base1(fc, j, "fc", 1), get_base1(cs, j, "cs", 1)), get_base1(c_prey, j, "c_prey", 1)), 
                             "assigning variable prey");
-                current_statement_begin__ = 95;
+                current_statement_begin__ = 96;
                 stan::model::assign(prey_precs_SI, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
                             diag_pre_multiply(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), get_base1(corr_prey_SI, j, "corr_prey_SI", 1)), 
                             "assigning variable prey_precs_SI");
-                current_statement_begin__ = 96;
+                current_statement_begin__ = 97;
                 stan::model::assign(prey_SI, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             add(get_base1(cc, j, "cc", 1), get_base1(cons_prey_SI, j, "cons_prey_SI", 1)), 
                             "assigning variable prey_SI");
             }
-            current_statement_begin__ = 100;
-            stan::math::assign(mu_SI, multiply(prey_SI, prop));
             current_statement_begin__ = 101;
+            stan::math::assign(mu_SI, multiply(prey_SI, prop));
+            current_statement_begin__ = 102;
             stan::math::assign(pred_prec_SI, diag_pre_multiply(tau_pred_SI, corr_pred_SI));
-            current_statement_begin__ = 103;
-            stan::math::assign(mu, alr(multiply(prey, prop), n_fats, pstream__));
             current_statement_begin__ = 104;
+            stan::math::assign(mu, alr(multiply(prey, prop), n_fats, pstream__));
+            current_statement_begin__ = 105;
             stan::math::assign(pred_prec, diag_pre_multiply(tau_pred, corr_pred));
 
             if (!include_gqs__ && !include_tparams__) return;
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-
-            current_statement_begin__ = 75;
-            size_t c_prey_i_0_max__ = n_preys;
-            for (size_t i_0__ = 0; i_0__ < c_prey_i_0_max__; ++i_0__) {
-                stan::math::check_simplex(function__, "c_prey[i_0__]", c_prey[i_0__]);
-            }
 
             current_statement_begin__ = 83;
             stan::math::check_simplex(function__, "prop", prop);
@@ -2652,7 +2651,7 @@ public:
                     param_names__.push_back(param_name_stream__.str());
                 }
             }
-            size_t c_prey_j_1_max__ = (n_fats - 1);
+            size_t c_prey_j_1_max__ = n_fats;
             size_t c_prey_k_0_max__ = n_preys;
             for (size_t j_1__ = 0; j_1__ < c_prey_j_1_max__; ++j_1__) {
                 for (size_t k_0__ = 0; k_0__ < c_prey_k_0_max__; ++k_0__) {

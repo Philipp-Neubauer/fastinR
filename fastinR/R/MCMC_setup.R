@@ -109,11 +109,11 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
       }
     }
     
-    res <- c(res,nChains = nChains)
-    res <- c(res,prey.names = list(unique(datas$prey.ix)))
+    res$res <- c(res$res,nChains = nChains)
+    res$res <- c(res$res,prey.names = list(unique(datas$prey.ix)))
     if (Analysis.Type == 'Analysis.with.Covariates') res <- c(res,Covs=list(Covs))
     
-    class(res) <- switch(Analysis.Type,
+    class(res$res) <- switch(Analysis.Type,
                          Population.proportions = 'pop_props',
                          Individual.proportions = 'ind_props',
                          Analysis.with.Covariates = 'cov_props'
@@ -191,16 +191,24 @@ run_MCMC <- function(datas=NULL,Covs=NULL,nIter=10000,nBurnin=1000,nChains=1,nTh
   #browser()
   #stanmodels[[sysfile]]
   JM <- sampling(stanmodels[[sysfile]],
-                 pars = variable.names,
+                 init = function() list(props = rep(1/jagsdata$n_preys, jagsdata$n_preys),
+                                        prey_means = jagsdata$preym,
+                                        cons_prey  = jagsdata$preym,
+                                        prey_means_SI = jagsdata$preym_SI,
+                                        cons_prey_SI  = jagsdata$preym_SI,
+                                        cc = jagsdata$mean_cs,
+                                        cs = jagsdata$mean_c,
+                                        fc = exp(jagsdata$fc_mean)
+                                        ),
                  chains = nChains, 
                  warmup = nBurnin,
                  thin =nThin,
                  iter =nIter,
                  data=jagsdata)
-  res <- As.mcmc.list(JM,pars=variable.names)
+  res <- As.mcmc.list(JM, pars=variable.names)
   
   
-  return(res)
+  list(res=res, mod=JM)
 }
 
 #' @title Raftery-Lewis and Gelman-Rubin diagnostics for MCMC chains from \code{\link{run_MCMC}}. Multiple chains are needed for the latter type of diagnostic.

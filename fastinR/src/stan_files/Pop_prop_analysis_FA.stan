@@ -1,7 +1,7 @@
 functions {
   
    vector clo(vector pp)
-    return exp(pp)/sum(exp(pp));  
+    return pp/sum(pp);  
     
   vector alr(vector pp, int dim)
     return log(pp[1:(dim-1)]/pp[dim]);  
@@ -49,7 +49,7 @@ transformed parameters{
   matrix[m_fats,m_fats] pred_prec;
   simplex[n_preys] prop;
   matrix[n_fats,n_preys] prey;
-  simplex[n_fats] c_prey[n_preys];
+  vector[n_fats] c_prey[n_preys];
   vector[m_fats] mu;
   
   prop = clo(props);
@@ -57,7 +57,8 @@ transformed parameters{
   for (j in 1:n_preys){
     
     prey_precs[j] = diag_pre_multiply(tau_prey[j], corr_prey[j]);
-    c_prey[j] = inv_alr(cons_prey[j], n_fats);
+    c_prey[j,1:(n_fats-1)] = exp(cons_prey[j]);
+    c_prey[j,n_fats] = 1;
     prey[,j] = fc[j] * cs[j] .* c_prey[j];
       // mixing for predator FA signature for likelihood
   }
@@ -75,13 +76,13 @@ model{
     
   for (p in 1:n_preds) preds[p] ~ multi_normal_cholesky(mu,pred_prec);
 
-  props ~ gamma(n_preys^-1,1);
+  props ~ gamma(1.5,1);
   fc ~ lognormal(fc_mean,sqrt(1.0./fc_tau));   
 
   for (j in 1:n_preys){
     
-    tau_prey[j] ~ cauchy(0, 10);
-    corr_prey[j] ~ lkj_corr_cholesky(1);
+    tau_prey[j] ~ normal(0, 10);
+    corr_prey[j] ~ lkj_corr_cholesky(3);
     
     prey_means[j] ~ multi_normal_cholesky(preym[j], diag_pre_multiply(tau_mean, corr_mean));
     cons_prey[j] ~ multi_normal_cholesky(prey_means[j],prey_precs[j]);
@@ -93,10 +94,10 @@ model{
       
   // priors for predator covariance
    tau_pred ~ normal(0, 10);
-   corr_pred ~ lkj_corr_cholesky(1);
+   corr_pred ~ lkj_corr_cholesky(3);
   
    tau_mean ~ normal(0, 10);
-   corr_mean ~ lkj_corr_cholesky(1);
+   corr_mean ~ lkj_corr_cholesky(3);
  
   
 }

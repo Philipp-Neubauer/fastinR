@@ -1,7 +1,7 @@
 functions {
   
   vector clo(vector pp)
-  return exp(pp)/sum(exp(pp));  
+    return pp/sum(pp);  
   
   vector alr(vector pp, int dim)
   return log(pp[1:(dim-1)]/pp[dim]);  
@@ -72,7 +72,7 @@ transformed parameters{
   matrix[m_fats,m_fats] prey_precs[n_preys];
   matrix[m_fats,m_fats] pred_prec;
   matrix[n_fats,n_preys] prey;
-  simplex[n_fats] c_prey[n_preys];
+  vector[n_fats] c_prey[n_preys];
   vector[m_fats] mu;
   
   matrix[isos,isos] prey_precs_SI[n_preys];
@@ -88,7 +88,8 @@ transformed parameters{
   for (j in 1:n_preys){
     
     prey_precs[j] = diag_pre_multiply(tau_prey[j], corr_prey[j]);
-    c_prey[j] = inv_alr(cons_prey[j], n_fats);
+    c_prey[j,1:(n_fats-1)] = exp(cons_prey[j]);
+    c_prey[j,n_fats] = 1;
     prey[,j] = fc[j] * cs[j] .* c_prey[j];
     // mixing for predator FA signature for likelihood
     
@@ -116,13 +117,13 @@ model{
     preds_SI[p] ~ multi_normal_cholesky(mu_SI,pred_prec_SI);
   }
   
-  props ~ gamma(n_preys^-1,1);
+  props ~ gamma(1.5,1);
   fc ~ lognormal(fc_mean,sqrt(1.0./fc_tau));   
   
   for (j in 1:n_preys){
     
-    tau_prey[j] ~ cauchy(0, 10);
-    corr_prey[j] ~ lkj_corr_cholesky(1);
+    tau_prey[j] ~ normal(0, 10);
+    corr_prey[j] ~ lkj_corr_cholesky(3);
     
     prey_means[j] ~ multi_normal_cholesky(preym[j], diag_pre_multiply(tau_mean, corr_mean));
     cons_prey[j] ~ multi_normal_cholesky(prey_means[j],prey_precs[j]);
@@ -130,8 +131,8 @@ model{
     cs[j] ~ gamma(mean_c[j],tau_coeffs[j]);
     
     
-    tau_prey_SI[j] ~ cauchy(0, 10);
-    corr_prey_SI[j] ~ lkj_corr_cholesky(1);
+    tau_prey_SI[j] ~ normal(0, 10);
+    corr_prey_SI[j] ~ lkj_corr_cholesky(3);
     
     prey_means_SI[j] ~ multi_normal_cholesky(preym_SI[j], diag_pre_multiply(tau_mean_SI, corr_mean_SI));
     cons_prey_SI[j] ~ multi_normal_cholesky(prey_means_SI[j],prey_precs_SI[j]);
@@ -143,13 +144,13 @@ model{
   
   // priors for predator covariance
   tau_pred ~ normal(0, 10);
-  corr_pred ~ lkj_corr_cholesky(1);
+  corr_pred ~ lkj_corr_cholesky(3);
   tau_pred_SI ~ normal(0, 10);
-  corr_pred_SI ~ lkj_corr_cholesky(1);
+  corr_pred_SI ~ lkj_corr_cholesky(3);
   
   tau_mean ~ normal(0, 10);
-  corr_mean ~ lkj_corr_cholesky(1);
+  corr_mean ~ lkj_corr_cholesky(3);
   tau_mean_SI ~ normal(0, 10);
-  corr_mean_SI ~ lkj_corr_cholesky(1);
+  corr_mean_SI ~ lkj_corr_cholesky(3);
   
 }
