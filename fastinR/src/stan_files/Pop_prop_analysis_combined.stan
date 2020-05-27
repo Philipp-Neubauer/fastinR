@@ -1,7 +1,7 @@
 functions {
   
   vector clo(vector pp)
-    return pp/sum(pp);  
+  return pp/sum(pp);  
   
   vector alr(vector pp, int dim)
   return log(pp[1:(dim-1)]/pp[dim]);  
@@ -28,6 +28,7 @@ data {
   int prey_ix[n_prey_samps];
   vector[n_preys] fc_mean;
   vector[n_preys] fc_tau;
+  int<lower=0, upper=1> fc_data;
   vector[m_fats] preys[n_prey_samps];
   vector[m_fats] preym[n_preys];
   vector[n_fats] mean_c[n_preys];
@@ -41,10 +42,15 @@ data {
   vector[isos] sigma_cs[n_preys];
   vector[isos] preds_SI[n_preds];
 }
+transformed data{
+  real fc_base[n_preys];
+  
+  for (p in 1:n_preys) fc_base[p] = 1.0;
+}
 parameters{
   vector[m_fats] prey_means[n_preys];
   vector<lower=0>[n_fats] cs[n_preys];
-  real<lower=0> fc[n_preys];
+  real<lower=0, upper=10> fcs[fc_data ? n_preys : 0];
   vector[m_fats] cons_prey[n_preys];
   
   cholesky_factor_corr[m_fats] corr_prey[n_preys];
@@ -79,11 +85,17 @@ transformed parameters{
   matrix[isos,isos] pred_prec_SI;
   matrix[isos,n_preys] prey_SI;
   vector[isos] mu_SI;
-  
+  real fc[n_preys]; 
   simplex[n_preys] prop;
   
   
   prop = clo(props);
+  
+  if(fc_data){
+    fc = fcs;
+  } else {
+    fc = fc_base;
+  }
   
   for (j in 1:n_preys){
     
@@ -118,7 +130,7 @@ model{
   }
   
   props ~ gamma(1.5,1);
-  fc ~ lognormal(fc_mean,sqrt(1.0./fc_tau));   
+  if(fc_data) fcs ~ lognormal(fc_mean,sqrt(1.0./fc_tau));  
   
   for (j in 1:n_preys){
     

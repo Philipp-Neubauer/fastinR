@@ -22,7 +22,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_Pop_prop_analysis_combined");
-    reader.add_event(158, 156, "end", "model_Pop_prop_analysis_combined");
+    reader.add_event(170, 168, "end", "model_Pop_prop_analysis_combined");
     return reader;
 }
 
@@ -152,6 +152,7 @@ private:
         std::vector<int> prey_ix;
         vector_d fc_mean;
         vector_d fc_tau;
+        int fc_data;
         std::vector<vector_d> preys;
         std::vector<vector_d> preym;
         std::vector<vector_d> mean_c;
@@ -163,6 +164,7 @@ private:
         std::vector<vector_d> mean_cs;
         std::vector<vector_d> sigma_cs;
         std::vector<vector_d> preds_SI;
+        std::vector<double> fc_base;
 public:
     model_Pop_prop_analysis_combined(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
@@ -289,6 +291,15 @@ public:
             }
 
             current_statement_begin__ = 31;
+            context__.validate_dims("data initialization", "fc_data", "int", context__.to_vec());
+            fc_data = int(0);
+            vals_i__ = context__.vals_i("fc_data");
+            pos__ = 0;
+            fc_data = vals_i__[pos__++];
+            check_greater_or_equal(function__, "fc_data", fc_data, 0);
+            check_less_or_equal(function__, "fc_data", fc_data, 1);
+
+            current_statement_begin__ = 32;
             validate_non_negative_index("preys", "m_fats", m_fats);
             validate_non_negative_index("preys", "n_prey_samps", n_prey_samps);
             context__.validate_dims("data initialization", "preys", "vector_d", context__.to_vec(n_prey_samps,m_fats));
@@ -303,7 +314,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 32;
+            current_statement_begin__ = 33;
             validate_non_negative_index("preym", "m_fats", m_fats);
             validate_non_negative_index("preym", "n_preys", n_preys);
             context__.validate_dims("data initialization", "preym", "vector_d", context__.to_vec(n_preys,m_fats));
@@ -318,7 +329,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 33;
+            current_statement_begin__ = 34;
             validate_non_negative_index("mean_c", "n_fats", n_fats);
             validate_non_negative_index("mean_c", "n_preys", n_preys);
             context__.validate_dims("data initialization", "mean_c", "vector_d", context__.to_vec(n_preys,n_fats));
@@ -333,7 +344,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 34;
+            current_statement_begin__ = 35;
             validate_non_negative_index("tau_coeffs", "n_fats", n_fats);
             validate_non_negative_index("tau_coeffs", "n_preys", n_preys);
             context__.validate_dims("data initialization", "tau_coeffs", "vector_d", context__.to_vec(n_preys,n_fats));
@@ -348,7 +359,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 35;
+            current_statement_begin__ = 36;
             validate_non_negative_index("preds", "m_fats", m_fats);
             validate_non_negative_index("preds", "n_preds", n_preds);
             context__.validate_dims("data initialization", "preds", "vector_d", context__.to_vec(n_preds,m_fats));
@@ -363,7 +374,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 37;
+            current_statement_begin__ = 38;
             validate_non_negative_index("prey_ix_SI", "n_prey_samps_SI", n_prey_samps_SI);
             context__.validate_dims("data initialization", "prey_ix_SI", "int", context__.to_vec(n_prey_samps_SI));
             prey_ix_SI = std::vector<int>(n_prey_samps_SI, int(0));
@@ -374,7 +385,7 @@ public:
                 prey_ix_SI[k_0__] = vals_i__[pos__++];
             }
 
-            current_statement_begin__ = 38;
+            current_statement_begin__ = 39;
             validate_non_negative_index("preys_SI", "isos", isos);
             validate_non_negative_index("preys_SI", "n_prey_samps_SI", n_prey_samps_SI);
             context__.validate_dims("data initialization", "preys_SI", "vector_d", context__.to_vec(n_prey_samps_SI,isos));
@@ -389,7 +400,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 39;
+            current_statement_begin__ = 40;
             validate_non_negative_index("preym_SI", "isos", isos);
             validate_non_negative_index("preym_SI", "n_preys", n_preys);
             context__.validate_dims("data initialization", "preym_SI", "vector_d", context__.to_vec(n_preys,isos));
@@ -404,7 +415,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 40;
+            current_statement_begin__ = 41;
             validate_non_negative_index("mean_cs", "isos", isos);
             validate_non_negative_index("mean_cs", "n_preys", n_preys);
             context__.validate_dims("data initialization", "mean_cs", "vector_d", context__.to_vec(n_preys,isos));
@@ -419,7 +430,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 41;
+            current_statement_begin__ = 42;
             validate_non_negative_index("sigma_cs", "isos", isos);
             validate_non_negative_index("sigma_cs", "n_preys", n_preys);
             context__.validate_dims("data initialization", "sigma_cs", "vector_d", context__.to_vec(n_preys,isos));
@@ -434,7 +445,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 42;
+            current_statement_begin__ = 43;
             validate_non_negative_index("preds_SI", "isos", isos);
             validate_non_negative_index("preds_SI", "n_preds", n_preds);
             context__.validate_dims("data initialization", "preds_SI", "vector_d", context__.to_vec(n_preds,isos));
@@ -451,87 +462,100 @@ public:
 
 
             // initialize transformed data variables
+            current_statement_begin__ = 46;
+            validate_non_negative_index("fc_base", "n_preys", n_preys);
+            fc_base = std::vector<double>(n_preys, double(0));
+            stan::math::fill(fc_base, DUMMY_VAR__);
+
             // execute transformed data statements
+            current_statement_begin__ = 48;
+            for (int p = 1; p <= n_preys; ++p) {
+                current_statement_begin__ = 48;
+                stan::model::assign(fc_base, 
+                            stan::model::cons_list(stan::model::index_uni(p), stan::model::nil_index_list()), 
+                            1.0, 
+                            "assigning variable fc_base");
+            }
 
             // validate transformed data
 
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 51;
             validate_non_negative_index("prey_means", "m_fats", m_fats);
             validate_non_negative_index("prey_means", "n_preys", n_preys);
             num_params_r__ += (m_fats * n_preys);
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 52;
             validate_non_negative_index("cs", "n_fats", n_fats);
             validate_non_negative_index("cs", "n_preys", n_preys);
             num_params_r__ += (n_fats * n_preys);
-            current_statement_begin__ = 47;
-            validate_non_negative_index("fc", "n_preys", n_preys);
-            num_params_r__ += (1 * n_preys);
-            current_statement_begin__ = 48;
+            current_statement_begin__ = 53;
+            validate_non_negative_index("fcs", "(fc_data ? n_preys : 0 )", (fc_data ? n_preys : 0 ));
+            num_params_r__ += (1 * (fc_data ? n_preys : 0 ));
+            current_statement_begin__ = 54;
             validate_non_negative_index("cons_prey", "m_fats", m_fats);
             validate_non_negative_index("cons_prey", "n_preys", n_preys);
             num_params_r__ += (m_fats * n_preys);
-            current_statement_begin__ = 50;
+            current_statement_begin__ = 56;
             validate_non_negative_index("corr_prey", "m_fats", m_fats);
             validate_non_negative_index("corr_prey", "m_fats", m_fats);
             validate_non_negative_index("corr_prey", "n_preys", n_preys);
             num_params_r__ += (((m_fats * (m_fats - 1)) / 2) * n_preys);
-            current_statement_begin__ = 51;
+            current_statement_begin__ = 57;
             validate_non_negative_index("corr_pred", "m_fats", m_fats);
             validate_non_negative_index("corr_pred", "m_fats", m_fats);
             num_params_r__ += ((m_fats * (m_fats - 1)) / 2);
-            current_statement_begin__ = 52;
+            current_statement_begin__ = 58;
             validate_non_negative_index("corr_mean", "m_fats", m_fats);
             validate_non_negative_index("corr_mean", "m_fats", m_fats);
             num_params_r__ += ((m_fats * (m_fats - 1)) / 2);
-            current_statement_begin__ = 53;
+            current_statement_begin__ = 59;
             validate_non_negative_index("tau_prey", "m_fats", m_fats);
             validate_non_negative_index("tau_prey", "n_preys", n_preys);
             num_params_r__ += (m_fats * n_preys);
-            current_statement_begin__ = 54;
+            current_statement_begin__ = 60;
             validate_non_negative_index("tau_mean", "m_fats", m_fats);
             num_params_r__ += m_fats;
-            current_statement_begin__ = 55;
+            current_statement_begin__ = 61;
             validate_non_negative_index("tau_pred", "m_fats", m_fats);
             num_params_r__ += m_fats;
-            current_statement_begin__ = 57;
+            current_statement_begin__ = 63;
             validate_non_negative_index("prey_means_SI", "isos", isos);
             validate_non_negative_index("prey_means_SI", "n_preys", n_preys);
             num_params_r__ += (isos * n_preys);
-            current_statement_begin__ = 58;
+            current_statement_begin__ = 64;
             validate_non_negative_index("cc", "isos", isos);
             validate_non_negative_index("cc", "n_preys", n_preys);
             num_params_r__ += (isos * n_preys);
-            current_statement_begin__ = 59;
+            current_statement_begin__ = 65;
             validate_non_negative_index("cons_prey_SI", "isos", isos);
             validate_non_negative_index("cons_prey_SI", "n_preys", n_preys);
             num_params_r__ += (isos * n_preys);
-            current_statement_begin__ = 61;
+            current_statement_begin__ = 67;
             validate_non_negative_index("corr_prey_SI", "isos", isos);
             validate_non_negative_index("corr_prey_SI", "isos", isos);
             validate_non_negative_index("corr_prey_SI", "n_preys", n_preys);
             num_params_r__ += (((isos * (isos - 1)) / 2) * n_preys);
-            current_statement_begin__ = 62;
+            current_statement_begin__ = 68;
             validate_non_negative_index("corr_pred_SI", "isos", isos);
             validate_non_negative_index("corr_pred_SI", "isos", isos);
             num_params_r__ += ((isos * (isos - 1)) / 2);
-            current_statement_begin__ = 63;
+            current_statement_begin__ = 69;
             validate_non_negative_index("corr_mean_SI", "isos", isos);
             validate_non_negative_index("corr_mean_SI", "isos", isos);
             num_params_r__ += ((isos * (isos - 1)) / 2);
-            current_statement_begin__ = 64;
+            current_statement_begin__ = 70;
             validate_non_negative_index("tau_prey_SI", "isos", isos);
             validate_non_negative_index("tau_prey_SI", "n_preys", n_preys);
             num_params_r__ += (isos * n_preys);
-            current_statement_begin__ = 65;
+            current_statement_begin__ = 71;
             validate_non_negative_index("tau_mean_SI", "isos", isos);
             num_params_r__ += isos;
-            current_statement_begin__ = 66;
+            current_statement_begin__ = 72;
             validate_non_negative_index("tau_pred_SI", "isos", isos);
             num_params_r__ += isos;
-            current_statement_begin__ = 69;
+            current_statement_begin__ = 75;
             validate_non_negative_index("props", "n_preys", n_preys);
             num_params_r__ += n_preys;
         } catch (const std::exception& e) {
@@ -555,7 +579,7 @@ public:
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
 
-        current_statement_begin__ = 45;
+        current_statement_begin__ = 51;
         if (!(context__.contains_r("prey_means")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable prey_means missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("prey_means");
@@ -580,7 +604,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 46;
+        current_statement_begin__ = 52;
         if (!(context__.contains_r("cs")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable cs missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("cs");
@@ -605,28 +629,28 @@ public:
             }
         }
 
-        current_statement_begin__ = 47;
-        if (!(context__.contains_r("fc")))
-            stan::lang::rethrow_located(std::runtime_error(std::string("Variable fc missing")), current_statement_begin__, prog_reader__());
-        vals_r__ = context__.vals_r("fc");
+        current_statement_begin__ = 53;
+        if (!(context__.contains_r("fcs")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable fcs missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("fcs");
         pos__ = 0U;
-        validate_non_negative_index("fc", "n_preys", n_preys);
-        context__.validate_dims("parameter initialization", "fc", "double", context__.to_vec(n_preys));
-        std::vector<double> fc(n_preys, double(0));
-        size_t fc_k_0_max__ = n_preys;
-        for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
-            fc[k_0__] = vals_r__[pos__++];
+        validate_non_negative_index("fcs", "(fc_data ? n_preys : 0 )", (fc_data ? n_preys : 0 ));
+        context__.validate_dims("parameter initialization", "fcs", "double", context__.to_vec((fc_data ? n_preys : 0 )));
+        std::vector<double> fcs((fc_data ? n_preys : 0 ), double(0));
+        size_t fcs_k_0_max__ = (fc_data ? n_preys : 0 );
+        for (size_t k_0__ = 0; k_0__ < fcs_k_0_max__; ++k_0__) {
+            fcs[k_0__] = vals_r__[pos__++];
         }
-        size_t fc_i_0_max__ = n_preys;
-        for (size_t i_0__ = 0; i_0__ < fc_i_0_max__; ++i_0__) {
+        size_t fcs_i_0_max__ = (fc_data ? n_preys : 0 );
+        for (size_t i_0__ = 0; i_0__ < fcs_i_0_max__; ++i_0__) {
             try {
-                writer__.scalar_lb_unconstrain(0, fc[i_0__]);
+                writer__.scalar_lub_unconstrain(0, 10, fcs[i_0__]);
             } catch (const std::exception& e) {
-                stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable fc: ") + e.what()), current_statement_begin__, prog_reader__());
+                stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable fcs: ") + e.what()), current_statement_begin__, prog_reader__());
             }
         }
 
-        current_statement_begin__ = 48;
+        current_statement_begin__ = 54;
         if (!(context__.contains_r("cons_prey")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable cons_prey missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("cons_prey");
@@ -651,7 +675,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 50;
+        current_statement_begin__ = 56;
         if (!(context__.contains_r("corr_prey")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable corr_prey missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("corr_prey");
@@ -680,7 +704,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 51;
+        current_statement_begin__ = 57;
         if (!(context__.contains_r("corr_pred")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable corr_pred missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("corr_pred");
@@ -702,7 +726,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable corr_pred: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 52;
+        current_statement_begin__ = 58;
         if (!(context__.contains_r("corr_mean")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable corr_mean missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("corr_mean");
@@ -724,7 +748,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable corr_mean: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 53;
+        current_statement_begin__ = 59;
         if (!(context__.contains_r("tau_prey")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable tau_prey missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("tau_prey");
@@ -749,7 +773,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 54;
+        current_statement_begin__ = 60;
         if (!(context__.contains_r("tau_mean")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable tau_mean missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("tau_mean");
@@ -767,7 +791,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable tau_mean: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 55;
+        current_statement_begin__ = 61;
         if (!(context__.contains_r("tau_pred")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable tau_pred missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("tau_pred");
@@ -785,7 +809,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable tau_pred: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 57;
+        current_statement_begin__ = 63;
         if (!(context__.contains_r("prey_means_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable prey_means_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("prey_means_SI");
@@ -810,7 +834,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 58;
+        current_statement_begin__ = 64;
         if (!(context__.contains_r("cc")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable cc missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("cc");
@@ -835,7 +859,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 59;
+        current_statement_begin__ = 65;
         if (!(context__.contains_r("cons_prey_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable cons_prey_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("cons_prey_SI");
@@ -860,7 +884,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 61;
+        current_statement_begin__ = 67;
         if (!(context__.contains_r("corr_prey_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable corr_prey_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("corr_prey_SI");
@@ -889,7 +913,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 62;
+        current_statement_begin__ = 68;
         if (!(context__.contains_r("corr_pred_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable corr_pred_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("corr_pred_SI");
@@ -911,7 +935,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable corr_pred_SI: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 63;
+        current_statement_begin__ = 69;
         if (!(context__.contains_r("corr_mean_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable corr_mean_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("corr_mean_SI");
@@ -933,7 +957,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable corr_mean_SI: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 64;
+        current_statement_begin__ = 70;
         if (!(context__.contains_r("tau_prey_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable tau_prey_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("tau_prey_SI");
@@ -958,7 +982,7 @@ public:
             }
         }
 
-        current_statement_begin__ = 65;
+        current_statement_begin__ = 71;
         if (!(context__.contains_r("tau_mean_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable tau_mean_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("tau_mean_SI");
@@ -976,7 +1000,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable tau_mean_SI: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 66;
+        current_statement_begin__ = 72;
         if (!(context__.contains_r("tau_pred_SI")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable tau_pred_SI missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("tau_pred_SI");
@@ -994,7 +1018,7 @@ public:
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable tau_pred_SI: ") + e.what()), current_statement_begin__, prog_reader__());
         }
 
-        current_statement_begin__ = 69;
+        current_statement_begin__ = 75;
         if (!(context__.contains_r("props")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable props missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("props");
@@ -1044,7 +1068,7 @@ public:
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
 
             // model parameters
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 51;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > prey_means;
             size_t prey_means_d_0_max__ = n_preys;
             prey_means.reserve(prey_means_d_0_max__);
@@ -1055,7 +1079,7 @@ public:
                     prey_means.push_back(in__.vector_constrain(m_fats));
             }
 
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 52;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > cs;
             size_t cs_d_0_max__ = n_preys;
             cs.reserve(cs_d_0_max__);
@@ -1066,18 +1090,18 @@ public:
                     cs.push_back(in__.vector_lb_constrain(0, n_fats));
             }
 
-            current_statement_begin__ = 47;
-            std::vector<local_scalar_t__> fc;
-            size_t fc_d_0_max__ = n_preys;
-            fc.reserve(fc_d_0_max__);
-            for (size_t d_0__ = 0; d_0__ < fc_d_0_max__; ++d_0__) {
+            current_statement_begin__ = 53;
+            std::vector<local_scalar_t__> fcs;
+            size_t fcs_d_0_max__ = (fc_data ? n_preys : 0 );
+            fcs.reserve(fcs_d_0_max__);
+            for (size_t d_0__ = 0; d_0__ < fcs_d_0_max__; ++d_0__) {
                 if (jacobian__)
-                    fc.push_back(in__.scalar_lb_constrain(0, lp__));
+                    fcs.push_back(in__.scalar_lub_constrain(0, 10, lp__));
                 else
-                    fc.push_back(in__.scalar_lb_constrain(0));
+                    fcs.push_back(in__.scalar_lub_constrain(0, 10));
             }
 
-            current_statement_begin__ = 48;
+            current_statement_begin__ = 54;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > cons_prey;
             size_t cons_prey_d_0_max__ = n_preys;
             cons_prey.reserve(cons_prey_d_0_max__);
@@ -1088,7 +1112,7 @@ public:
                     cons_prey.push_back(in__.vector_constrain(m_fats));
             }
 
-            current_statement_begin__ = 50;
+            current_statement_begin__ = 56;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> > corr_prey;
             size_t corr_prey_d_0_max__ = n_preys;
             corr_prey.reserve(corr_prey_d_0_max__);
@@ -1099,7 +1123,7 @@ public:
                     corr_prey.push_back(in__.cholesky_factor_corr_constrain(m_fats));
             }
 
-            current_statement_begin__ = 51;
+            current_statement_begin__ = 57;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> corr_pred;
             (void) corr_pred;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1107,7 +1131,7 @@ public:
             else
                 corr_pred = in__.cholesky_factor_corr_constrain(m_fats);
 
-            current_statement_begin__ = 52;
+            current_statement_begin__ = 58;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> corr_mean;
             (void) corr_mean;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1115,7 +1139,7 @@ public:
             else
                 corr_mean = in__.cholesky_factor_corr_constrain(m_fats);
 
-            current_statement_begin__ = 53;
+            current_statement_begin__ = 59;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > tau_prey;
             size_t tau_prey_d_0_max__ = n_preys;
             tau_prey.reserve(tau_prey_d_0_max__);
@@ -1126,7 +1150,7 @@ public:
                     tau_prey.push_back(in__.vector_lb_constrain(0, m_fats));
             }
 
-            current_statement_begin__ = 54;
+            current_statement_begin__ = 60;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> tau_mean;
             (void) tau_mean;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1134,7 +1158,7 @@ public:
             else
                 tau_mean = in__.vector_lb_constrain(0, m_fats);
 
-            current_statement_begin__ = 55;
+            current_statement_begin__ = 61;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> tau_pred;
             (void) tau_pred;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1142,7 +1166,7 @@ public:
             else
                 tau_pred = in__.vector_lb_constrain(0, m_fats);
 
-            current_statement_begin__ = 57;
+            current_statement_begin__ = 63;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > prey_means_SI;
             size_t prey_means_SI_d_0_max__ = n_preys;
             prey_means_SI.reserve(prey_means_SI_d_0_max__);
@@ -1153,7 +1177,7 @@ public:
                     prey_means_SI.push_back(in__.vector_constrain(isos));
             }
 
-            current_statement_begin__ = 58;
+            current_statement_begin__ = 64;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > cc;
             size_t cc_d_0_max__ = n_preys;
             cc.reserve(cc_d_0_max__);
@@ -1164,7 +1188,7 @@ public:
                     cc.push_back(in__.vector_constrain(isos));
             }
 
-            current_statement_begin__ = 59;
+            current_statement_begin__ = 65;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > cons_prey_SI;
             size_t cons_prey_SI_d_0_max__ = n_preys;
             cons_prey_SI.reserve(cons_prey_SI_d_0_max__);
@@ -1175,7 +1199,7 @@ public:
                     cons_prey_SI.push_back(in__.vector_constrain(isos));
             }
 
-            current_statement_begin__ = 61;
+            current_statement_begin__ = 67;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> > corr_prey_SI;
             size_t corr_prey_SI_d_0_max__ = n_preys;
             corr_prey_SI.reserve(corr_prey_SI_d_0_max__);
@@ -1186,7 +1210,7 @@ public:
                     corr_prey_SI.push_back(in__.cholesky_factor_corr_constrain(isos));
             }
 
-            current_statement_begin__ = 62;
+            current_statement_begin__ = 68;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> corr_pred_SI;
             (void) corr_pred_SI;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1194,7 +1218,7 @@ public:
             else
                 corr_pred_SI = in__.cholesky_factor_corr_constrain(isos);
 
-            current_statement_begin__ = 63;
+            current_statement_begin__ = 69;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> corr_mean_SI;
             (void) corr_mean_SI;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1202,7 +1226,7 @@ public:
             else
                 corr_mean_SI = in__.cholesky_factor_corr_constrain(isos);
 
-            current_statement_begin__ = 64;
+            current_statement_begin__ = 70;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > tau_prey_SI;
             size_t tau_prey_SI_d_0_max__ = n_preys;
             tau_prey_SI.reserve(tau_prey_SI_d_0_max__);
@@ -1213,7 +1237,7 @@ public:
                     tau_prey_SI.push_back(in__.vector_lb_constrain(0, isos));
             }
 
-            current_statement_begin__ = 65;
+            current_statement_begin__ = 71;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> tau_mean_SI;
             (void) tau_mean_SI;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1221,7 +1245,7 @@ public:
             else
                 tau_mean_SI = in__.vector_lb_constrain(0, isos);
 
-            current_statement_begin__ = 66;
+            current_statement_begin__ = 72;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> tau_pred_SI;
             (void) tau_pred_SI;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1229,7 +1253,7 @@ public:
             else
                 tau_pred_SI = in__.vector_lb_constrain(0, isos);
 
-            current_statement_begin__ = 69;
+            current_statement_begin__ = 75;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> props;
             (void) props;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -1238,7 +1262,7 @@ public:
                 props = in__.vector_lb_constrain(0, n_preys);
 
             // transformed parameters
-            current_statement_begin__ = 72;
+            current_statement_begin__ = 78;
             validate_non_negative_index("prey_precs", "m_fats", m_fats);
             validate_non_negative_index("prey_precs", "m_fats", m_fats);
             validate_non_negative_index("prey_precs", "n_preys", n_preys);
@@ -1246,34 +1270,34 @@ public:
             stan::math::initialize(prey_precs, DUMMY_VAR__);
             stan::math::fill(prey_precs, DUMMY_VAR__);
 
-            current_statement_begin__ = 73;
+            current_statement_begin__ = 79;
             validate_non_negative_index("pred_prec", "m_fats", m_fats);
             validate_non_negative_index("pred_prec", "m_fats", m_fats);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> pred_prec(m_fats, m_fats);
             stan::math::initialize(pred_prec, DUMMY_VAR__);
             stan::math::fill(pred_prec, DUMMY_VAR__);
 
-            current_statement_begin__ = 74;
+            current_statement_begin__ = 80;
             validate_non_negative_index("prey", "n_fats", n_fats);
             validate_non_negative_index("prey", "n_preys", n_preys);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> prey(n_fats, n_preys);
             stan::math::initialize(prey, DUMMY_VAR__);
             stan::math::fill(prey, DUMMY_VAR__);
 
-            current_statement_begin__ = 75;
+            current_statement_begin__ = 81;
             validate_non_negative_index("c_prey", "n_fats", n_fats);
             validate_non_negative_index("c_prey", "n_preys", n_preys);
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > c_prey(n_preys, Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1>(n_fats));
             stan::math::initialize(c_prey, DUMMY_VAR__);
             stan::math::fill(c_prey, DUMMY_VAR__);
 
-            current_statement_begin__ = 76;
+            current_statement_begin__ = 82;
             validate_non_negative_index("mu", "m_fats", m_fats);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> mu(m_fats);
             stan::math::initialize(mu, DUMMY_VAR__);
             stan::math::fill(mu, DUMMY_VAR__);
 
-            current_statement_begin__ = 78;
+            current_statement_begin__ = 84;
             validate_non_negative_index("prey_precs_SI", "isos", isos);
             validate_non_negative_index("prey_precs_SI", "isos", isos);
             validate_non_negative_index("prey_precs_SI", "n_preys", n_preys);
@@ -1281,83 +1305,99 @@ public:
             stan::math::initialize(prey_precs_SI, DUMMY_VAR__);
             stan::math::fill(prey_precs_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 79;
+            current_statement_begin__ = 85;
             validate_non_negative_index("pred_prec_SI", "isos", isos);
             validate_non_negative_index("pred_prec_SI", "isos", isos);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> pred_prec_SI(isos, isos);
             stan::math::initialize(pred_prec_SI, DUMMY_VAR__);
             stan::math::fill(pred_prec_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 80;
+            current_statement_begin__ = 86;
             validate_non_negative_index("prey_SI", "isos", isos);
             validate_non_negative_index("prey_SI", "n_preys", n_preys);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> prey_SI(isos, n_preys);
             stan::math::initialize(prey_SI, DUMMY_VAR__);
             stan::math::fill(prey_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 81;
+            current_statement_begin__ = 87;
             validate_non_negative_index("mu_SI", "isos", isos);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> mu_SI(isos);
             stan::math::initialize(mu_SI, DUMMY_VAR__);
             stan::math::fill(mu_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 83;
+            current_statement_begin__ = 88;
+            validate_non_negative_index("fc", "n_preys", n_preys);
+            std::vector<local_scalar_t__> fc(n_preys, local_scalar_t__(0));
+            stan::math::initialize(fc, DUMMY_VAR__);
+            stan::math::fill(fc, DUMMY_VAR__);
+
+            current_statement_begin__ = 89;
             validate_non_negative_index("prop", "n_preys", n_preys);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> prop(n_preys);
             stan::math::initialize(prop, DUMMY_VAR__);
             stan::math::fill(prop, DUMMY_VAR__);
 
             // transformed parameters block statements
-            current_statement_begin__ = 86;
+            current_statement_begin__ = 92;
             stan::math::assign(prop, clo(props, pstream__));
-            current_statement_begin__ = 88;
+            current_statement_begin__ = 94;
+            if (as_bool(fc_data)) {
+
+                current_statement_begin__ = 95;
+                stan::math::assign(fc, fcs);
+            } else {
+
+                current_statement_begin__ = 97;
+                stan::math::assign(fc, fc_base);
+            }
+            current_statement_begin__ = 100;
             for (int j = 1; j <= n_preys; ++j) {
 
-                current_statement_begin__ = 90;
+                current_statement_begin__ = 102;
                 stan::model::assign(prey_precs, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
                             diag_pre_multiply(get_base1(tau_prey, j, "tau_prey", 1), get_base1(corr_prey, j, "corr_prey", 1)), 
                             "assigning variable prey_precs");
-                current_statement_begin__ = 91;
+                current_statement_begin__ = 103;
                 stan::model::assign(c_prey, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_min_max(1, (n_fats - 1)), stan::model::nil_index_list())), 
                             stan::math::exp(get_base1(cons_prey, j, "cons_prey", 1)), 
                             "assigning variable c_prey");
-                current_statement_begin__ = 92;
+                current_statement_begin__ = 104;
                 stan::model::assign(c_prey, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_uni(n_fats), stan::model::nil_index_list())), 
                             1, 
                             "assigning variable c_prey");
-                current_statement_begin__ = 93;
+                current_statement_begin__ = 105;
                 stan::model::assign(prey, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             elt_multiply(multiply(get_base1(fc, j, "fc", 1), get_base1(cs, j, "cs", 1)), get_base1(c_prey, j, "c_prey", 1)), 
                             "assigning variable prey");
-                current_statement_begin__ = 96;
+                current_statement_begin__ = 108;
                 stan::model::assign(prey_precs_SI, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
                             diag_pre_multiply(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), get_base1(corr_prey_SI, j, "corr_prey_SI", 1)), 
                             "assigning variable prey_precs_SI");
-                current_statement_begin__ = 97;
+                current_statement_begin__ = 109;
                 stan::model::assign(prey_SI, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             add(get_base1(cc, j, "cc", 1), get_base1(cons_prey_SI, j, "cons_prey_SI", 1)), 
                             "assigning variable prey_SI");
             }
-            current_statement_begin__ = 101;
+            current_statement_begin__ = 113;
             stan::math::assign(mu_SI, multiply(prey_SI, prop));
-            current_statement_begin__ = 102;
+            current_statement_begin__ = 114;
             stan::math::assign(pred_prec_SI, diag_pre_multiply(tau_pred_SI, corr_pred_SI));
-            current_statement_begin__ = 104;
+            current_statement_begin__ = 116;
             stan::math::assign(mu, alr(multiply(prey, prop), n_fats, pstream__));
-            current_statement_begin__ = 105;
+            current_statement_begin__ = 117;
             stan::math::assign(pred_prec, diag_pre_multiply(tau_pred, corr_pred));
 
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
 
-            current_statement_begin__ = 72;
+            current_statement_begin__ = 78;
             size_t prey_precs_k_0_max__ = n_preys;
             size_t prey_precs_j_1_max__ = m_fats;
             size_t prey_precs_j_2_max__ = m_fats;
@@ -1372,7 +1412,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 73;
+            current_statement_begin__ = 79;
             size_t pred_prec_j_1_max__ = m_fats;
             size_t pred_prec_j_2_max__ = m_fats;
             for (size_t j_1__ = 0; j_1__ < pred_prec_j_1_max__; ++j_1__) {
@@ -1384,7 +1424,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 74;
+            current_statement_begin__ = 80;
             size_t prey_j_1_max__ = n_fats;
             size_t prey_j_2_max__ = n_preys;
             for (size_t j_1__ = 0; j_1__ < prey_j_1_max__; ++j_1__) {
@@ -1396,7 +1436,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 75;
+            current_statement_begin__ = 81;
             size_t c_prey_k_0_max__ = n_preys;
             size_t c_prey_j_1_max__ = n_fats;
             for (size_t k_0__ = 0; k_0__ < c_prey_k_0_max__; ++k_0__) {
@@ -1408,7 +1448,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 76;
+            current_statement_begin__ = 82;
             size_t mu_j_1_max__ = m_fats;
             for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(mu(j_1__))) {
@@ -1417,7 +1457,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable mu: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 78;
+            current_statement_begin__ = 84;
             size_t prey_precs_SI_k_0_max__ = n_preys;
             size_t prey_precs_SI_j_1_max__ = isos;
             size_t prey_precs_SI_j_2_max__ = isos;
@@ -1432,7 +1472,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 79;
+            current_statement_begin__ = 85;
             size_t pred_prec_SI_j_1_max__ = isos;
             size_t pred_prec_SI_j_2_max__ = isos;
             for (size_t j_1__ = 0; j_1__ < pred_prec_SI_j_1_max__; ++j_1__) {
@@ -1444,7 +1484,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 80;
+            current_statement_begin__ = 86;
             size_t prey_SI_j_1_max__ = isos;
             size_t prey_SI_j_2_max__ = n_preys;
             for (size_t j_1__ = 0; j_1__ < prey_SI_j_1_max__; ++j_1__) {
@@ -1456,7 +1496,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 81;
+            current_statement_begin__ = 87;
             size_t mu_SI_j_1_max__ = isos;
             for (size_t j_1__ = 0; j_1__ < mu_SI_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(mu_SI(j_1__))) {
@@ -1465,7 +1505,16 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable mu_SI: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 83;
+            current_statement_begin__ = 88;
+            size_t fc_k_0_max__ = n_preys;
+            for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
+                if (stan::math::is_uninitialized(fc[k_0__])) {
+                    std::stringstream msg__;
+                    msg__ << "Undefined transformed parameter: fc" << "[" << k_0__ << "]";
+                    stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable fc: ") + msg__.str()), current_statement_begin__, prog_reader__());
+                }
+            }
+            current_statement_begin__ = 89;
             size_t prop_j_1_max__ = n_preys;
             for (size_t j_1__ = 0; j_1__ < prop_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(prop(j_1__))) {
@@ -1479,67 +1528,70 @@ public:
 
             // model body
 
-            current_statement_begin__ = 111;
+            current_statement_begin__ = 123;
             for (int ps = 1; ps <= n_prey_samps; ++ps) {
-                current_statement_begin__ = 111;
+                current_statement_begin__ = 123;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preys, ps, "preys", 1), get_base1(prey_means, get_base1(prey_ix, ps, "prey_ix", 1), "prey_means", 1), get_base1(prey_precs, get_base1(prey_ix, ps, "prey_ix", 1), "prey_precs", 1)));
             }
-            current_statement_begin__ = 112;
+            current_statement_begin__ = 124;
             for (int ps = 1; ps <= n_prey_samps_SI; ++ps) {
-                current_statement_begin__ = 112;
+                current_statement_begin__ = 124;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preys_SI, ps, "preys_SI", 1), get_base1(prey_means_SI, get_base1(prey_ix_SI, ps, "prey_ix_SI", 1), "prey_means_SI", 1), get_base1(prey_precs_SI, get_base1(prey_ix_SI, ps, "prey_ix_SI", 1), "prey_precs_SI", 1)));
             }
-            current_statement_begin__ = 115;
+            current_statement_begin__ = 127;
             for (int p = 1; p <= n_preds; ++p) {
 
-                current_statement_begin__ = 116;
+                current_statement_begin__ = 128;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preds, p, "preds", 1), mu, pred_prec));
-                current_statement_begin__ = 117;
+                current_statement_begin__ = 129;
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preds_SI, p, "preds_SI", 1), mu_SI, pred_prec_SI));
             }
-            current_statement_begin__ = 120;
+            current_statement_begin__ = 132;
             lp_accum__.add(gamma_log<propto__>(props, 1.5, 1));
-            current_statement_begin__ = 121;
-            lp_accum__.add(lognormal_log<propto__>(fc, fc_mean, stan::math::sqrt(elt_divide(1.0, fc_tau))));
-            current_statement_begin__ = 123;
+            current_statement_begin__ = 133;
+            if (as_bool(fc_data)) {
+                current_statement_begin__ = 133;
+                lp_accum__.add(lognormal_log<propto__>(fcs, fc_mean, stan::math::sqrt(elt_divide(1.0, fc_tau))));
+            }
+            current_statement_begin__ = 135;
             for (int j = 1; j <= n_preys; ++j) {
 
-                current_statement_begin__ = 125;
-                lp_accum__.add(normal_log<propto__>(get_base1(tau_prey, j, "tau_prey", 1), 0, 10));
-                current_statement_begin__ = 126;
-                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey, j, "corr_prey", 1), 3));
-                current_statement_begin__ = 128;
-                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means, j, "prey_means", 1), get_base1(preym, j, "preym", 1), diag_pre_multiply(tau_mean, corr_mean)));
-                current_statement_begin__ = 129;
-                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(cons_prey, j, "cons_prey", 1), get_base1(prey_means, j, "prey_means", 1), get_base1(prey_precs, j, "prey_precs", 1)));
-                current_statement_begin__ = 131;
-                lp_accum__.add(gamma_log<propto__>(get_base1(cs, j, "cs", 1), get_base1(mean_c, j, "mean_c", 1), get_base1(tau_coeffs, j, "tau_coeffs", 1)));
-                current_statement_begin__ = 134;
-                lp_accum__.add(normal_log<propto__>(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), 0, 10));
-                current_statement_begin__ = 135;
-                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey_SI, j, "corr_prey_SI", 1), 3));
                 current_statement_begin__ = 137;
-                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means_SI, j, "prey_means_SI", 1), get_base1(preym_SI, j, "preym_SI", 1), diag_pre_multiply(tau_mean_SI, corr_mean_SI)));
+                lp_accum__.add(normal_log<propto__>(get_base1(tau_prey, j, "tau_prey", 1), 0, 10));
                 current_statement_begin__ = 138;
-                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(cons_prey_SI, j, "cons_prey_SI", 1), get_base1(prey_means_SI, j, "prey_means_SI", 1), get_base1(prey_precs_SI, j, "prey_precs_SI", 1)));
+                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey, j, "corr_prey", 1), 3));
                 current_statement_begin__ = 140;
+                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means, j, "prey_means", 1), get_base1(preym, j, "preym", 1), diag_pre_multiply(tau_mean, corr_mean)));
+                current_statement_begin__ = 141;
+                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(cons_prey, j, "cons_prey", 1), get_base1(prey_means, j, "prey_means", 1), get_base1(prey_precs, j, "prey_precs", 1)));
+                current_statement_begin__ = 143;
+                lp_accum__.add(gamma_log<propto__>(get_base1(cs, j, "cs", 1), get_base1(mean_c, j, "mean_c", 1), get_base1(tau_coeffs, j, "tau_coeffs", 1)));
+                current_statement_begin__ = 146;
+                lp_accum__.add(normal_log<propto__>(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), 0, 10));
+                current_statement_begin__ = 147;
+                lp_accum__.add(lkj_corr_cholesky_log<propto__>(get_base1(corr_prey_SI, j, "corr_prey_SI", 1), 3));
+                current_statement_begin__ = 149;
+                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(prey_means_SI, j, "prey_means_SI", 1), get_base1(preym_SI, j, "preym_SI", 1), diag_pre_multiply(tau_mean_SI, corr_mean_SI)));
+                current_statement_begin__ = 150;
+                lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(cons_prey_SI, j, "cons_prey_SI", 1), get_base1(prey_means_SI, j, "prey_means_SI", 1), get_base1(prey_precs_SI, j, "prey_precs_SI", 1)));
+                current_statement_begin__ = 152;
                 lp_accum__.add(normal_log<propto__>(get_base1(cc, j, "cc", 1), get_base1(mean_cs, j, "mean_cs", 1), get_base1(sigma_cs, j, "sigma_cs", 1)));
             }
-            current_statement_begin__ = 146;
+            current_statement_begin__ = 158;
             lp_accum__.add(normal_log<propto__>(tau_pred, 0, 10));
-            current_statement_begin__ = 147;
+            current_statement_begin__ = 159;
             lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_pred, 3));
-            current_statement_begin__ = 148;
+            current_statement_begin__ = 160;
             lp_accum__.add(normal_log<propto__>(tau_pred_SI, 0, 10));
-            current_statement_begin__ = 149;
+            current_statement_begin__ = 161;
             lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_pred_SI, 3));
-            current_statement_begin__ = 151;
+            current_statement_begin__ = 163;
             lp_accum__.add(normal_log<propto__>(tau_mean, 0, 10));
-            current_statement_begin__ = 152;
+            current_statement_begin__ = 164;
             lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_mean, 3));
-            current_statement_begin__ = 153;
+            current_statement_begin__ = 165;
             lp_accum__.add(normal_log<propto__>(tau_mean_SI, 0, 10));
-            current_statement_begin__ = 154;
+            current_statement_begin__ = 166;
             lp_accum__.add(lkj_corr_cholesky_log<propto__>(corr_mean_SI, 3));
 
         } catch (const std::exception& e) {
@@ -1569,7 +1621,7 @@ public:
         names__.resize(0);
         names__.push_back("prey_means");
         names__.push_back("cs");
-        names__.push_back("fc");
+        names__.push_back("fcs");
         names__.push_back("cons_prey");
         names__.push_back("corr_prey");
         names__.push_back("corr_pred");
@@ -1596,6 +1648,7 @@ public:
         names__.push_back("pred_prec_SI");
         names__.push_back("prey_SI");
         names__.push_back("mu_SI");
+        names__.push_back("fc");
         names__.push_back("prop");
     }
 
@@ -1612,7 +1665,7 @@ public:
         dims__.push_back(n_fats);
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back(n_preys);
+        dims__.push_back((fc_data ? n_preys : 0 ));
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(n_preys);
@@ -1714,6 +1767,9 @@ public:
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(isos);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(n_preys);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(n_preys);
@@ -1764,15 +1820,15 @@ public:
             }
         }
 
-        std::vector<double> fc;
-        size_t fc_d_0_max__ = n_preys;
-        fc.reserve(fc_d_0_max__);
-        for (size_t d_0__ = 0; d_0__ < fc_d_0_max__; ++d_0__) {
-            fc.push_back(in__.scalar_lb_constrain(0));
+        std::vector<double> fcs;
+        size_t fcs_d_0_max__ = (fc_data ? n_preys : 0 );
+        fcs.reserve(fcs_d_0_max__);
+        for (size_t d_0__ = 0; d_0__ < fcs_d_0_max__; ++d_0__) {
+            fcs.push_back(in__.scalar_lub_constrain(0, 10));
         }
-        size_t fc_k_0_max__ = n_preys;
-        for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
-            vars__.push_back(fc[k_0__]);
+        size_t fcs_k_0_max__ = (fc_data ? n_preys : 0 );
+        for (size_t k_0__ = 0; k_0__ < fcs_k_0_max__; ++k_0__) {
+            vars__.push_back(fcs[k_0__]);
         }
 
         std::vector<Eigen::Matrix<double, Eigen::Dynamic, 1> > cons_prey;
@@ -1970,7 +2026,7 @@ public:
 
         try {
             // declare and define transformed parameters
-            current_statement_begin__ = 72;
+            current_statement_begin__ = 78;
             validate_non_negative_index("prey_precs", "m_fats", m_fats);
             validate_non_negative_index("prey_precs", "m_fats", m_fats);
             validate_non_negative_index("prey_precs", "n_preys", n_preys);
@@ -1978,34 +2034,34 @@ public:
             stan::math::initialize(prey_precs, DUMMY_VAR__);
             stan::math::fill(prey_precs, DUMMY_VAR__);
 
-            current_statement_begin__ = 73;
+            current_statement_begin__ = 79;
             validate_non_negative_index("pred_prec", "m_fats", m_fats);
             validate_non_negative_index("pred_prec", "m_fats", m_fats);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> pred_prec(m_fats, m_fats);
             stan::math::initialize(pred_prec, DUMMY_VAR__);
             stan::math::fill(pred_prec, DUMMY_VAR__);
 
-            current_statement_begin__ = 74;
+            current_statement_begin__ = 80;
             validate_non_negative_index("prey", "n_fats", n_fats);
             validate_non_negative_index("prey", "n_preys", n_preys);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> prey(n_fats, n_preys);
             stan::math::initialize(prey, DUMMY_VAR__);
             stan::math::fill(prey, DUMMY_VAR__);
 
-            current_statement_begin__ = 75;
+            current_statement_begin__ = 81;
             validate_non_negative_index("c_prey", "n_fats", n_fats);
             validate_non_negative_index("c_prey", "n_preys", n_preys);
             std::vector<Eigen::Matrix<double, Eigen::Dynamic, 1> > c_prey(n_preys, Eigen::Matrix<double, Eigen::Dynamic, 1>(n_fats));
             stan::math::initialize(c_prey, DUMMY_VAR__);
             stan::math::fill(c_prey, DUMMY_VAR__);
 
-            current_statement_begin__ = 76;
+            current_statement_begin__ = 82;
             validate_non_negative_index("mu", "m_fats", m_fats);
             Eigen::Matrix<double, Eigen::Dynamic, 1> mu(m_fats);
             stan::math::initialize(mu, DUMMY_VAR__);
             stan::math::fill(mu, DUMMY_VAR__);
 
-            current_statement_begin__ = 78;
+            current_statement_begin__ = 84;
             validate_non_negative_index("prey_precs_SI", "isos", isos);
             validate_non_negative_index("prey_precs_SI", "isos", isos);
             validate_non_negative_index("prey_precs_SI", "n_preys", n_preys);
@@ -2013,76 +2069,92 @@ public:
             stan::math::initialize(prey_precs_SI, DUMMY_VAR__);
             stan::math::fill(prey_precs_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 79;
+            current_statement_begin__ = 85;
             validate_non_negative_index("pred_prec_SI", "isos", isos);
             validate_non_negative_index("pred_prec_SI", "isos", isos);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> pred_prec_SI(isos, isos);
             stan::math::initialize(pred_prec_SI, DUMMY_VAR__);
             stan::math::fill(pred_prec_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 80;
+            current_statement_begin__ = 86;
             validate_non_negative_index("prey_SI", "isos", isos);
             validate_non_negative_index("prey_SI", "n_preys", n_preys);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> prey_SI(isos, n_preys);
             stan::math::initialize(prey_SI, DUMMY_VAR__);
             stan::math::fill(prey_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 81;
+            current_statement_begin__ = 87;
             validate_non_negative_index("mu_SI", "isos", isos);
             Eigen::Matrix<double, Eigen::Dynamic, 1> mu_SI(isos);
             stan::math::initialize(mu_SI, DUMMY_VAR__);
             stan::math::fill(mu_SI, DUMMY_VAR__);
 
-            current_statement_begin__ = 83;
+            current_statement_begin__ = 88;
+            validate_non_negative_index("fc", "n_preys", n_preys);
+            std::vector<double> fc(n_preys, double(0));
+            stan::math::initialize(fc, DUMMY_VAR__);
+            stan::math::fill(fc, DUMMY_VAR__);
+
+            current_statement_begin__ = 89;
             validate_non_negative_index("prop", "n_preys", n_preys);
             Eigen::Matrix<double, Eigen::Dynamic, 1> prop(n_preys);
             stan::math::initialize(prop, DUMMY_VAR__);
             stan::math::fill(prop, DUMMY_VAR__);
 
             // do transformed parameters statements
-            current_statement_begin__ = 86;
+            current_statement_begin__ = 92;
             stan::math::assign(prop, clo(props, pstream__));
-            current_statement_begin__ = 88;
+            current_statement_begin__ = 94;
+            if (as_bool(fc_data)) {
+
+                current_statement_begin__ = 95;
+                stan::math::assign(fc, fcs);
+            } else {
+
+                current_statement_begin__ = 97;
+                stan::math::assign(fc, fc_base);
+            }
+            current_statement_begin__ = 100;
             for (int j = 1; j <= n_preys; ++j) {
 
-                current_statement_begin__ = 90;
+                current_statement_begin__ = 102;
                 stan::model::assign(prey_precs, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
                             diag_pre_multiply(get_base1(tau_prey, j, "tau_prey", 1), get_base1(corr_prey, j, "corr_prey", 1)), 
                             "assigning variable prey_precs");
-                current_statement_begin__ = 91;
+                current_statement_begin__ = 103;
                 stan::model::assign(c_prey, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_min_max(1, (n_fats - 1)), stan::model::nil_index_list())), 
                             stan::math::exp(get_base1(cons_prey, j, "cons_prey", 1)), 
                             "assigning variable c_prey");
-                current_statement_begin__ = 92;
+                current_statement_begin__ = 104;
                 stan::model::assign(c_prey, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::cons_list(stan::model::index_uni(n_fats), stan::model::nil_index_list())), 
                             1, 
                             "assigning variable c_prey");
-                current_statement_begin__ = 93;
+                current_statement_begin__ = 105;
                 stan::model::assign(prey, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             elt_multiply(multiply(get_base1(fc, j, "fc", 1), get_base1(cs, j, "cs", 1)), get_base1(c_prey, j, "c_prey", 1)), 
                             "assigning variable prey");
-                current_statement_begin__ = 96;
+                current_statement_begin__ = 108;
                 stan::model::assign(prey_precs_SI, 
                             stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
                             diag_pre_multiply(get_base1(tau_prey_SI, j, "tau_prey_SI", 1), get_base1(corr_prey_SI, j, "corr_prey_SI", 1)), 
                             "assigning variable prey_precs_SI");
-                current_statement_begin__ = 97;
+                current_statement_begin__ = 109;
                 stan::model::assign(prey_SI, 
                             stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list())), 
                             add(get_base1(cc, j, "cc", 1), get_base1(cons_prey_SI, j, "cons_prey_SI", 1)), 
                             "assigning variable prey_SI");
             }
-            current_statement_begin__ = 101;
+            current_statement_begin__ = 113;
             stan::math::assign(mu_SI, multiply(prey_SI, prop));
-            current_statement_begin__ = 102;
+            current_statement_begin__ = 114;
             stan::math::assign(pred_prec_SI, diag_pre_multiply(tau_pred_SI, corr_pred_SI));
-            current_statement_begin__ = 104;
+            current_statement_begin__ = 116;
             stan::math::assign(mu, alr(multiply(prey, prop), n_fats, pstream__));
-            current_statement_begin__ = 105;
+            current_statement_begin__ = 117;
             stan::math::assign(pred_prec, diag_pre_multiply(tau_pred, corr_pred));
 
             if (!include_gqs__ && !include_tparams__) return;
@@ -2090,7 +2162,7 @@ public:
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
 
-            current_statement_begin__ = 83;
+            current_statement_begin__ = 89;
             stan::math::check_simplex(function__, "prop", prop);
 
             // write transformed parameters
@@ -2158,6 +2230,10 @@ public:
                 for (size_t j_1__ = 0; j_1__ < mu_SI_j_1_max__; ++j_1__) {
                     vars__.push_back(mu_SI(j_1__));
                 }
+                size_t fc_k_0_max__ = n_preys;
+                for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
+                    vars__.push_back(fc[k_0__]);
+                }
                 size_t prop_j_1_max__ = n_preys;
                 for (size_t j_1__ = 0; j_1__ < prop_j_1_max__; ++j_1__) {
                     vars__.push_back(prop(j_1__));
@@ -2216,10 +2292,10 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
-        size_t fc_k_0_max__ = n_preys;
-        for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
+        size_t fcs_k_0_max__ = (fc_data ? n_preys : 0 );
+        for (size_t k_0__ = 0; k_0__ < fcs_k_0_max__; ++k_0__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "fc" << '.' << k_0__ + 1;
+            param_name_stream__ << "fcs" << '.' << k_0__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         size_t cons_prey_j_1_max__ = m_fats;
@@ -2451,6 +2527,12 @@ public:
                 param_name_stream__ << "mu_SI" << '.' << j_1__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
+            size_t fc_k_0_max__ = n_preys;
+            for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "fc" << '.' << k_0__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
             size_t prop_j_1_max__ = n_preys;
             for (size_t j_1__ = 0; j_1__ < prop_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
@@ -2485,10 +2567,10 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
-        size_t fc_k_0_max__ = n_preys;
-        for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
+        size_t fcs_k_0_max__ = (fc_data ? n_preys : 0 );
+        for (size_t k_0__ = 0; k_0__ < fcs_k_0_max__; ++k_0__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "fc" << '.' << k_0__ + 1;
+            param_name_stream__ << "fcs" << '.' << k_0__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         size_t cons_prey_j_1_max__ = m_fats;
@@ -2700,6 +2782,12 @@ public:
             for (size_t j_1__ = 0; j_1__ < mu_SI_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
                 param_name_stream__ << "mu_SI" << '.' << j_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
+            size_t fc_k_0_max__ = n_preys;
+            for (size_t k_0__ = 0; k_0__ < fc_k_0_max__; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "fc" << '.' << k_0__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
             size_t prop_j_1_max__ = (n_preys - 1);

@@ -22,6 +22,8 @@ data {
   int<lower = 1> n_fats;
   int<lower = 1> m_fats;
   int prey_ix[n_prey_samps];
+  
+  int<lower=0, upper=1> fc_data;
   vector[n_preys] fc_mean;
   vector[n_preys] fc_tau;
   vector[m_fats] preys[n_prey_samps];
@@ -30,10 +32,15 @@ data {
   vector[n_fats] tau_coeffs[n_preys];
   vector[m_fats] preds[n_preds];
 }
+transformed data{
+  real fc_base[n_preys];
+  
+  for (p in 1:n_preys) fc_base[p] = 1.0;
+}
 parameters{
   vector[m_fats] prey_means[n_preys];
   vector<lower=0>[n_fats] cs[n_preys];
-  real<lower=0> fc[n_preys];
+  real<lower=0, upper=10> fcs[fc_data ? n_preys : 0];
   vector[m_fats] cons_prey[n_preys];
   
   cholesky_factor_corr[m_fats] corr_prey[n_preys];
@@ -51,8 +58,15 @@ transformed parameters{
   matrix[n_fats,n_preys] prey;
   vector[n_fats] c_prey[n_preys];
   vector[m_fats] mu;
+  real fc[n_preys]; 
   
   prop = clo(props);
+  
+  if(fc_data){
+    fc = fcs;
+  } else {
+    fc = fc_base;
+  }
   
   for (j in 1:n_preys){
     
@@ -77,7 +91,8 @@ model{
   for (p in 1:n_preds) preds[p] ~ multi_normal_cholesky(mu,pred_prec);
 
   props ~ gamma(1.5,1);
-  fc ~ lognormal(fc_mean,sqrt(1.0./fc_tau));   
+  
+  if(fc_data) fcs ~ lognormal(fc_mean,sqrt(1.0./fc_tau));   
 
   for (j in 1:n_preys){
     

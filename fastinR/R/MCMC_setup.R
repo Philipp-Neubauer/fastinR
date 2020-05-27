@@ -313,6 +313,7 @@ diags <- function(MCMCout=NULL,accuracy=0.01,proba=0.95,quant=0.025){
     R =datas$datas.FA$R,
     fc_mean =datas$datas.FA$fc_mean,
     fc_tau =datas$datas.FA$fc_tau,
+    fc_data =datas$datas.FA$fc_data,
     mean_c = data.frame(datas$datas.FA$mean_c),
     tau_coeffs =datas$datas.FA$tau_c,
     Rnot =datas$datas.FA$Rnot,

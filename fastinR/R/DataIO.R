@@ -248,7 +248,7 @@ add_SI <- function(SI.predators=NULL,SI.preys=NULL,Frac.Coeffs.mean='',Frac.Coef
 #' fat.conts <- system.file("extdata", "Simdata_fat_cont.csv", package="fastinR")
 #' dats <- add_FA(FA.predators=FA.predators,FA.preys=FA.preys,fat.conts=fat.conts,Conv.Coeffs.mean=Conv.Coeffs.mean,Conv.Coeffs.var=Conv.Coeffs.var)
 #' @export
-add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=1,FC.var=1,CC.mean=1,CC.var=1,datas=NULL,LN.par=F){
+add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.mean='',Conv.Coeffs.var='',FC.mean=NULL,FC.var=NULL,CC.mean=1,CC.var=1,datas=NULL,LN.par=F){
   
   # check if GUI is being used
   if(exists('GUI',envir=.GlobalEnv)){
@@ -332,27 +332,29 @@ add_FA <- function(FA.predators=NULL,FA.preys=NULL,fat.conts = '',Conv.Coeffs.me
   {
     if(length(FC.mean) == n.preys & length(FC.var) == n.preys)
     {
-      fc.mean <- FC.mean; fc.var <- FC.var
+      fc.mean <- FC.mean; fc.var <- FC.var; fc.data <- 1
     } else if(length(FC.mean) == 1 & length(FC.var) == 1){
-      fc.mean <- rep(FC.mean,n.preys); fc.var <- rep(FC.var,n.preys)
-    } else {stop('Fat content mean and variance need to be either a single number, or supplied as a vector of length equal to the number of prey items - use R c() notation in that case. In the latter case, or for individual sample fat content please supply a file')}
+      fc.mean <- rep(FC.mean,n.preys); fc.var <- rep(FC.var,n.preys); fc.data <- 1
+    } else {print('No fat content provided, fixing to 1'); fc.data=0;fc.mean <- rep(1, n.preys); fc.var <- rep(1, n.preys)}
     
   } else
   {
     fat.cont <- read.csv(fat.conts,header=F)
     if (dim(fat.cont)[2]>2){
       fat.cont <- read.csv(fat.conts,header=F,row.names=1) 
-      fc.mean <- fat.cont[,1];fc.var <- fat.cont[,2]
+      fc.mean <- fat.cont[,1];fc.var <- fat.cont[,2]; fc.data <- 1
       
     } else if (dim(fat.cont)[2]==2){
-      fc.mean <- fat.cont[,1];fc.var <- fat.cont[,2]
+      fc.mean <- fat.cont[,1];fc.var <- fat.cont[,2]; fc.data <- 1
     } else {
       fc.mean <- tapply(fat.cont,preys.ix,mean)
       fc.var <- tapply(fat.cont,preys.ix,var)
+      fc.data <- 1
     }
   }
   
   if(LN.par == F){
+    
     fc.var = log(fc.var + fc.mean^2) - 2*log(fc.mean)
     fc.mean = log(fc.mean)-fc.var/2
   }  
@@ -409,7 +411,7 @@ if (length(datas$datas.SI)>1){
 
   ## first some data and inits ----
   
- datas.FA <- list(fc_mean=fc.mean,fc_tau=1/fc.var,n.fats=n.fats,m.fats=m.fats,R=R,Rnot=NULL,preys=preys,preds.FA=predators,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=var_c)
+ datas.FA <- list(fc_mean=fc.mean,fc_tau=1/fc.var, fc_data=fc.data, n.fats=n.fats,m.fats=m.fats,R=R,Rnot=NULL,preys=preys,preds.FA=predators,preym=preym,preds=preds,ni=ni,mean_c=mean_c,tau_c=var_c)
   
   if(length(datas)<=1){
     datas <- list(n.preys = n.preys,n.preds=n.preds,prey.ix=preys.ix,datas.FA=datas.FA,datas.SI=NULL,even=NULL)
