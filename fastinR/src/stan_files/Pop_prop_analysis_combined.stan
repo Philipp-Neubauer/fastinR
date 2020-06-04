@@ -135,7 +135,7 @@ model{
   for (j in 1:n_preys){
     
     tau_prey[j] ~ normal(0, 10);
-    corr_prey[j] ~ lkj_corr_cholesky(3);
+    corr_prey[j] ~ lkj_corr_cholesky(0.99);
     
     prey_means[j] ~ multi_normal_cholesky(preym[j], diag_pre_multiply(tau_mean, corr_mean));
     cons_prey[j] ~ multi_normal_cholesky(prey_means[j],prey_precs[j]);
@@ -144,7 +144,7 @@ model{
     
     
     tau_prey_SI[j] ~ normal(0, 10);
-    corr_prey_SI[j] ~ lkj_corr_cholesky(3);
+    corr_prey_SI[j] ~ lkj_corr_cholesky(0.99);
     
     prey_means_SI[j] ~ multi_normal_cholesky(preym_SI[j], diag_pre_multiply(tau_mean_SI, corr_mean_SI));
     cons_prey_SI[j] ~ multi_normal_cholesky(prey_means_SI[j],prey_precs_SI[j]);
@@ -156,13 +156,13 @@ model{
   
   // priors for predator covariance
   tau_pred ~ normal(0, 10);
-  corr_pred ~ lkj_corr_cholesky(3);
+  corr_pred ~ lkj_corr_cholesky(0.99);
   tau_pred_SI ~ normal(0, 10);
-  corr_pred_SI ~ lkj_corr_cholesky(3);
+  corr_pred_SI ~ lkj_corr_cholesky(0.99);
   
   tau_mean ~ normal(0, 10);
-  corr_mean ~ lkj_corr_cholesky(3);
+  corr_mean ~ lkj_corr_cholesky(0.99);
   tau_mean_SI ~ normal(0, 10);
-  corr_mean_SI ~ lkj_corr_cholesky(3);
+  corr_mean_SI ~ lkj_corr_cholesky(0.99);
   
 }
