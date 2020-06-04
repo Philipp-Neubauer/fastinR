@@ -1547,7 +1547,7 @@ public:
                 lp_accum__.add(multi_normal_cholesky_log<propto__>(get_base1(preds_SI, p, "preds_SI", 1), mu_SI, pred_prec_SI));
             }
             current_statement_begin__ = 132;
-            lp_accum__.add(gamma_log<propto__>(props, 1.5, 1));
+            lp_accum__.add(gamma_log<propto__>(props, 1, 1));
             current_statement_begin__ = 133;
             if (as_bool(fc_data)) {
                 current_statement_begin__ = 133;

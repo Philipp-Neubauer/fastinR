@@ -19,11 +19,11 @@ options("useFancyQuotes" = FALSE)
 
 make_cc <- function(file) {
 
-  cat(file)
+  #cat(file)
   file <- sub("\\.cc$", ".stan", file)
 
   cppcode <- rstan::stanc(file, allow_undefined = TRUE,
-                          obfuscate_model_name = FALSE)$cppcode
+                          obfuscate_model_name = FALSE,verbose = F)$cppcode
   cppcode <- sub("(class[[:space:]][A-Za-z_][A-Za-z0-9_]*[[:space:]])",
                  paste("#include <meta_header.hpp>\n", "\\1"), cppcode)
   

@@ -129,7 +129,7 @@ model{
     preds_SI[p] ~ multi_normal_cholesky(mu_SI,pred_prec_SI);
   }
   
-  props ~ gamma(1.5,1);
+  props ~ gamma(1,1);
   if(fc_data) fcs ~ lognormal(fc_mean,sqrt(1.0./fc_tau));  
   
   for (j in 1:n_preys){
