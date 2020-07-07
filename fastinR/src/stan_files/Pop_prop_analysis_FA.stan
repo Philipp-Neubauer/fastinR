@@ -90,14 +90,14 @@ model{
     
   for (p in 1:n_preds) preds[p] ~ multi_normal_cholesky(mu,pred_prec);
 
-  props ~ gamma(1.5,1);
+  props ~ gamma(1,1);
   
   if(fc_data) fcs ~ lognormal(fc_mean,sqrt(1.0./fc_tau));   
 
   for (j in 1:n_preys){
     
     tau_prey[j] ~ normal(0, 10);
-    corr_prey[j] ~ lkj_corr_cholesky(3);
+    corr_prey[j] ~ lkj_corr_cholesky(1);
     
     prey_means[j] ~ multi_normal_cholesky(preym[j], diag_pre_multiply(tau_mean, corr_mean));
     cons_prey[j] ~ multi_normal_cholesky(prey_means[j],prey_precs[j]);
@@ -109,10 +109,10 @@ model{
       
   // priors for predator covariance
    tau_pred ~ normal(0, 10);
-   corr_pred ~ lkj_corr_cholesky(3);
+   corr_pred ~ lkj_corr_cholesky(1);
   
    tau_mean ~ normal(0, 10);
-   corr_mean ~ lkj_corr_cholesky(3);
+   corr_mean ~ lkj_corr_cholesky(1);
  
   
 }
