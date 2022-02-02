@@ -161,8 +161,8 @@ We start with the default Rnot prior of 0.2, which is reasonably broad and often
 
 <<FAP SC analysis v0,results='hide',eval=FALSE>>=
 Squid.SC.analysis <- run_MCMC(datas=squid.subset.treat.SC,
-                              nIter=600000,
-                              nBurnin=10000,
+                              nIter=6000,
+                              nBurnin=100,
                               nChains=3,
                               nThin=200,
                               Data.Type='Fatty.Acid.Profiles',

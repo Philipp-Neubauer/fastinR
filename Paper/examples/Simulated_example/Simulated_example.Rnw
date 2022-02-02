@@ -142,11 +142,12 @@ Pop.SI <- run_MCMC(datas = dats.subset,
                    nIter = 1000,
                    nBurnin = 500,
                    nChains = 3,
-                   nThin = 20,
+                   nThin = 1,
                    Data.Type = 'Stable.Isotopes',
                    Analysis.Type = 'Population.proportions',
                    Rnot_SI = 0.1,
-                   plott = F, spawn = F)
+                   plott = T, spawn = F)
+
 @
 
 Plotting the MCMC is the easiest way to ensure that the sampler is mixing - meaning that the chain explores the posterior distribution of each parameter efficiently.
@@ -202,14 +203,14 @@ We repeat this analysis with Fatty Acids, again starting with the default prior.
 
 <<FAP Analysis>>=
 Pop.FA <- run_MCMC(datas = dats.subset,
-                   nIter = 10000,
-                   nBurnin = 1000,
+                   nIter = 1000,
+                   nBurnin = 500,
                    nChains = 3,
-                   nThin = 10,
+                   nThin = 1,
                    Data.Type = 'Fatty.Acid.Profiles',
                    Analysis.Type = 'Population.proportions',
                    Rnot = 0.2,
-                   plott = F, spawn = T)
+                   plott = F, spawn = F)
 @
 
 <<FAP MCMCplot,fig.cap='MCMC traces from FAP analysis showing 3 individual Markov Chains (colours)',out.width='0.75\\textwidth', fig.height=6>>=
@@ -280,15 +281,12 @@ if there is a gain in information:
 
 <<Combined Analysis>>=
 Pop.Combined <- run_MCMC(datas = dats.subset,
-                         nIter = 30000,
-                         nBurnin = 10000,
+                         nIter = 1000,
+                         nBurnin = 500,
                          nChains = 3,
-                         nThin = 30,
+                         nThin = 3,
                          Data.Type = 'Combined.Analysis',
-                         Analysis.Type = 'Population.proportions',
-                         Rnot = 1,
-                         Rnot_SI = 1,
-                         plott = F, spawn = T)
+                         Analysis.Type = 'Population.proportions',plott = F)
 @
 
 <<MCMCout Comb1,fig.width=7>>=

@@ -95,7 +95,8 @@ simulation <- function(){
     v1 = 0.5; v2 = 0.7
     Q = rlnorm(n.preys,c(rep(0,n.preys-1),eveness),v2)
     #rlnorm(n.preys,c(rep(0,n.preys-1),eveness),v2)# individual proportions
-    props=MCMCpack::rdirichlet(n.preds,Q)
+    props=rgamma(n.preds,Q,1)
+    props=props/sum(props)
     
     guiSet("props",props)
     guiSet("gswitch",'gprops')
@@ -322,7 +323,8 @@ simulation <- function(){
     
     preys <- array(,c(nsamples[1],n.fats,n.preys))
     for (i in 1:n.preys){
-      preys[,,i] <- MCMCpack::rdirichlet(nsamples,As[i,])
+      preys[,,i] <- rgamma(nsamples,As[i,],1)
+      preys[,,i] <- preys[,,i]/sum(preys[,,i])
     }
     
     preya={}

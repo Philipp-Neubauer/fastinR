@@ -1,11 +1,11 @@
 functions {
   
-  vector clo(vector pp)
-  return pp/sum(pp);  
-  
-  vector alr(vector pp, int dim)
-  return log(pp[1:(dim-1)]/pp[dim]);  
-  
+  vector clo(vector pp){
+    return pp/sum(pp);  
+  }
+  vector alr(vector pp, int dim){
+    return log(pp[1:(dim-1)]/pp[dim]);  
+  }
   vector inv_alr(vector pp, int dim){
     vector[dim] ppo;
     

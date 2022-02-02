@@ -46,7 +46,6 @@ quantile.ind_props <- function(object,...){
 } #function
 
 #' @export
-# Returns data frame with one row for each pop/prey combination, for each chain.  
 quantile.pop_props <- function(object,...){
   
   prey.names <- object$prey.names
